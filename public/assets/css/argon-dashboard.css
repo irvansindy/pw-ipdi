@@ -9453,6 +9453,10 @@ textarea.form-control-lg {
   --bs-text-opacity: 1;
 }
 
+th {
+  text-align:center !important;
+}
+
 .bg-primary {
   /* background-color: #fb6340 !important; */
   /* background-color: #909090 !important; */

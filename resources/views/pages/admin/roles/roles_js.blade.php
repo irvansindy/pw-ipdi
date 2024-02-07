@@ -1,10 +1,6 @@
 <script>
-    new DataTable('#role_managament', {
+    new DataTable('#role_management', {
         // pagingType: 'first_last_numbers'
-    });
-    
-    new DataTable('#permission_managament', {
-        pagingType: 'first_last_numbers'
     });
     
     $('#create_role_user').click(function(e) {

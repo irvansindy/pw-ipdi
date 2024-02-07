@@ -22,12 +22,12 @@
                     <span class="nav-link-text ms-1">Dashboard</span>
                 </a>
             </li>
-            <li class="nav-item mt-3 d-flex align-items-center">
+            {{-- <li class="nav-item mt-3 d-flex align-items-center">
                 <div class="ps-4">
                     <i class="fab fa-laravel" style="color: #f4645f;"></i>
                 </div>
                 <h6 class="ms-2 text-uppercase text-xs font-weight-bolder opacity-6 mb-0">Laravel Examples</h6>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
                     <div
@@ -38,11 +38,27 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ str_contains(request()->url(), 'user-management') == true ? 'active' : '' }}" href="{{ route('page', ['page' => 'user-management']) }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'users' ? 'active' : '' }}" href="{{ route('users') }}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">User Management</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                    <a class="nav-link {{ Route::currentRouteName() == 'roles' ? 'active' : '' }}" href="{{ route('roles') }}">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Role Management</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                    <a class="nav-link {{ Route::currentRouteName() == 'event' ? 'active' : '' }}" href="{{ route('event') }}">
+                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-calendar-grid-58 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Event Management</span>
                 </a>
             </li>
             <li class="nav-item mt-3">
