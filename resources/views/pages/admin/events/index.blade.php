@@ -9,7 +9,7 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Event Management</h6>
-                            <button type="button" class="btn bg-gradient-primary ms-auto" data-bs-toggle="modal" data-bs-target="#formCreateEvent">+ Event</button>
+                            <button type="button" class="btn bg-gradient-primary ms-auto" id="for_create_event_data" data-bs-toggle="modal" data-bs-target="#formCreateEvent">+ Event</button>
 
                         </div>
                     </div>
@@ -56,24 +56,14 @@
                                                     class="text-primary text-xs font-weight-bold">{{ $event->date }}</span>
                                             </td>
                                             <td class="align-middle">
-                                                <a href="javascript::" class="text-info font-weight-bold text-xs mr-3"
-                                                    data-toggle="tooltip" data-original-title="Edit user">
+                                                <p class="text-info font-weight-bold text-xs mt-3 mr-3 detail_event_data" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#formUpdateEvent" data-original-title="Edit Event" data-event_id="{{ $event->id }}">
                                                     Edit
-                                                </a>
+                                                </p>
                                             </td>
                                         </tr>
                                         
                                     @endforeach
-                                    {{-- @forelse ($events as $key => $event)
-                                    @empty
-                                        <tr>
-                                            <td colspan="5">
-                                                <span class="text-primary text-center text-xs font-weight-bold">
-                                                    No Data
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    @endforelse --}}
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -83,6 +73,7 @@
         </div>
     </div>
     @include('pages.admin.events.create')
+    @include('pages.admin.events.update')
 @endsection
 @push('js')
     @include('pages.admin.events.event_js')

@@ -1,7 +1,5 @@
 {{-- modal --}}
 <div class="modal fade" id="formCreateEvent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"  role="dialog" aria-labelledby="formCreateEventLabel" aria-hidden="true">
-    {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered me-lg-8" role="document"> --}}
-    {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered" role="document"> --}}
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <form action="" method="POST" id="form_create_event">
@@ -16,16 +14,28 @@
                     <div class="row">
                         <div class="form-group">
                             <label for="create_event_name">Name</label>
-                            <input type="text" class="form-control" name="create_event_name" id="create_event_name" placeholder="Event Name">
+                            <input type="text" class="form-control" name="create_event_name" id="create_event_name" placeholder="Event Name" value="">
                         </div>
                         <div class="form-group">
                             <label for="create_event_title">Title</label>
-                            <input type="text" class="form-control" name="create_event_title" id="create_event_title" placeholder="Event Title">
+                            <input type="text" class="form-control" name="create_event_title" id="create_event_title" placeholder="Event Title" value="">
                         </div>
                         <div class="form-group">
                             <label for="create_event_category">Category</label>
-                            {{-- <input type="text" class="form-control" name="create_event_category" id="create_event_category" placeholder="Event Category"> --}}
-                            <select class="form-control" name="create_event_category" id="create_event_category">
+                            <select class="form-control" name="create_event_category" id="create_event_category" style="
+                            display: block !important;
+                            width: 100% !important;
+                            padding: 0.5rem 0.75rem !important;
+                            font-size: 0.875rem !important;
+                            font-weight: 400 !important;
+                            line-height: 1.4rem !important;
+                            color: #495057 !important;
+                            background-color: #fff !important;
+                            background-clip: padding-box !important;
+                            border: 1px solid #d2d6da !important;
+                            appearance: none !important;
+                            border-radius: 0.5rem !important;
+                            transition: box-shadow 0.15s ease, border-color 0.15s ease !important;">
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
@@ -33,12 +43,16 @@
                         </div>
                         <div class="form-group">
                             <label for="create_event_description">Description</label>
-                            <textarea class="form-control" name="create_event_description" id="create_event_description" rows="3"></textarea>
+                            <textarea class="form-control" name="create_event_description" id="create_event_description" rows="3" value=""></textarea>
                         </div>
                         <div class="form-group">
                             <label for="create_event_date" class="form-control-label">Date</label>
-                            <input class="form-control" type="datetime-local" value="" id="create_event_date">
+                            <input class="form-control" type="datetime-local" name="create_event_date" id="create_event_date" value="">
                         </div>
+                        {{-- <div class="form-group">
+                            <label for="create_event_image" class="form-control-label">Image</label>
+                            <input class="form-control" type="file" value="" name="create_event_image" id="create_event_image" value="">
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">

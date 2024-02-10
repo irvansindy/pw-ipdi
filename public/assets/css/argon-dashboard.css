@@ -9457,6 +9457,23 @@ th {
   text-align:center !important;
 }
 
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 33px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #444 !important;
+  line-height: 34px !important;
+}
+
+.select2-container .select2-selection--single {
+  height: 38px !important;
+}
+
+p.text-info:hover {
+  cursor: pointer !important;
+}
+
 .bg-primary {
   /* background-color: #fb6340 !important; */
   /* background-color: #909090 !important; */
@@ -20352,6 +20369,7 @@ label,
 
 .bg-gradient-primary {
   background-image: linear-gradient(310deg, #fb6340 0%, #f56036 100%);
+  /* background-image: linear-gradient(310deg, #f8f8f8 0%, #eeeeee 100%); */
 }
 
 .bg-gradient-secondary {
@@ -20364,6 +20382,7 @@ label,
 
 .bg-gradient-info {
   background-image: linear-gradient(310deg, #1171ef 0%, #11cdef 100%);
+    background-image: linear-gradient(310deg, #f8f8f8 0%, #eeeeee 100%);
 }
 
 .bg-gradient-warning {

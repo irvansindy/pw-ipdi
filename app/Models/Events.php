@@ -11,4 +11,9 @@ class Events extends Model
     use HasFactory, SoftDeletes;
     protected $guarded = [];
     protected $hidden = [];
+
+    public function category()
+    {
+        return $this->hasOne(CategoriesEvent::class, "id");
+    }
 }

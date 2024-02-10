@@ -28,7 +28,7 @@ use App\Http\Controllers\Admin\RoleManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\EventManagementController;
 
-Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
+	Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 	Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 	Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
 	Route::get('/login', [LoginController::class, 'show'])->middleware('guest')->name('login');
@@ -43,15 +43,18 @@ Route::get('/', function () {return redirect('/dashboard');})->middleware('auth'
 	Route::get('/roles', [RoleManagementController::class, 'index'])->name('roles');
 	Route::post('/role-store', [RoleManagementController::class, 'store'])->name('role-store');
 	Route::get('/event', [EventManagementController::class, 'index'])->name('event');
+	Route::post('/event-store', [EventManagementController::class, 'store'])->name('event-store');
+	Route::get('/event-detail', [EventManagementController::class, 'detail'])->name('event-detail');
+	Route::post('/event-update', [EventManagementController::class, 'update'])->name('event-update');
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
-	Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');
-	Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
-	Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
-	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static'); 
-	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
-	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static'); 
-	Route::get('/{page}', [PageController::class, 'index'])->name('page');
-	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-});
+	Route::group(['middleware' => 'auth'], function () {
+		Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
+		Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');
+		Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
+		Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+		Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static'); 
+		Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
+		Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static'); 
+		Route::get('/{page}', [PageController::class, 'index'])->name('page');
+		Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+	});
