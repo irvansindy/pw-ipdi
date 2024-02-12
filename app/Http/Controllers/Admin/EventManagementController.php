@@ -14,10 +14,30 @@ class EventManagementController extends Controller
 {
     public function index()
     {
-        $events = Events::orderBy("created_at","desc")->get();
-        $categories = CategoriesEvent::all();
-        return view("pages.admin.events.index", compact("events", "categories"));
+        return view("pages.admin.events.index");
     }
+
+    public function fetch()
+    {
+        try {
+            $events = Events::orderBy("created_at","desc")->limit(100)->get();
+            return FormatResponseJson::success($events, 'Event fetched successfully');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 400);
+        }
+
+    }
+    public function fetchCategory()
+    {
+        try {
+            $categories = CategoriesEvent::all();
+            return FormatResponseJson::success($categories, 'Event fetched successfully');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 400);
+        }
+
+    }
+    
 
     public function store(Request $request)
     {
@@ -27,7 +47,9 @@ class EventManagementController extends Controller
                 "name"=> "required|string",
                 "title"=> "required|string",
                 "category"=> "required|string",
+                "price"=> "required|string",
                 "description"=> "required|string",
+                "quota"=> "required|integer",
                 "date"=> "required|string",
             ]);
 
@@ -35,7 +57,9 @@ class EventManagementController extends Controller
                 "name"=> $request->name,
                 "title"=> $request->title,
                 "category_event_id"=> $request->category,
+                "price"=> $request->price,
                 "description"=> $request->description,
+                "quota"=> $request->quota,
                 "date"=> $request->date,
             ];
 
@@ -72,7 +96,9 @@ class EventManagementController extends Controller
                 "name"=> "required|string",
                 "title"=> "required|string",
                 "category"=> "required|string",
+                "price"=> "required|string",
                 "description"=> "required|string",
+                "quota"=> "required|integer",
                 "date"=> "required|string"
             ]);
 
@@ -80,7 +106,9 @@ class EventManagementController extends Controller
                 "name"=> $request->name,
                 "title"=> $request->title,
                 "category_event_id"=> $request->category,
+                "price"=> $request->price,
                 "description"=> $request->description,
+                "quota"=> $request->quota,
                 "date"=> $request->date
             ]);
             return FormatResponseJson::success($current_event,'Event updated successfully');

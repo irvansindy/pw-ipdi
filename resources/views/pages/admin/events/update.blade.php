@@ -41,8 +41,16 @@
                             <input type="hidden" class="form-control" id="update_event_category_value" name="update_event_category_value">
                         </div>
                         <div class="form-group">
+                            <label for="update_event_price">Price</label>
+                            <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
+                        </div>
+                        <div class="form-group">
                             <label for="update_event_description">Description</label>
                             <textarea class="form-control" name="update_event_description" id="update_event_description" rows="3" value=""></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="update_event_quota">Quota User</label>
+                            <input class="form-control" name="update_event_quota" id="update_event_quota" rows="3" value="" onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" type="number" placeholder="Quota">
                         </div>
                         <div class="form-group">
                             <label for="update_event_date" class="form-control-label">Date</label>

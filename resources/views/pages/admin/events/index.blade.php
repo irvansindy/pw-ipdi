@@ -14,8 +14,8 @@
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
-                        <div class="table-responsive p-0 px-2">
-                            <table class="table align-items-center mb-0" id="event_management">
+                        <div class="table-responsive p-0 px-md-2">
+                            <table class="table align-items-center mb-0 data_tables" id="event_management">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -25,7 +25,7 @@
                                             Name 
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Title
+                                            Quota
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Date
@@ -34,35 +34,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $no = 1;
-                                    @endphp
-                                    @foreach ($events as $key => $event)
-                                        <tr>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $no++ }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-primary text-xs font-weight-bold">{{ $event->name }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-primary text-xs font-weight-bold">{{ $event->title }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-primary text-xs font-weight-bold">{{ $event->date }}</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <p class="text-info font-weight-bold text-xs mt-3 mr-3 detail_event_data" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#formUpdateEvent" data-original-title="Edit Event" data-event_id="{{ $event->id }}">
-                                                    Edit
-                                                </p>
-                                            </td>
-                                        </tr>
-                                        
-                                    @endforeach
                                     
                                 </tbody>
                             </table>

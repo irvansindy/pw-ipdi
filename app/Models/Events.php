@@ -14,6 +14,6 @@ class Events extends Model
 
     public function category()
     {
-        return $this->hasOne(CategoriesEvent::class, "id");
+        return $this->hasOne(CategoriesEvent::class, "id", "category_event_id");
     }
 }

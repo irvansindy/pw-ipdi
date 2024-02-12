@@ -36,14 +36,20 @@
                             appearance: none !important;
                             border-radius: 0.5rem !important;
                             transition: box-shadow 0.15s ease, border-color 0.15s ease !important;">
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
+                                
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="create_event_price">Price</label>
+                            <input type="text" class="form-control price" name="create_event_price" id="create_event_price" placeholder="Event Price" value="">
                         </div>
                         <div class="form-group">
                             <label for="create_event_description">Description</label>
                             <textarea class="form-control" name="create_event_description" id="create_event_description" rows="3" value=""></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="create_event_quota">Quota User</label>
+                            <input class="form-control" name="create_event_quota" id="create_event_quota" rows="3" value="" onkeypress="return (event.charCode !=8 && event.charCode ==0 || ( event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)))" type="number" placeholder="Quota">
                         </div>
                         <div class="form-group">
                             <label for="create_event_date" class="form-control-label">Date</label>

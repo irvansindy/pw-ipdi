@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('title');
             $table->unsignedInteger('category_event_id');
-            // $table->foreign('category_event_id')->references('id')->on('categories_events');
+            $table->string('price');
             $table->text('description')->nullable();
             $table->datetime('date')->nullable();
             $table->timestamps();
