@@ -2,7 +2,7 @@
 <div class="modal fade" id="detailTransaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     role="dialog" aria-labelledby="detailTransactionLabel" aria-hidden="true">
     {{-- <div class="modal-dialog modal-lg" role="document"> --}}
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog mt-5" role="document">
         <div class="modal-content">
             <form action="" method="POST" id="form_update_transaction">
                 @csrf
@@ -30,9 +30,15 @@
                             <dd class="col-sm-9" id="update_transaction_status"></dd>
                         </dl>
                         <div class="form-group">
+                            <label for="update_transaction_status">Update Status</label>
+                            <select name="update_transaction_status" id="update_transaction_status" class="form-control" style="width: 50% !important;">
+                                <option value="">Success</option>
+                            </select>
+                        </div>
+                        {{-- <div class="form-group">
                             <label for="update_transaction_date" class="form-control-label">Date</label>
                             <input class="form-control" type="datetime-local" name="update_transaction_date" id="update_transaction_date" value="">
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer">

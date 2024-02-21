@@ -21,6 +21,7 @@ class RegisterController extends Controller
             'terms' => 'required'
         ]);
         $user = User::create($attributes);
+        $user->assignRole('user');
         auth()->login($user);
 
         return redirect('/dashboard');

@@ -5,37 +5,37 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
+        $superAdmin = User::create([
+            'username' => 'Irvan Sindy', 
+            'email' => 'superadmin@gmail.com',
+            'password' => 'pass12345'
+        ]);
+        $superAdmin->assignRole('admin');
+
+        // Creating Admin User
         $admin = User::create([
-            'username' => 'admin',
-            'firstname' => 'Admin',
-            'lastname' => 'Admin',
-            'email' => 'admin@argon.com',
-            'password' => 'secret'
-            // 'password' => bcrypt('secret')
-            // 'password' => Hash::make('secret')
+            'username' => 'admin biasa',
+            'email' => 'adminbiasa@gmail.com',
+            'password' => 'pass12345'
         ]);
-
         $admin->assignRole('admin');
-        
-        $user = User::create([
-            'username' => 'user',
-            'firstname' => 'User',
-            'lastname' => 'User',
-            'email' => 'user@argon.com',
-            'password' => 'secretuser'
-            // 'password' => bcrypt('secretuser')
-            // 'password' => Hash::make('secret')
-        ]);
 
+        // Creating Product Manager User
+        $user = User::create([
+            'username' => 'user pertama', 
+            'email' => 'userpertama@gmail.com',
+            'password' => 'pass12345'
+        ]);
         $user->assignRole('user');
     }
 }

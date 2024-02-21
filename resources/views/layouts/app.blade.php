@@ -32,7 +32,7 @@
         @yield('content')
     @endguest
 
-    @auth
+    {{-- @auth
         @if (in_array(request()->route()->getName(), ['user-management', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
             @yield('content')
         @else
@@ -48,7 +48,32 @@
                     @yield('content')
                 </main>
         @endif
+    @endauth --}}
+
+    @auth
+        @if(Auth::user()->getRoleNames()[0] == 'admin')
+            @if (in_array(request()->route()->getName(), ['user-management', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
+                @yield('content')
+            @else
+                @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
+                    <div class="min-height-300 bg-primary position-absolute w-100"></div>
+                @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
+                    <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
+                        <span class="mask bg-primary opacity-6"></span>
+                    </div>
+                @endif
+                @include('layouts.navbars.auth.sidenav')
+                    <main class="main-content border-radius-lg">
+                        @yield('content')
+                    </main>
+            @endif
+        @elseif(Auth::user()->getRoleNames()[0] == 'user')
+            <main class="main-content border-radius-lg">
+                @yield('content')
+            </main>
+        @endif
     @endauth
+    
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
@@ -111,7 +136,7 @@
             })
         }
     </script>
-    @stack('js');
+    @stack('js')
 </body>
 
 </html>

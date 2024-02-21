@@ -1,14 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- <div class="container position-sticky z-index-sticky top-0">
-        <div class="row">
-            <div class="col-12">
-                @include('layouts.navbars.guest.navbar')
-            </div>
-        </div>
-    </div> --}}
-    <main class="main-content  mt-0">
+    <main class="main-content mt-0">
         <section>
             <div class="page-header min-vh-100">
                 <div class="container">
@@ -25,14 +18,14 @@
                                         @method('post')
                                         <div class="flex flex-col mb-3">
                                             <input type="email" name="email" class="form-control form-control-lg"
-                                                value="{{ old('email') ?? 'admin@argon.com' }}" aria-label="Email">
+                                                value="" aria-label="Email">
                                             @error('email')
                                                 <p class="text-danger text-xs pt-1"> {{ $message }} </p>
                                             @enderror
                                         </div>
                                         <div class="flex flex-col mb-3">
                                             <input type="password" name="password" class="form-control form-control-lg"
-                                                aria-label="Password" value="secret">
+                                                aria-label="Password" value="">
                                             @error('password')
                                                 <p class="text-danger text-xs pt-1"> {{ $message }} </p>
                                             @enderror
