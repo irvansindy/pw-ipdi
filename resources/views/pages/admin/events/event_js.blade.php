@@ -181,11 +181,13 @@
                     $.each(res.data[1], function(i, data) {
                         $('#update_event_category').append('<option value="' + data.id + '">' + data.name + '</option>')
                     })
-
+                    alert(moment(res.data[0].last_register).format('D/MM/YYYY'))
                     $('#update_event_price').val(res.data[0].price)
                     $('#update_event_description').val(res.data[0].description)
                     $('#update_event_quota').val(res.data[0].quota)
                     $('#update_event_date').val(res.data[0].date)
+                    // $('#update_event_date_last_register').val(res.data[0].last_register)
+                    $('#update_event_date_last_register').val(moment(res.data[0].last_register).format('D/M/YYYY'))
                 },
                 error: function(xhr, status, error) {
                     $('#formUpdateEvent').modal('toggle');

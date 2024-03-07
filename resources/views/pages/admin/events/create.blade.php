@@ -55,10 +55,14 @@
                             <label for="create_event_date" class="form-control-label">Date</label>
                             <input class="form-control" type="datetime-local" name="create_event_date" id="create_event_date" value="">
                         </div>
-                        {{-- <div class="form-group">
+                        <div class="form-group">
+                            <label for="create_event_date_last_register" class="form-control-label">Date Last Register</label>
+                            <input class="form-control" type="date" name="create_event_date_last_register" id="create_event_date_last_register" value="">
+                        </div>
+                        <div class="form-group">
                             <label for="create_event_image" class="form-control-label">Image</label>
-                            <input class="form-control" type="file" value="" name="create_event_image" id="create_event_image" value="">
-                        </div> --}}
+                            <input class="form-control" type="file"name="create_event_image" id="create_event_image" value="">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

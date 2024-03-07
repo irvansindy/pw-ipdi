@@ -38,7 +38,7 @@
                                 border-radius: 0.5rem !important;
                                 transition: box-shadow 0.15s ease, border-color 0.15s ease !important;">
                             </select>
-                            <input type="hidden" class="form-control" id="update_event_category_value" name="update_event_category_value">
+                            <input type="hidden" class="form-control" id="update_event_category_value" name="update_event_category_value" value="">
                         </div>
                         <div class="form-group">
                             <label for="update_event_price">Price</label>
@@ -55,6 +55,14 @@
                         <div class="form-group">
                             <label for="update_event_date" class="form-control-label">Date</label>
                             <input class="form-control" type="datetime-local" name="update_event_date" id="update_event_date" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="update_event_date_last_register" class="form-control-label">Date Last Register</label>
+                            <input class="form-control" type="date" name="update_event_date_last_register" id="update_event_date_last_register" value="">
+                        </div>
+                        <div class="form-group">
+                            <label for="update_event_image" class="form-control-label">Image</label>
+                            <input class="form-control" type="file" name="update_event_image" id="update_event_image" value="">
                         </div>
                     </div>
                 </div>

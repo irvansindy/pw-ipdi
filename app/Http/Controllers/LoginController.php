@@ -29,7 +29,15 @@ class LoginController extends Controller
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $request->session()->regenerate();
 
-            return redirect()->intended('dashboard');
+            // return redirect()->intended('dashboard');
+            $user = Auth::user();
+            if ($user->hasRole('superadmin')) {
+                return redirect()->route('dashboard');
+            } elseif ($user->hasRole('admin')) {
+                return redirect()->route('dashboard');
+            } else {
+                return redirect()->route('home');
+            }
         }
 
         return back()->withErrors([
@@ -44,6 +52,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('home');
     }
 }

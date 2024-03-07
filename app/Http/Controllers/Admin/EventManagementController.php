@@ -80,7 +80,6 @@ class EventManagementController extends Controller
                 $event,
                 $categories,
             ];
-            // return FormatResponseJson::success($data,'Event fetched successfully');
             return FormatResponseJson::success($data,'Event fetched successfully');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 404);
@@ -116,4 +115,5 @@ class EventManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 404);
         }
     }
+
 }

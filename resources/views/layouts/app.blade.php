@@ -5,10 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="/img/favicon.png">
+    {{-- <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png"> --}}
+    {{-- <link rel="icon" type="image/png" href="/img/favicon.png"> --}}
+    <link rel="icon" type="image/png" href="{{ asset("img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png") }}">
     <title>
-        Argon Dashboard 2 by Creative Tim
+        PW IPDI DKI Jakarta
     </title>
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
@@ -23,7 +24,29 @@
     <!-- data table -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .carousel-inner {
+            height: 0;
+            padding-bottom: 42%;
+            /* this sets carousel aspect ratio (4:1 here) */
+        }
 
+        .carousel-item {
+            position: absolute !important;
+            /* Bootstrap is insistent */
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .carousel-item img {
+            height: 100%;
+            /* Bootstrap handles width already */
+            object-fit: cover;
+            /* or 'contain' if you want stretch instead of crop */
+        }
+    </style>
 </head>
 
 <body class="{{ $class ?? '' }}">
@@ -32,40 +55,20 @@
         @yield('content')
     @endguest
 
-    {{-- @auth
-        @if (in_array(request()->route()->getName(), ['user-management', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
-            @yield('content')
-        @else
-            @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                <div class="min-height-300 bg-primary position-absolute w-100"></div>
-            @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
-                <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
-                    <span class="mask bg-primary opacity-6"></span>
-                </div>
-            @endif
-            @include('layouts.navbars.auth.sidenav')
+    @auth
+        @if (Auth::user()->getRoleNames()[0] == 'admin' || Auth::user()->getRoleNames()[0] == 'superadmin')
+            @if (Request::is('/'))
+                {{-- <div class="min-height-300 bg-primary position-absolute w-100"></div> --}}
+                {{-- @include('layouts.navbars.auth.sidenav') --}}
                 <main class="main-content border-radius-lg">
                     @yield('content')
                 </main>
-        @endif
-    @endauth --}}
-
-    @auth
-        @if(Auth::user()->getRoleNames()[0] == 'admin')
-            @if (in_array(request()->route()->getName(), ['user-management', 'sign-up-static', 'login', 'register', 'recover-password', 'rtl', 'virtual-reality']))
-                @yield('content')
             @else
-                @if (!in_array(request()->route()->getName(), ['profile', 'profile-static']))
-                    <div class="min-height-300 bg-primary position-absolute w-100"></div>
-                @elseif (in_array(request()->route()->getName(), ['profile-static', 'profile']))
-                    <div class="position-absolute w-100 min-height-300 top-0" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg'); background-position-y: 50%;">
-                        <span class="mask bg-primary opacity-6"></span>
-                    </div>
-                @endif
+                <div class="min-height-300 bg-primary position-absolute w-100"></div>
                 @include('layouts.navbars.auth.sidenav')
-                    <main class="main-content border-radius-lg">
-                        @yield('content')
-                    </main>
+                <main class="main-content border-radius-lg">
+                    @yield('content')
+                </main>
             @endif
         @elseif(Auth::user()->getRoleNames()[0] == 'user')
             <main class="main-content border-radius-lg">
@@ -73,7 +76,6 @@
             </main>
         @endif
     @endauth
-    
 
     <!--   Core JS Files   -->
     <script src="assets/js/core/popper.min.js"></script>
@@ -94,19 +96,22 @@
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="assets/js/argon-dashboard.js"></script>
     <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
     <!-- datatables -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
     <!-- sweet alert 2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- select 2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    {{-- moment js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
         function CreateOrUpdateOrDelete(url, method, data, id_modal) {
             $.ajax({
                 headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: url,
                 type: method,
