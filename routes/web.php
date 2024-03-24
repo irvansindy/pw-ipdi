@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\EventManagementController;
 use App\Http\Controllers\Admin\TransactionManagementController;
 use App\Http\Controllers\UserContentController;
+use App\Http\Controllers\TransactionController;
 
 // Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 
@@ -52,6 +53,11 @@ Route::get('/event-wkd', [UserContentController::class,'fetchEventWKD'])->name('
 Route::get('/events', [UserContentController::class,'viewEvents'])->name('events');
 Route::get('/fetch-categories', [UserContentController::class,'fetchCategoriesEvent'])->name('fetch-categories');
 Route::get('/fetch-events', [UserContentController::class,'fetchAllEvent'])->name('fetch-events');
+
+Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
+
+Route::post('/check-transaction', [TransactionController::class,'checkTransaction'])->name('check-transaction');
+Route::post('/create-transaction', [TransactionController::class,'createTransaction'])->name('create-transaction');
 
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');

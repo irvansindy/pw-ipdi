@@ -43,10 +43,10 @@
                     </ul>
                 </li> --}}
                 <li class="nav-item mx-md-4">
-                    <a class="nav-link active" aria-current="page" href="#">Bantuan</a>
+                    <a class="nav-link active" aria-current="page" href="{{ route('events') }}">Acara</a>
                 </li>
                 <li class="nav-item mx-md-4">
-                    <a class="nav-link active" aria-current="page" href="{{ route('events') }}">Events</a>
+                    <a class="nav-link active" aria-current="page" href="#">Bantuan</a>
                 </li>
                 <li class="nav-item mx-md-4">
                     <a class="nav-link active" aria-current="page" href="#">Pengaduan</a>
@@ -60,14 +60,14 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="#">Profile</a>
+                                <a class="dropdown-item" href="#">Profil</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">Resertifikasi</a>
+                                <a class="dropdown-item" href="#">Riwayat Event</a>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a class="dropdown-item" href="#">WKD</a>
-                            </li>
+                            </li> --}}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

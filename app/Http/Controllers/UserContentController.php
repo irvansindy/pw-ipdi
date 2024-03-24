@@ -305,4 +305,9 @@ class UserContentController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
+
+    public function eventRegistration(Request $request)
+    {
+        $id = $request->input('id');
+    }
 }

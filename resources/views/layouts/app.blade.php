@@ -21,31 +21,26 @@
     <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="assets/css/argon-dashboard.css" rel="stylesheet" />
-    <!-- data table -->
+    <!-- data table -->     
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
-        .carousel-inner {
+        /* .carousel-inner {
             height: 0;
-            padding-bottom: 42%;
-            /* this sets carousel aspect ratio (4:1 here) */
+            padding-bottom: 43%;
         }
-
         .carousel-item {
             position: absolute !important;
-            /* Bootstrap is insistent */
             top: 0;
             right: 0;
             bottom: 0;
             left: 0;
         }
-
         .carousel-item img {
             height: 100%;
-            /* Bootstrap handles width already */
-            object-fit: cover;
-            /* or 'contain' if you want stretch instead of crop */
-        }
+            object-fit: fill;
+        } */
+        
     </style>
 </head>
 
@@ -57,7 +52,7 @@
 
     @auth
         @if (Auth::user()->getRoleNames()[0] == 'admin' || Auth::user()->getRoleNames()[0] == 'superadmin')
-            @if (Request::is('/'))
+            @if (Request::is('/') || Request::is('events'))
                 {{-- <div class="min-height-300 bg-primary position-absolute w-100"></div> --}}
                 {{-- @include('layouts.navbars.auth.sidenav') --}}
                 <main class="main-content border-radius-lg">

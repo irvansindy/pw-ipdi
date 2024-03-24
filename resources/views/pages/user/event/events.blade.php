@@ -10,7 +10,6 @@
                         <input type="text" class="form-control" name="search_events" id="search_events" placeholder="Search...." value="">
                     </div>
                     <div class="col-auto">
-                        {{-- <input type="text" class="form-control" name="search_events" id="search_events" placeholder="Search...." value=""> --}}
                         <select class="form-control" name="filter_events" id="filter_events">
                         </select>
                     </div>
@@ -22,11 +21,9 @@
             <div class="row" id="list_events">
             </div>
             <div class="load-more justify-content-center"></div>
-            {{-- <div id="pagination" class="mt-5">
-                
-            </div> --}}
         </div>
     </section>
+    @include('pages.user.event.create_event')
     @include('layouts.users.footer')
 @endsection
 @push('js')

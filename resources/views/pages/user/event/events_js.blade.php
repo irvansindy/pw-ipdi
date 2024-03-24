@@ -59,7 +59,7 @@
                                                     <small>${moment(card.date).format('DD-MM-YYYY h:mm:ss')} WIB</small>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-primary float-right" type="button">
+                                            <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}">
                                                 Register
                                             </button> 
                                         </div>
@@ -120,7 +120,7 @@
                                                     <small>${moment(card.date).format('DD-MM-YYYY h:mm:ss')} WIB</small>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-primary float-right" type="button">
+                                            <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}">
                                                 Register
                                             </button> 
                                         </div>
@@ -128,6 +128,88 @@
                                 </div>
                             </div>
                         `)
+                    })
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
+            })
+        })
+
+        $(document).on('click', '.event-register', function(e) {
+            e.preventDefault()
+            let event_id = $(this).data('event_id')
+            $.ajax({
+                url: '{{ route("check-transaction") }}',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    event_id: event_id
+                },
+                dataType: 'json',
+                async: true,
+                success:function(res){
+                    if (res.data[0] == null) {
+                        $('#form_create_event').modal('show')
+                        $('#name_event').html(res.data[1].name)
+                        $('#title_event').html(res.data[1].title)
+                        let price_event = res.data[1].price.replace(/(\d)(?=(\d{3})+\b)/g, '$1.');
+                        $('#price_event').html('Rp.'+price_event)
+                        $('#quota_event').html(res.data[1].quota+' Audien/Peserta')
+                        $('#desc_event').html(res.data[1].description)
+                        let date_event = moment(res.data[1].date).format('D-MM-YYYY, h:mm:ss')+' WIB'
+                        $('#date_event').html(date_event)
+                        let last_register = moment(res.data[1].date).format('D-MM-YYYY, h:mm:ss')+' WIB'
+                        $('#last_register').html(last_register)
+
+                        $('#create_transaction_event').attr('data-event_id', res.data[1].id);
+                    } else {
+                        Swal.fire({
+                            icon: "warning",
+                            title: 'Alert!',
+                            text: 'Kamu sudah terdaftar sebagai peserta!.',
+                        })
+                    }
+                },
+                error: function(xhr) {
+                    let response_error = JSON.parse(xhr.responseText)
+                    // alert(response_error.meta.message)
+                    Swal.fire({
+                        icon: "warning",
+                        title: 'Alert!',
+                        text: response_error.meta.message,
+                    })
+                }
+            })
+        })
+
+        $(document).on('click', '#create_transaction_event', function(e) {
+            e.preventDefault()
+            let id = $(this).data('event_id')
+            $.ajax({
+                
+                url: '{{ route("create-transaction") }}',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+                    // console.log(res.data[1][0].quota)
+                    // if (res.data[0] < res.data[1][0].quota) {
+                    //     alert('bisa join')
+                    // }
+                    $('#form_create_event').modal('hide')
+                    Swal.fire({
+                        icon: "success",
+                        title: 'Success!',
+                        text: res.meta.message,
                     })
                 },
                 error: function(xhr) {

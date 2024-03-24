@@ -10,6 +10,7 @@ class Transactions extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = "transactions";
     protected $guarded = [];
     protected $hidden = [];
 
