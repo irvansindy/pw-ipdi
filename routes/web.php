@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\EventManagementController;
 use App\Http\Controllers\Admin\TransactionManagementController;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\VisionAndMisionController;
 
 // Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 
@@ -37,18 +38,6 @@ use App\Http\Controllers\TransactionController;
 // Route::get('/home-user', [UserContentController::class, 'index'])->name('home-user');
 Route::get('/', [UserContentController::class, 'index'])->name('home');
 Route::get('/fetch-content', [UserContentController::class,'fetchContent'])->name('fetch-content');
-
-Route::get('/jnns', [UserContentController::class,'viewJnns'])->name('jnns');
-Route::get('/event-jnns', [UserContentController::class,'fetchEventJnns'])->name('event-jnns');
-
-Route::get('/seminar', [UserContentController::class,'viewSeminar'])->name('seminar');
-Route::get('/event-seminar', [UserContentController::class,'fetchEventSeminar'])->name('event-seminar');
-
-Route::get('/resertifikasi', [UserContentController::class,'viewResertifikasi'])->name('resertifikasi');
-Route::get('/event-resertifikasi', [UserContentController::class,'fetchEventResertifikasi'])->name('event-resertifikasi');
-
-Route::get('/wkd', [UserContentController::class,'viewWKD'])->name('wkd');
-Route::get('/event-wkd', [UserContentController::class,'fetchEventWKD'])->name('event-wkd');
 
 Route::get('/events', [UserContentController::class,'viewEvents'])->name('events');
 Route::get('/fetch-categories', [UserContentController::class,'fetchCategoriesEvent'])->name('fetch-categories');
@@ -58,6 +47,9 @@ Route::get('/event-registration', [UserContentController::class,'eventRegistrati
 
 Route::post('/check-transaction', [TransactionController::class,'checkTransaction'])->name('check-transaction');
 Route::post('/create-transaction', [TransactionController::class,'createTransaction'])->name('create-transaction');
+Route::get('/transaction-list', [TransactionController::class,'viewTransaction'])->name('transaction-list');
+Route::get('/transaction-history', [TransactionController::class,'transactionHistory'])->name('transaction-history');
+Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
 
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');
@@ -90,6 +82,11 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/transaction', [TransactionManagementController::class,'index'])->name('transaction');
 	Route::get('/transaction-fetch', [TransactionManagementController::class,'fetch'])->name('transaction-fetch');
 	Route::get('/transaction-detail', [TransactionManagementController::class,'detail'])->name('transaction-detail');
+
+	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');
+	Route::get('/fetch-vision', [VisionAndMisionController::class,'fetchVision'])->name('fetch-vision');
+	Route::get('/fetch-mision', [VisionAndMisionController::class,'fetchMision'])->name('fetch-mision');
+	Route::post('/upsert-vision', [VisionAndMisionController::class,'createOrUpdateVision'])->name('upsert-vision');
 });
 
 
@@ -98,7 +95,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');
 	Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
 	Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
-	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static'); 
+	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static');
 	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static'); 
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');

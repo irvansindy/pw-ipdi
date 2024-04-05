@@ -23,7 +23,7 @@
     <link id="pagestyle" href="assets/css/argon-dashboard.css" rel="stylesheet" />
     <!-- data table -->     
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
     <style>
         /* .carousel-inner {
             height: 0;
@@ -51,20 +51,6 @@
     @endguest
 
     @auth
-        {{-- @if (Auth::user()->getRoleNames()[0] == 'admin' || Auth::user()->getRoleNames()[0] == 'superadmin')
-            @if (Request::is('/') || Request::is('events'))
-                <main class="main-content border-radius-lg">
-                    @yield('content')
-                </main>
-            @else
-                <div class="min-height-300 bg-primary position-absolute w-100"></div>
-                @include('layouts.navbars.auth.sidenav')
-                <main class="main-content border-radius-lg">
-                    @yield('content')
-                </main>
-            @endif
-        @elseif(Auth::user()->getRoleNames()[0] == 'user')
-        @endif --}}
         <main class="main-content border-radius-lg">
             @yield('content')
         </main>
@@ -99,6 +85,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {{-- moment js --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://example.com/fontawesome/v6.5.1/js/all.js" data-auto-replace-svg="nest"></script>
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
         function CreateOrUpdateOrDelete(url, method, data, id_modal) {

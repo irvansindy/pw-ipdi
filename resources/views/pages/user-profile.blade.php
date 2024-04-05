@@ -1,8 +1,10 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+{{-- @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100']) --}}
+@extends('layouts.users.app')
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Your Profile'])
-    <div class="card shadow-lg mx-4 card-profile">
+    @include('layouts.users.navbar')
+    {{-- @include('layouts.navbars.auth.topnav', ['title' => 'Your Profile']) --}}
+    <div class="card shadow-lg mx-4 mt-4 card-profile">
         <div class="card-body p-3">
             <div class="row gx-4">
                 <div class="col-auto">
@@ -55,7 +57,7 @@
     </div>
     <div class="container-fluid py-4">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card">
                     <form role="form" method="POST" action={{ route('profile.update') }} enctype="multipart/form-data">
                         @csrf
@@ -137,7 +139,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <div class="card card-profile">
                     <img src="/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
                     <div class="row justify-content-center">
@@ -196,8 +198,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
         </div>
-        @include('layouts.footers.auth.footer')
+        {{-- @include('layouts.footers.auth.footer') --}}
     </div>
 @endsection

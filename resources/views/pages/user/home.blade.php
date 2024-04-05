@@ -1,4 +1,5 @@
-@extends('layouts.app')
+{{-- @extends('layouts.app') --}}
+@extends('layouts.users.app')
 
 @section('content')
     @include('layouts.users.navbar')

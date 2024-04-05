@@ -1,0 +1,12 @@
+penambahan module :
+    scan qr code dengan alat scanner,
+    menu home (sejarah, visi misi, struktur organisasi)
+    KOWIL, JNNS (WS,SYMP), RSTF, SMNR,
+    list transaksi event dipisah berdasarkan kategori, (khusus JNNS mempunyai sub-kategori)
+    penambahan module broadcast wa,
+
+hasil diskusi 30 maret 2024 :
+    penambahan upload materi pada event setelah acara,
+    export data anggota lama,
+    module bantuan berisi user knowledge,
+    penambahan fitur batch transaksi iuran dan event,

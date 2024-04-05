@@ -17,31 +17,28 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
             <ul class="navbar-nav mx-md-4 py-md-3">
-                <li class="nav-item mx-md-4">
+                {{-- <li class="nav-item mx-md-4">
                     <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" aria-current="page" href="{{ route('home') }}">Home</a>
-                </li>
-                {{-- <li class="nav-item mx-md-4 dropdown">
+                </li> --}}
+                <li class="nav-item mx-md-4 dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Event
+                        Home
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a class="dropdown-item" href="{{ route('jnns') }}">JNNS</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" aria-current="page" href="{{ route('home') }}">Beranda</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('seminar') }}">Seminar Ilmiah</a>
+                            <a class="dropdown-item" href="#">Sejarah</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('resertifikasi') }}">Resertifikasi</a>
+                            <a class="dropdown-item" href="#">Visi & Misi</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('wkd') }}">WKD</a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Kongres Wilayah</a>
+                            <a class="dropdown-item" href="#">Struktur Organisasi</a>
                         </li>
                     </ul>
-                </li> --}}
+                </li>
                 <li class="nav-item mx-md-4">
                     <a class="nav-link active" aria-current="page" href="{{ route('events') }}">Acara</a>
                 </li>
@@ -60,10 +57,10 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="#">Profil</a>
+                                <a class="dropdown-item" href="{{ route('profile') }}">Profil Diri</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">Riwayat Event</a>
+                                <a class="dropdown-item" href="{{ route('transaction-list') }}">Riwayat Transaksi</a>
                             </li>
                             {{-- <li>
                                 <a class="dropdown-item" href="#">WKD</a>

@@ -20,7 +20,6 @@ class UserContentController extends Controller
     {
         return view('pages.user.home');
     }
-
     public function fetchContent()
     {
         try {
@@ -71,187 +70,10 @@ class UserContentController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-
-    public function viewJnns()
-    {
-        return view('pages.user.event.jnns');
-    }
-
-    public function fetchEventJnns(Request $request)
-    {
-        try {
-            $search = $request->input('search');
-            if ($search == NULL) {
-                $event_jnns = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%JNNS%');
-                })
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-
-                // dd($event_jnns);
-            } else {
-                $event_jnns = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%JNNS%');
-                })
-                ->where('name','like','%'.$search.'%')
-                ->orWhere('title','like','%'.$search.'%')
-                ->orWhere('price','like','%'.$search.'%')
-                ->orWhere('description','like','%'.$search.'%')
-                ->orWhere('quota','like','%'.$search.'%')
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            }
-            
-            // ->paginate(2);
-            // dd($event_jnns);
-            return FormatResponseJson::success($event_jnns,'Event fetched successfully');
-        } catch (\Exception $e) {
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
-        }
-    }
-
-    public function viewSeminar()
-    {
-        return view('pages.user.event.seminar');
-    }
-
-    public function fetchEventSeminar(Request $request)
-    {
-        try {
-            $search = $request->input('search');
-            if ($search == NULL) {
-                $event_seminar = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%Seminar%');
-                })
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            } else {
-                $event_seminar = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%Seminar%');
-                })
-                ->where('name','like','%'.$search.'%')
-                ->orWhere('title','like','%'.$search.'%')
-                ->orWhere('price','like','%'.$search.'%')
-                ->orWhere('description','like','%'.$search.'%')
-                ->orWhere('quota','like','%'.$search.'%')
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            }
-            return FormatResponseJson::success($event_seminar,'Event fetched successfully');
-        } catch (\Exception $e) {
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
-        }
-    }
-    
-    public function viewResertifikasi()
-    {
-        return view('pages.user.event.resertifikasi');
-    }
-
-    public function fetchEventResertifikasi(Request $request)
-    {
-        try {
-            $search = $request->input('search');
-            if ($search == NULL) {
-                $event_resertifikasi = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%Resertifikasi%');
-                })
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            } else {
-                $event_resertifikasi = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%Resertifikasi%');
-                })
-                ->where('name','like','%'.$search.'%')
-                ->orWhere('title','like','%'.$search.'%')
-                ->orWhere('price','like','%'.$search.'%')
-                ->orWhere('description','like','%'.$search.'%')
-                ->orWhere('quota','like','%'.$search.'%')
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            }
-            return FormatResponseJson::success($event_resertifikasi,'Event fetched successfully');
-        } catch (\Exception $e) {
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
-        }
-    }
-
-    public function viewWKD()
-    {
-        return view('pages.user.event.wkd');
-    }
-
-    public function fetchEventWKD(Request $request)
-    {
-        try {
-            $search = $request->input('search');
-            if ($search == NULL) {
-                $event_wkd = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%WKD%');
-                })
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            } else {
-                $event_wkd = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%WKD%');
-                })
-                ->where('name','like','%'.$search.'%')
-                ->orWhere('title','like','%'.$search.'%')
-                ->orWhere('price','like','%'.$search.'%')
-                ->orWhere('description','like','%'.$search.'%')
-                ->orWhere('quota','like','%'.$search.'%')
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            }
-            return FormatResponseJson::success($event_wkd,'Event fetched successfully');
-        } catch (\Exception $e) {
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
-        }
-    }
-
-    public function fetchEventKongresWilayah(Request $request)
-    {
-        try {
-            $search = $request->input('search');
-            if ($search == NULL) {
-                $event_kongres_wilayah = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%Kongres Wilayah%');
-                })
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            } else {
-                $event_kongres_wilayah = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%Kongres Wilayah%');
-                })
-                ->where('name','like','%'.$search.'%')
-                ->orWhere('title','like','%'.$search.'%')
-                ->orWhere('price','like','%'.$search.'%')
-                ->orWhere('description','like','%'.$search.'%')
-                ->orWhere('quota','like','%'.$search.'%')
-                ->orderBy('date', 'desc')
-                ->limit(100)
-                ->get();
-            }
-            return FormatResponseJson::success($event_kongres_wilayah,'Event fetched successfully');
-        } catch (\Exception $e) {
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
-        }
-    }
-
     public function viewEvents()
     {
         return view('pages.user.event.events');
     }
-
     public function fetchCategoriesEvent()
     {
         try {
@@ -261,7 +83,6 @@ class UserContentController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-
     public function fetchAllEvent(Request $request)
     {
         try {
@@ -305,9 +126,20 @@ class UserContentController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-
-    public function eventRegistration(Request $request)
-    {
-        $id = $request->input('id');
+    public function history() {
+        try {
+            //code...
+        } catch (\Exception $e) {
+            //throw $th;
+        }
     }
+    public function visionAndMision()
+    {
+        try {
+            //code...
+        } catch (\Exception $e) {
+            //throw $th;
+        }
+    }
+
 }

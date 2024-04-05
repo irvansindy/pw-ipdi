@@ -40,7 +40,7 @@
                                     </div>
                                     <div class="card-body pt-2">
                                         <span
-                                            class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">House</span>
+                                            class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">${card.category.name}</span>
                                         <a href="javascript:;" class="card-title h5 d-block text-darker">
                                             ${card.title}
                                         </a>
@@ -101,7 +101,7 @@
                                     </div>
                                     <div class="card-body pt-2">
                                         <span
-                                            class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">House</span>
+                                            class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">${card.category.name}</span>
                                         <a href="javascript:;" class="card-title h5 d-block text-darker">
                                             ${card.title}
                                         </a>
@@ -151,6 +151,17 @@
                 dataType: 'json',
                 async: true,
                 success:function(res){
+                    // if (res.data[2].address == null || res.data[2].city == null || res.data[2].country == null || res.data[2].postal == null) {
+                    //     Swal.fire({
+                    //         icon: "warning",
+                    //         title: 'Alert!',
+                    //         text: 'Silahkan lengkapi biodata terlebih dahulu!.',
+                    //         showCancelButton: false,
+                    //         showConfirmButton: false,
+                    //         footer: '<a href="{{ route('profile') }}" class="text-primary">Klik link di bawah ini</a>'
+                    //     })
+                    // } else {
+                    // }
                     if (res.data[0] == null) {
                         $('#form_create_event').modal('show')
                         $('#name_event').html(res.data[1].name)
@@ -158,13 +169,14 @@
                         let price_event = res.data[1].price.replace(/(\d)(?=(\d{3})+\b)/g, '$1.');
                         $('#price_event').html('Rp.'+price_event)
                         $('#quota_event').html(res.data[1].quota+' Audien/Peserta')
-                        $('#desc_event').html(res.data[1].description)
+                        // $('#desc_event').html(res.data[1].description)
                         let date_event = moment(res.data[1].date).format('D-MM-YYYY, h:mm:ss')+' WIB'
                         $('#date_event').html(date_event)
                         let last_register = moment(res.data[1].date).format('D-MM-YYYY, h:mm:ss')+' WIB'
                         $('#last_register').html(last_register)
-
                         $('#create_transaction_event').attr('data-event_id', res.data[1].id);
+                        let bank_data = res.data[3][0].name+'('+res.data[3][0].account_number+')'+' a/n '+res.data[3][0].account_name
+                        $('#bank_account_number').html(bank_data)
                     } else {
                         Swal.fire({
                             icon: "warning",
@@ -189,7 +201,6 @@
             e.preventDefault()
             let id = $(this).data('event_id')
             $.ajax({
-                
                 url: '{{ route("create-transaction") }}',
                 type: 'POST',
                 headers: {
@@ -201,10 +212,6 @@
                 dataType: 'json',
                 async: true,
                 success: function(res) {
-                    // console.log(res.data[1][0].quota)
-                    // if (res.data[0] < res.data[1][0].quota) {
-                    //     alert('bisa join')
-                    // }
                     $('#form_create_event').modal('hide')
                     Swal.fire({
                         icon: "success",

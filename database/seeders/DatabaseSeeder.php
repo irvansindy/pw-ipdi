@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             EventCategorySeeder::class,
             EventSeeder::class,
             TransactionSeeder::class,
+            BankSeeder::class,
         ]);
     }
 }

@@ -2,7 +2,6 @@
     $(document).ready(function() {
         $('#transaction_management').DataTable({
             processing: true,
-            // serverside: false,
             ajax: {
                 url: '{{ route("transaction-fetch") }}',
                 type: 'GET',

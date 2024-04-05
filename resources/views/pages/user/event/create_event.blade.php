@@ -6,7 +6,7 @@
             <form action="" method="POST" id="form_create_role">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create New Transaction</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Daftar Acara</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #172b4d !important;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -14,13 +14,14 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-auto">
-                            <p>Name : <span id="name_event"></span></p>
-                            <p>Title : <span id="title_event"></span></p>
-                            <p>Price : <span id="price_event"></span></p>
-                            <p>quota : <span id="quota_event"></span></p>
-                            <p>Description : <span id="desc_event"></span></p>
-                            <p>Date : <span id="date_event"></span></p>
-                            <p>Last Register : <span id="last_register"></span></p>
+                            <p>Nama : <span id="name_event"></span></p>
+                            <p>Judul : <span id="title_event"></span></p>
+                            <p>Harga : <span id="price_event"></span></p>
+                            <p>Kuota : <span id="quota_event"></span></p>
+                            <p>Tanggal : <span id="date_event"></span></p>
+                            <p>Terakhir Registrasi : <span id="last_register"></span></p>
+                            {{-- <p>Description : <span id="desc_event"></span></p> --}}
+                            <p>Rekening : <span id="bank_account_number"></span></p>
                         </div>
                     </div>
                 </div>
