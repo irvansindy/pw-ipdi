@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\TransactionManagementController;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController;
+use App\Http\Controllers\HistoryController;
 
 // Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 
@@ -90,6 +91,11 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::post('/upsert-vision', [VisionAndMisionController::class,'createOrUpdateVision'])->name('upsert-vision');
 	Route::get('/detail-mision', [VisionAndMisionController::class,'detailMision'])->name('detail-mision');
 	Route::post('/upsert-mision', [VisionAndMisionController::class,'createOrUpdateMision'])->name('upsert-mision');
+	
+	Route::get('/history', [HistoryController::class,'index'])->name('history');
+	Route::get('/fetch-history', [HistoryController::class,'fetchHistory'])->name('fetch-history');
+	Route::get('/detail-history', [HistoryController::class,'detailHistory'])->name('detail-history');
+	Route::post('/upsert-history', [HistoryController::class,'createOrUpdateHistory'])->name('upsert-history');
 });
 
 
