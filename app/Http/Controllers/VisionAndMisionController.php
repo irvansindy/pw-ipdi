@@ -31,7 +31,6 @@ class VisionAndMisionController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-
     public function createOrUpdateVision(Request $request) {
         try {
             $vision = Vision::updateOrCreate([
@@ -40,6 +39,44 @@ class VisionAndMisionController extends Controller
                 'content' => $request->content
             ]);
             return FormatResponseJson::success($vision, 'vision updated successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 400);
+        }
+    }
+
+    public function detailVision(Request $request)
+    {
+        try {
+            $vision = Vision::findOrFail($request->id);
+            return FormatResponseJson::success($vision,'vision fetched successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 400);
+        }
+    }
+    public function createOrUpdateMision(Request $request) {
+        try {
+            if ($request->id == '' && $request->ordering == '') {
+                $mision = Mision::orderBy('ordering', 'desc')->first();
+                $ordering = $mision->ordering + 1;
+                $request->ordering = $ordering;
+            }
+
+            $data = Mision::updateOrCreate([
+                'id' => $request->id
+            ], [
+                'content' => $request->content,
+                'ordering' => $request->ordering
+            ]);
+            return FormatResponseJson::success($data, 'mision created successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 400);
+        }
+    }
+    public function detailMision(Request $request)
+    {
+        try {
+            $mision = Mision::findOrFail($request->id);
+            return FormatResponseJson::success($mision,'mision fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }

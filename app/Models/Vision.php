@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Vision extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        "content",
+    ];
 }

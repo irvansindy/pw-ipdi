@@ -18,7 +18,7 @@
             <div class="card-header pb-2">
                 <div class="d-flex align-items-center">
                     <h6>Misi</h6>
-                    <button type="button" class="btn bg-gradient-primary ms-auto" data-bs-toggle="modal" data-bs-target="#formCreateMisi">+ Misi</button>
+                    <button type="button" class="btn bg-gradient-primary ms-auto" id="add_visi" data-bs-toggle="modal" data-bs-target="#add_modal_misi">+ Misi</button>
                 </div>
             </div>
             <div class="card-body px-0 pt-0 pb-2" id="content_misi">
@@ -28,8 +28,12 @@
             </div>
         </div>
     </div>
-    @include('pages.admin.visi_misi.modal_visi')
+    @include('pages.admin.visi_misi.add_modal_visi')
+    @include('pages.admin.visi_misi.add_modal_misi')
+    @include('pages.admin.visi_misi.detail_modal_visi')
+    @include('pages.admin.visi_misi.detail_modal_misi')
 @endsection
 @push('js')
     @include('pages.admin.visi_misi.visi_misi_js')
 @endpush
+

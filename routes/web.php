@@ -86,7 +86,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');
 	Route::get('/fetch-vision', [VisionAndMisionController::class,'fetchVision'])->name('fetch-vision');
 	Route::get('/fetch-mision', [VisionAndMisionController::class,'fetchMision'])->name('fetch-mision');
+	Route::get('/detail-vision', [VisionAndMisionController::class,'detailVision'])->name('detail-vision');
 	Route::post('/upsert-vision', [VisionAndMisionController::class,'createOrUpdateVision'])->name('upsert-vision');
+	Route::get('/detail-mision', [VisionAndMisionController::class,'detailMision'])->name('detail-mision');
+	Route::post('/upsert-mision', [VisionAndMisionController::class,'createOrUpdateMision'])->name('upsert-mision');
 });
 
 
