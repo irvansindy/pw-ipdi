@@ -28,10 +28,12 @@ use App\Http\Controllers\Admin\RoleManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\EventManagementController;
 use App\Http\Controllers\Admin\TransactionManagementController;
+use App\Http\Controllers\Admin\VisionAndMisionController;
+use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\VisionAndMisionController;
-use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\VisionAndMisionController as userVisiMision;
+use App\Http\Controllers\HistoryController as userHistory;
 
 // Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 
@@ -43,6 +45,13 @@ Route::get('/fetch-content', [UserContentController::class,'fetchContent'])->nam
 Route::get('/events', [UserContentController::class,'viewEvents'])->name('events');
 Route::get('/fetch-categories', [UserContentController::class,'fetchCategoriesEvent'])->name('fetch-categories');
 Route::get('/fetch-events', [UserContentController::class,'fetchAllEvent'])->name('fetch-events');
+Route::get('/visi-misi', [UserContentController::class,'visionAndMision'])->name('visi-misi');
+
+Route::get('/visi-dan-misi', [userVisiMision::class, 'index'])->name('visi-dan-misi');
+Route::get('/fetch-visi-misi', [userVisiMision::class, 'visionAndMision'])->name('fetch-visi-misi');
+
+Route::get('/sejarah', [userHistory::class, 'index'])->name('sejarah');
+Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-sejarah');
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 

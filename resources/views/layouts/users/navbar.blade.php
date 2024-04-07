@@ -29,10 +29,10 @@
                             <a class="dropdown-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" aria-current="page" href="{{ route('home') }}">Beranda</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">Sejarah</a>
+                            <a class="dropdown-item" href="{{ route('sejarah') }}">Sejarah</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">Visi & Misi</a>
+                            <a class="dropdown-item" href="{{ route('visi-dan-misi') }}">Visi & Misi</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Struktur Organisasi</a>

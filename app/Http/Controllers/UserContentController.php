@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Helpers\FormatResponseJson;
 use App\Models\Events;
 use App\Models\CategoriesEvent;
+use App\Models\Vision;
+use App\Models\Mision;
 
 class UserContentController extends Controller
 {
@@ -136,9 +138,16 @@ class UserContentController extends Controller
     public function visionAndMision()
     {
         try {
-            //code...
+            $visi = Vision::all();
+            $misi = Mision::all();
+
+            $data = [
+                'visi' => $visi,
+                'misi'=> $misi
+            ];
+            return FormatResponseJson::success($data,'data fetched successfully');
         } catch (\Exception $e) {
-            //throw $th;
+            return FormatResponseJson::error(null, $e->getMessage(), 404);
         }
     }
 
