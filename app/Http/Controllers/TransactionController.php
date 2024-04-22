@@ -98,10 +98,16 @@ class TransactionController extends Controller
             $request->validate([
                 'file_upload_transaction' => 'required|mimes:png,jpg'
             ]);
+            
             $file = $request->file('file_upload_transaction');
             $file_name = time().'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads'), $file_name);
-            return FormatResponseJson::success($file,'Transaction fetched successfully');
+            $file->move(public_path('uploads/bukti_transaksi'), $file_name);
+            $transaction = Transactions::find($request->id);
+            $transaction->update([
+                'status' => 'progress',
+                'proof_of_payment' => $file_name
+            ]);
+            return FormatResponseJson::success($transaction,'Transaction fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi', 500);
         }

@@ -20,7 +20,6 @@
     @include('pages.admin.history.detail_history')
 @endsection
 @push('js')
-    {{-- @include('pages.admin.visi_misi.visi_misi_js') --}}
     @include('pages.admin.history.history_js')
 @endpush
 

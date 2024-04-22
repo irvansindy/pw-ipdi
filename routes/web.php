@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\EventManagementController;
 use App\Http\Controllers\Admin\TransactionManagementController;
 use App\Http\Controllers\Admin\VisionAndMisionController;
 use App\Http\Controllers\Admin\HistoryController;
+use App\Http\Controllers\Admin\OrganizationStructure;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController as userVisiMision;
@@ -105,6 +106,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/fetch-history', [HistoryController::class,'fetchHistory'])->name('fetch-history');
 	Route::get('/detail-history', [HistoryController::class,'detailHistory'])->name('detail-history');
 	Route::post('/upsert-history', [HistoryController::class,'createOrUpdateHistory'])->name('upsert-history');
+	
+	Route::get('/organization', [OrganizationStructure::class,'index'])->name('organization');
+	Route::get('/fetch-organization', [OrganizationStructure::class,'fetchOrganization'])->name('fetch-organization');
+	Route::post('/upload-video', [OrganizationStructure::class,'upload'])->name('upload-video');
 });
 
 

@@ -35,7 +35,7 @@
                                 <div class="card shadow">
                                     <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
                                         <a href="javascript:;" class="d-block">
-                                            <img src="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}" class="img-fluid border-radius-lg">
+                                            <img src="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}" class="img-fluid border-radius-lg" loading="lazy">
                                         </a>
                                     </div>
                                     <div class="card-body pt-2">
@@ -96,7 +96,7 @@
                                 <div class="card shadow">
                                     <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
                                         <a href="javascript:;" class="d-block">
-                                            <img src="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}" class="img-fluid border-radius-lg">
+                                            <img src="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}" class="img-fluid border-radius-lg" loading="lazy">
                                         </a>
                                     </div>
                                     <div class="card-body pt-2">

@@ -9,7 +9,9 @@
     {{-- <link rel="icon" type="image/png" href="/img/favicon.png"> --}}
     <link rel="icon" type="image/png" href="{{ asset("img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png") }}">
     <title>
-        PW IPDI DKI Jakarta
+        @isset($title)
+            {{ $title }}
+        @endisset
     </title>
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />

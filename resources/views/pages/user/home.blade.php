@@ -1,18 +1,18 @@
 {{-- @extends('layouts.app') --}}
-@extends('layouts.users.app')
+@extends('layouts.users.app', ['title' => 'PW IPDI DKI JAKARTA'])
 
 @section('content')
     @include('layouts.users.navbar')
     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ asset('img/carousel/1.png') }}" class="d-block w-100" alt="...">
+                <img src="{{ asset('img/carousel/1.png') }}" class="d-block w-100" loading="lazy">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('img/carousel/2.png') }}" class="d-block w-100" alt="...">
+                <img src="{{ asset('img/carousel/2.png') }}" class="d-block w-100" loading="lazy">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('img/carousel/3.png') }}" class="d-block w-100" alt="...">
+                <img src="{{ asset('img/carousel/3.png') }}" class="d-block w-100" loading="lazy">
             </div>
         </div>
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
@@ -163,7 +163,7 @@
                                 <div class="blur-shadow-image">
                                     <img class="img border-radius-lg move-on-hover img-fluid"
                                         src="{{ asset('img/carousel/3.png') }}"
-                                        style="height: 30% !important;">
+                                        style="height: 30% !important;" loading="lazy">
                                 </div>
                             </a>
                         </div>
@@ -248,7 +248,7 @@
                                 <div class="blur-shadow-image">
                                     <img class="img border-radius-lg move-on-hover img-fluid"
                                         src="{{ asset('img/carousel/2.png') }}"
-                                        style="height: 30% !important;">
+                                        style="height: 30% !important;" loading="lazy">
                                 </div>
                             </a>
                         </div>

@@ -7,7 +7,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route('fetch-history') }}',
+                url: '{{ route("fetch-history") }}',
                 type: 'get',
                 dataType: 'json',
                 async: true,
