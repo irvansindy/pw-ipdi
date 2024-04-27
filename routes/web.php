@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\TransactionManagementController;
 use App\Http\Controllers\Admin\VisionAndMisionController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\OrganizationStructure;
+use App\Http\Controllers\Admin\IuranController;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController as userVisiMision;
@@ -89,6 +90,12 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::post('/event-store', [EventManagementController::class, 'store'])->name('event-store');
 	Route::get('/event-detail', [EventManagementController::class, 'detail'])->name('event-detail');
 	Route::post('/event-update', [EventManagementController::class, 'update'])->name('event-update');
+
+	Route::get('/iuran', [IuranController::class,'index'])->name('iuran');
+	Route::get('/fetch-iuran', [IuranController::class,'fetchIuran'])->name('fetch-iuran');
+	Route::get('/detail-iuran', [IuranController::class,'detailIuran'])->name('detail-iuran');
+	Route::post('/store-iuran', [IuranController::class,'storeIuran'])->name('store-iuran');
+	Route::post('/update-iuran', [IuranController::class,'updateIuran'])->name('update-iuran');
 	
 	Route::get('/transaction', [TransactionManagementController::class,'index'])->name('transaction');
 	Route::get('/transaction-fetch', [TransactionManagementController::class,'fetch'])->name('transaction-fetch');

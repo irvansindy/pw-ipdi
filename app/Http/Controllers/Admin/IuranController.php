@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Helpers\FormatResponseJson;
+use App\Models\Iuran;
+class IuranController extends Controller
+{
+    public function index()
+    {
+        return view('pages.admin.iuran.index');
+    }
+
+    public function fetchIuran()
+    {
+        try {
+            // $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->limit(100)->get();
+            $iuran = Iuran::orderBy("id","desc")->get();
+            return FormatResponseJson::success($iuran, 'iuran fetched successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 400);
+        }
+    }
+
+    public function storeIuran(Request $request)
+    {
+        try {
+            $iuran = Iuran::create($request->all());
+            return FormatResponseJson::success($iuran,'iuran created successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 500);
+        }
+    }
+
+    public function detailIuran(Request $request)
+    {
+        try {
+            $iuran = Iuran::findOrFail($request->id);
+            return FormatResponseJson::success($iuran, 'iuran fetched successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 404);
+        }
+    }
+
+    public function updateIuran(Request $request)
+    {
+        try {
+            $iuran = Iuran::findOrFail($request->id);
+            $iuran->update($request->all());
+            return FormatResponseJson::success($iuran,'iuran updated successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 404);
+        }
+    }
+}

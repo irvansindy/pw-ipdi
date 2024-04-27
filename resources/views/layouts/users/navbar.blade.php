@@ -60,11 +60,11 @@
                                 <a class="dropdown-item" href="{{ route('profile') }}">Profil Diri</a>
                             </li>
                             <li>
+                                <a class="dropdown-item" href="#">Iuran</a>
+                            </li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('transaction-list') }}">Riwayat Transaksi</a>
                             </li>
-                            {{-- <li>
-                                <a class="dropdown-item" href="#">WKD</a>
-                            </li> --}}
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
