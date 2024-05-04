@@ -4265,7 +4265,8 @@ textarea.form-control-lg {
   background-color: #e9ecef;
 }
 .dropdown-item.active, .dropdown-item:active {
-  color: #67748e;
+  /* color: #67748e; */
+  color: #f56036;
   text-decoration: none;
   background-color: transparent;
 }
@@ -4430,7 +4431,8 @@ textarea.form-control-lg {
 .nav-link {
   display: block;
   padding: 0.5rem 1rem;
-  color: #fb6340;
+  color: #344767;
+  /* color: #fb6340; */
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -4468,7 +4470,8 @@ textarea.form-control-lg {
 }
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-  color: #495057;
+  /* color: #495057; */
+  color: #fb6340;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
 }
@@ -4942,7 +4945,9 @@ textarea.form-control-lg {
 }
 .navbar-light .navbar-nav .show > .nav-link,
 .navbar-light .navbar-nav .nav-link.active {
-  color: rgba(52, 71, 103, 0.9);
+  /* color: rgba(52, 71, 103, 0.9) !important; */
+  color: #f56036 !important;
+
 }
 .navbar-light .navbar-toggler {
   color: #344767;
@@ -4977,7 +4982,7 @@ textarea.form-control-lg {
 }
 .navbar-dark .navbar-nav .show > .nav-link,
 .navbar-dark .navbar-nav .nav-link.active {
-  color: #fff;
+  color: #fff !important;
 }
 .navbar-dark .navbar-toggler {
   color: rgba(255, 255, 255, 0.85);

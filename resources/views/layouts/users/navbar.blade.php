@@ -29,24 +29,24 @@
                             <a class="dropdown-item {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" aria-current="page" href="{{ route('home') }}">Beranda</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('sejarah') }}">Sejarah</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'sejarah' ? 'active' : '' }}" href="{{ route('sejarah') }}">Sejarah</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="{{ route('visi-dan-misi') }}">Visi & Misi</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'visi-dan-misi' ? 'active' : '' }}" href="{{ route('visi-dan-misi') }}">Visi & Misi</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">Struktur Organisasi</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() == '' ? 'active' : '' }}" href="#">Struktur Organisasi</a>
                         </li>
                     </ul>
                 </li>
                 <li class="nav-item mx-md-4">
-                    <a class="nav-link active" aria-current="page" href="{{ route('events') }}">Acara</a>
+                    <a class="nav-link {{ Route::currentRouteName() == 'events' ? 'active' : '' }}" aria-current="page" href="{{ route('events') }}">Acara</a>
                 </li>
                 <li class="nav-item mx-md-4">
-                    <a class="nav-link active" aria-current="page" href="#">Bantuan</a>
+                    <a class="nav-link {{ Route::currentRouteName() == '' ? 'active' : '' }}" aria-current="page" href="{{ route('home') }}">Bantuan</a>
                 </li>
                 <li class="nav-item mx-md-4">
-                    <a class="nav-link active" aria-current="page" href="#">Pengaduan</a>
+                    <a class="nav-link {{ Route::currentRouteName() == '' ? 'active' : '' }}" aria-current="page" href="{{ route('home') }}">Pengaduan</a>
                 </li>
 
                 @if (auth()->check())
@@ -60,7 +60,7 @@
                                 <a class="dropdown-item" href="{{ route('profile') }}">Profil Diri</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">Iuran</a>
+                                <a class="dropdown-item" href="{{ route('iuran-anggota') }}">Iuran</a>
                             </li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('transaction-list') }}">Riwayat Transaksi</a>

@@ -36,6 +36,7 @@ use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController as userVisiMision;
 use App\Http\Controllers\HistoryController as userHistory;
+use App\Http\Controllers\IuranController as userIuran;
 
 // Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 
@@ -62,6 +63,16 @@ Route::post('/create-transaction', [TransactionController::class,'createTransact
 Route::get('/transaction-list', [TransactionController::class,'viewTransaction'])->name('transaction-list');
 Route::get('/transaction-history', [TransactionController::class,'transactionHistory'])->name('transaction-history');
 Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
+
+Route::group(['middleware' => ['auth', 'role:user']], function() {
+	Route::get('/iuran-anggota', [userIuran::class,'index'])->name('iuran-anggota');
+	Route::get('/fetch-iuran-anggota', [userIuran::class,'fetchIuran'])->name('fetch-iuran-anggota');
+	Route::get('/fetch-transaksi-iuran', [userIuran::class,'fetchTransaksiIuran'])->name('fetch-transaksi-iuran');
+	Route::get('/detail-transaksi-iuran', [userIuran::class,'detailTransaksiIuran'])->name('detail-transaksi-iuran');
+	Route::get('/fetch-peserta', [userIuran::class,'peserta'])->name('fetch-peserta');
+	Route::post('/store-iuran-peserta', [userIuran::class,'storeIuran'])->name('store-iuran-peserta');
+	Route::post('/upload-iuran-peserta', [userIuran::class,'uploadIuran'])->name('upload-iuran-peserta');
+});
 
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->middleware('guest')->name('register.perform');

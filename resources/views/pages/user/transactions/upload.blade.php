@@ -16,7 +16,7 @@
                         <input type="hidden" name="file_transaction_id" id="file_transaction_id">
                         <label for="">Bukti Transaksi</label>
                         <input type="file" name="file_upload_transaction" id="file_upload_transaction">
-                        <p class="text-danger" style="font-size: 12px">file harus berjenis: jpeg/jpg/jpg, max size: 128kb</p>
+                        <p class="text-danger" style="font-size: 12px">file harus berjenis: jpeg/jpg/png, max size: 128kb</p>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\FormatResponseJson;
 use App\Models\Transactions;
-
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TransactionMail;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class TransactionManagementController extends Controller
 {
     public function index()
@@ -25,7 +26,6 @@ class TransactionManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 400);
         }
     }
-
     public function detail(Request $request)
     {
         try {
