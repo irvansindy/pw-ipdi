@@ -63,7 +63,7 @@
                                 <a class="dropdown-item" href="{{ route('iuran-anggota') }}">Iuran</a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{{ route('transaction-list') }}">Riwayat Transaksi</a>
+                                <a class="dropdown-item" href="{{ route('list-transaksi') }}">Riwayat Transaksi</a>
                             </li>
                             <li>
                                 <hr class="dropdown-divider">

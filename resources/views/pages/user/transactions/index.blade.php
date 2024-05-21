@@ -47,6 +47,7 @@
             </div>
         </div>
     </div>
+    @include('pages.user.transactions.transaction_detail')
     @include('pages.user.transactions.upload')
     @include('layouts.users.footer')
 @endsection

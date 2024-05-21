@@ -351,7 +351,7 @@
                         icon: "success",
                         title: 'Success!',
                         text: res.meta.message,
-                        footer: '<a href="{{ route('transaction-list') }}" class="text-primary">Riwayat Transaksi</a>'
+                        footer: '<a href="{{ route('list-transaksi') }}" class="text-primary">Riwayat Transaksi</a>'
                     })
                 },
                 error: function(xhr) {

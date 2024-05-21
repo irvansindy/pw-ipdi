@@ -58,13 +58,15 @@ Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 
-Route::post('/check-transaction', [TransactionController::class,'checkTransaction'])->name('check-transaction');
-Route::post('/create-transaction', [TransactionController::class,'createTransaction'])->name('create-transaction');
-Route::get('/transaction-list', [TransactionController::class,'viewTransaction'])->name('transaction-list');
-Route::get('/transaction-history', [TransactionController::class,'transactionHistory'])->name('transaction-history');
-Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
 
 Route::group(['middleware' => ['auth', 'role:user']], function() {
+	Route::post('/check-transaction', [TransactionController::class,'checkTransaction'])->name('check-transaction');
+	Route::post('/create-transaction', [TransactionController::class,'createTransaction'])->name('create-transaction');
+	Route::get('/list-transaksi', [TransactionController::class,'viewTransaction'])->name('list-transaksi');
+	Route::get('/histori-transaksi', [TransactionController::class,'transactionHistory'])->name('histori-transaksi');
+	Route::get('/detail-transaksi', [TransactionController::class,'detailTransaction'])->name('detail-transaksi');
+	Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
+
 	Route::get('/iuran-anggota', [userIuran::class,'index'])->name('iuran-anggota');
 	Route::get('/fetch-iuran-anggota', [userIuran::class,'fetchIuran'])->name('fetch-iuran-anggota');
 	Route::get('/fetch-transaksi-iuran', [userIuran::class,'fetchTransaksiIuran'])->name('fetch-transaksi-iuran');

@@ -3,7 +3,7 @@
         $('#transaction_list').DataTable({
             processing: true,
             ajax: {
-                url: '{{ route("transaction-history") }}',
+                url: '{{ route("histori-transaksi") }}',
                 type: 'GET',
             },
             columns: [
@@ -52,6 +52,59 @@
             $('#file_transaction_id').val(transaction_id)
             $('#submit_upload_transaction').attr('data-transaction_id', transaction_id)
             // alert(transaction_id)
+        })
+
+        $(document).on('click', '.detail_transaction', function(e) {
+            e.preventDefault()
+            let transaction_id = $(this).data('transaction_id')
+            // alert(transaction_id)
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("detail-transaksi") }}',
+                type: 'GET',
+                data: {
+                    transaction_id: transaction_id
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+                    $('#detail_id').html(res.data.number)
+                    $('#detail_event').html(res.data.event.name)
+                    $('#detail_date').html(moment(res.data.event.date).format('lll'))
+                    $('#detail_status').html(res.data.status)
+                    $('#detail_price').html(res.data.price)
+                    if (res.data.with_hotel == true) {
+                        $('.is_with_hotel').empty()
+                        $('.is_with_hotel').append(`
+                        <div class="col-sm-6">
+                            <span style="font-weight: 700 !important;">Harga Hotel</span>
+                            <p id="">${res.data.harga_hotel}</p>
+                        </div>
+                        
+                        `)
+                        $('.is_with_hotel').append(`
+                        <div class="col-sm-6">
+                            <span style="font-weight: 700 !important;">Jumlah Kamar Hotel</span>
+                            <p id="">${res.data.total_room + `Room`}</p>
+                        </div>
+                        `)
+                    } else {
+                        $('.is_with_hotel').empty()
+                    }
+                    let numbering_user = 1
+                    $('#list_data_pererta').empty()
+                    $.each(res.data.transaction_detail, function(i, peserta) {
+                        $('#list_data_pererta').append(`
+                            <tr>
+                                <td>${numbering_user++}</td>
+                                <td>${peserta.user.username}</td>
+                            </tr>
+                        `)
+                    })
+                }
+            })
         })
 
         $(document).on('click', '#submit_upload_transaction', function() {

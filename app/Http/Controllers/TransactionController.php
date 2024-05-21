@@ -115,7 +115,7 @@ class TransactionController extends Controller
                     'event_id' => $id,
                     'date' => now()->format('Y-m-d H:i:s'),
                     'status' => 'pending',
-                    'price' => $total_harga_event,
+                    'price' => $grand_total_harga,
                     'with_hotel' => $with_hotel,
                     'harga_hotel' => $harga_hotel,
                     'total_room' => $total_kamar_hotel,
@@ -168,8 +168,11 @@ class TransactionController extends Controller
     public function detailTransaction(Request $request)
     {
         try {
-            $transaction = Transactions::with(['transactionDetail'])
-            ->where('user_id', Auth::user()->id);
+            $transaction = Transactions::with(['event.eventDetail','transactionDetail.user'])
+            ->where('user_id', Auth::user()->id)
+            ->find($request->transaction_id);
+            // ->find(4);
+            return FormatResponseJson::success($transaction,'Transaction fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, 'Gagal mendapatkan data transaksi', 400);
         }
@@ -178,7 +181,7 @@ class TransactionController extends Controller
     {
         try {
             $request->validate([
-                'file_upload_transaction' => 'required|mimes:png,jpg,pdf'
+                'file_upload_transaction' => 'required|mimes:png,jpg,pdf|max:128'
             ]);
             
             $file = $request->file('file_upload_transaction');
@@ -191,7 +194,8 @@ class TransactionController extends Controller
             ]);
             return FormatResponseJson::success($transaction,'Transaction fetched successfully');
         } catch (\Exception $e) {
-            return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi', 500);
+            // return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi', 500);
+            return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
 }
