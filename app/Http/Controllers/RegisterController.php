@@ -24,6 +24,6 @@ class RegisterController extends Controller
         $user->assignRole('user');
         auth()->login($user);
 
-        return redirect('/dashboard');
+        return redirect('/');
     }
 }

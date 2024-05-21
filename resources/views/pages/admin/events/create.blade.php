@@ -39,9 +39,25 @@
                                 
                             </select>
                         </div>
+                        <div class="detail_event">
+
+                        </div>
+                        <div id="master_event_price">
+                            <div class="form-group">
+                                <label for="create_event_price">Price</label>
+                                <input type="text" class="form-control price" name="create_event_price" id="create_event_price" placeholder="Event Price" value="">
+                            </div>
+                        </div>
                         <div class="form-group">
-                            <label for="create_event_price">Price</label>
-                            <input type="text" class="form-control price" name="create_event_price" id="create_event_price" placeholder="Event Price" value="">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" name="check_event_hotel" id="check_event_hotel">
+                                <label class="form-check-label" for="check_event_hotel">
+                                    Hotel
+                                </label>
+                            </div>
+                        </div>
+                        <div id="select_event_hotel">
+                            
                         </div>
                         <div class="form-group">
                             <label for="create_event_description">Description</label>

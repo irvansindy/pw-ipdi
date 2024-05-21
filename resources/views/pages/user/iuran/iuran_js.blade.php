@@ -139,9 +139,21 @@
                 data: new FormData($('#form_create_data_iuran')[0]),
                 processData: false,
                 contentType: false,
-                cache: false
+                cache: false,
                 // dataType: 'json',
                 // async: true,
+                success: function(res) {
+                    $('#form_create_event').modal('hide')
+                    Swal.fire({
+                        icon: "success",
+                        title: 'Success!',
+                        text: res.meta.message,
+                        footer: '<a href="{{ route('transaction-history') }}" class="text-primary">Riwayat Transaksi</a>'
+                    })
+                },
+                error: function(xhr) {
+                    console.log(xhr.responseText);
+                }
             })
         })
 

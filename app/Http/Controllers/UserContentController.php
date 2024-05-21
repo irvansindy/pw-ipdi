@@ -91,7 +91,7 @@ class UserContentController extends Controller
             $search = $request->input('search');
             $filter = $request->input('filter');
 
-            $events_query = Events::with('category');
+            $events_query = Events::with(['category', 'EventDetail', 'hotel']);
             
             if ($search != null && $filter != null) {
                 $events_query->whereHas('category', function($q) use ($filter) {

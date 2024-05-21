@@ -42,6 +42,13 @@
         $('#create_event_category').select2({
             dropParent: '#formCreateEvent'
         })
+        
+        $('#create_event_hotel').select2({
+            dropParent: '#formCreateEvent',
+            allowClear: true,
+            width: '100%'
+        })
+        
         $('#update_event_category').select2({
             dropParent: '#formUpdateEvent'
         })
@@ -54,12 +61,109 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(res) {
+                    $('#select_event_hotel').empty()
                     $('#create_event_category').empty()
+                    $('#create_event_category').append('<option value="">Pilih Satu</option>')
                     $.each(res.data, function (i, data) {
                         $('#create_event_category').append('<option value="'+ data.id + '">'+ data.name + '</option>')
                     })
                 }
             })
+        })
+
+        $(document).on('change', '#create_event_category', function(e) {
+            e.preventDefault()
+            var value_category = $("#create_event_category option:selected").val();
+            // alert(value_category)
+            if (value_category == 1) {
+                $('.detail_event').empty()
+                $('#master_event_price').empty()
+                $('.detail_event').append(`
+                    <div class="row g-3 align-items-center form-group">
+                        <div class="col-md-4">
+                            <label for="create_event_detail_name_simposium">Harga Simposium</label>
+                            <input type="hidden" name="create_event_detail_name[]" id="create_event_detail_name_simposium" class="form-control" value="simposium">
+                            <input type="text" name="create_event_detail_price[]" id="create_event_detail_price_simposium" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="create_event_detail_name_simposium">Harga Workshop</label>
+                            <input type="hidden" name="create_event_detail_name[]" id="create_event_detail_name_simposium" class="form-control" value="workshop">
+                            <input type="text" name="create_event_detail_price[]" id="create_event_detail_price_simposium" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="create_event_detail_name_simposium">Harga Paket</label>
+                            <input type="hidden" name="create_event_detail_name[]" id="create_event_detail_name_simposium" class="form-control" value="paket">
+                            <input type="text" name="create_event_detail_price[]" id="create_event_detail_price_simposium" class="form-control">
+                        </div>
+                    </div>
+                `)
+            } else {
+                $('.detail_event').empty()
+                $('#master_event_price').append(`
+                <div class="form-group">
+                    <label for="create_event_price">Price</label>
+                    <input type="text" class="form-control price" name="create_event_price" id="create_event_price" placeholder="Event Price" value="">
+                </div>
+                `)
+            }
+        })
+
+        $(document).on('change', '#check_event_hotel', function() {
+            if ($('#check_event_hotel').prop('checked')) {
+                $('#select_event_hotel').empty()
+                $('#select_event_hotel').append(`
+                <div class="row g-2 align-items-center form-group">
+                    <div class="col-md-6">
+                        <label for="create_event_hotel">Nama Hotel</label>
+                        <input type="text" name="create_event_hotel" id="create_event_hotel" class="form-control">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="create_event_detail_name_simposium">Harga Hotel</label>
+                        <input type="text" name="create_event_harga_hotel" id="create_event_harga_hotel" class="form-control">
+                    </div>
+                </div>
+                `)
+                // $('#select_event_hotel').append(`
+                //     <div class="form-group">
+                //         <label for="create_event_hotel">Hotel</label>
+                //         <select class="form-control" name="create_event_hotel" id="create_event_hotel" style="
+                //             display: block !important;
+                //             width: 100% !important;
+                //             padding: 0.5rem 0.75rem !important;
+                //             font-size: 0.875rem !important;
+                //             font-weight: 400 !important;
+                //             line-height: 1.4rem !important;
+                //             color: #495057 !important;
+                //             background-color: #fff !important;
+                //             background-clip: padding-box !important;
+                //             border: 1px solid #d2d6da !important;
+                //             appearance: none !important;
+                //             border-radius: 0.5rem !important;
+                //             transition: box-shadow 0.15s ease, border-color 0.15s ease !important;">
+                            
+                //         </select>
+                //     </div>
+                // `)
+                // $.ajax({
+                //     url: '{{ route("event-hotel") }}',
+                //     type: 'GET',
+                //     dataType: 'json',
+                //     success: function(res) {
+                //         // $('#select_event_hotel').empty()
+                //         $('#create_event_hotel').empty()
+                //         $('#create_event_hotel').append('<option value="">Pilih Satu</option>')
+                //         $.each(res.data, function (i, data) {
+                //             $('#create_event_hotel').append('<option value="'+ data.id + '">'+ data.name +' - Rp.' +data.price_per_night  + '</option>')
+                //         })
+                //         $('#create_event_hotel').select2({
+                //             dropParent: '#formCreateEvent',
+                //             width: '100%'
+                //         })
+                //     }
+                // })
+            } else {
+                $('#select_event_hotel').empty()
+            }
         })
 
         $(document).on('click', '#create_event', function(e) {
@@ -72,53 +176,26 @@
             let create_event_description = $('#create_event_description').val()
             let create_event_quota = $('#create_event_quota').val()
             let create_event_date = $('#create_event_date').val()
+            let create_event_hotel = $('#create_event_hotel').val()
+            let create_event_harga_hotel = $('#create_event_harga_hotel').val()
+            var value_detail_name = [];
+            $("input[name='create_event_detail_name[]']").each(function() {
+                var value = $(this).val();
+                value_detail_name.push(value);
+            });
+            // Anda sekarang memiliki semua nilai dalam value_detail_name
+            console.log(value_detail_name);
+            var value_detail_price = [];
+            $("input[name='create_event_detail_price[]']").each(function() {
+                var value = $(this).val();
+                value_detail_price.push(value);
+            });
+
+            // Anda sekarang memiliki semua nilai dalam value_detail_price
+            console.log(value_detail_price);
 
             let allow_image_extensions = ['jpeg', 'jpg', 'png']
-
-            if (create_event_name == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Nama event tidak boleh kosong',
-                })
-            } else if (create_event_title == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Title event tidak boleh kosong',
-                })
-            } else if (create_event_category == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Category event tidak boleh kosong',
-                })
-            } else if (create_event_price == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Price event tidak boleh kosong',
-                })
-            } else if (create_event_description == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Description event tidak boleh kosong',
-                })
-            } else if (create_event_quota == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Quota event tidak boleh kosong',
-                })
-            } else if (create_event_date == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Date event tidak boleh kosong',
-                })
-            }
-
+            
             let data = {
                 'name': create_event_name,
                 'title': create_event_title,
@@ -127,16 +204,45 @@
                 'description': create_event_description,
                 'quota': create_event_quota,
                 'date': create_event_date,
+                'hotel': create_event_hotel,
+                'detail_event': value_detail_price,
+                'image': $('input[name="create_event_image"]')[0].files[0]
             }
 
+            let form_data = new FormData();
+            form_data.append('name', create_event_name);
+            form_data.append('title', create_event_title);
+            form_data.append('category', create_event_category);
+            form_data.append('price', create_event_price);
+            form_data.append('description', create_event_description);
+            form_data.append('quota', create_event_quota);
+            form_data.append('date', create_event_date);
+            form_data.append('hotel', create_event_hotel);
+            form_data.append('harga_hotel', create_event_harga_hotel);
+            form_data.append('last_register', create_event_date_last_register);
+
+            for (let i = 0; i < value_detail_name.length; i++) {
+                form_data.append('detail_event_name[]', value_detail_name[i]);
+            }
+            for (let i = 0; i < value_detail_price.length; i++) {
+                form_data.append('detail_event_price[]', value_detail_price[i]);
+            }
+
+            // form_data.append('detail_event_name[]', value_detail_name);
+            // form_data.append('detail_event_price[]', value_detail_price);
+            form_data.append('image', $('input[name="create_event_image"]')[0].files[0]);
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: '{{ route('event-store') }}',
                 type: 'post',
-                data: data,
-                dataType: 'json',
+                data: form_data,
+                // dataType: 'json',
+                cache : false,
+                processData: false,
+                contentType: false,
+                enctype: 'multipart/form-data',
                 success: function(res) {
                     Swal.fire({
                         icon: "success",
@@ -146,13 +252,13 @@
                     $('.data_tables').DataTable().ajax.reload();
                     // location.reload()
                 },
-                error: function(xhr, status, error) {
-                    var errorMessage = JSON.parse(xhr.responseText);
+                error: function(xhr) {
+                    // console.log(xhr.responseText);
+                    let response_error = JSON.parse(xhr.responseText)
                     Swal.fire({
                         icon: "error",
-                        title: errorMessage.meta.message,
-                        text: errorMessage.data.message,
-                        // text: "User role cannot empty"
+                        title: 'Error!',
+                        text: 'Form field tidak boleh kosong.',
                     })
                 }
             })

@@ -81,7 +81,8 @@
                     Swal.fire({
                         icon: "success",
                         title: 'Success!',
-                        text: res.meta.message,
+                        // text: res.meta.message,
+                        text: 'sukses mengupload bukti pembayaran.',
                     })
                 },
                 error: function(xhr) {
@@ -94,6 +95,10 @@
                     })
                 }
             })
+        })
+
+        $(document).on('click', '.detail_transaction', function(e) {
+            let transaction_id = $(this).data('transaction_id')
         })
     });
 </script>

@@ -97,6 +97,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	
 	Route::get('/event', [EventManagementController::class, 'index'])->name('event');
 	Route::get('/event-category', [EventManagementController::class, 'fetchCategory'])->name('event-category');
+	Route::get('/event-hotel', [EventManagementController::class, 'fetchHotel'])->name('event-hotel');
 	Route::get('/event-fetch', [EventManagementController::class,'fetch'])->name('event-fetch');
 	Route::post('/event-store', [EventManagementController::class, 'store'])->name('event-store');
 	Route::get('/event-detail', [EventManagementController::class, 'detail'])->name('event-detail');

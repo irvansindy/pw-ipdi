@@ -69,7 +69,7 @@ class IuranController extends Controller
                     array_push($data_peserta, $list_peserta);
                 }
                 // dd($data_peserta);
-                $create_address = IuranTransactionDetail::insert($data_peserta);
+                $create_peserta = IuranTransactionDetail::insert($data_peserta);
             }
 
             return FormatResponseJson::success($iuran, 'iuran created successfully');

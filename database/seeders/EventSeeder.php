@@ -22,6 +22,7 @@ class EventSeeder extends Seeder
             'description' => 'acara pertama untuk JNNS',
             'quota' => 200,
             'date' => '2024-03-20 10:00:00',
+            'image' => 'jnns.png',
             'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -34,42 +35,46 @@ class EventSeeder extends Seeder
             'description' => 'acara pertama untuk Seminar',
             'quota' => 200,
             'date' => '2024-04-20 10:00:00',
+            'image' => 'seminar.webp',
             'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
         
         Events::create([
             'name' => 'Event Resertifikasi',
             'title' => 'Event Resertifikasi',
-            'category_event_id' => 1,
+            'category_event_id' => 3,
             'price' => '500000',
             'last_register' => '2024-05-10',
             'description' => 'acara pertama untuk Resertifikasi',
             'quota' => 200,
             'date' => '2024-05-20 10:00:00',
+            'image' => 'resertifikasi.png',
             'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
         
         Events::create([
             'name' => 'Event WKD',
             'title' => 'Event WKD',
-            'category_event_id' => 1,
+            'category_event_id' => 4,
             'price' => '500000',
             'last_register' => '2024-06-10',
             'description' => 'acara pertama untuk WKD',
             'quota' => 200,
             'date' => '2024-06-20 10:00:00',
+            'image' => 'wkd.png',
             'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
         
         Events::create([
             'name' => 'Event Kongres Wilayah',
             'title' => 'Event Kongres Wilayah',
-            'category_event_id' => 1,
+            'category_event_id' => 5,
             'price' => '500000',
             'last_register' => '2024-07-10',
             'description' => 'acara pertama untuk Kongres Wilayah',
             'quota' => 200,
             'date' => '2024-07-20 10:00:00',
+            'image' => 'kongres.png',
             'created_at' => now()->format('Y-m-d H:i:s'),
         ]);
 

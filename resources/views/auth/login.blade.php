@@ -40,13 +40,13 @@
                                         </div>
                                     </form>
                                 </div>
-                                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                                {{-- <div class="card-footer text-center pt-0 px-lg-2 px-1">
                                     <p class="mb-1 text-sm mx-auto">
                                         Forgot you password? Reset your password
                                         <a href="{{ route('reset-password') }}"
                                             class="text-primary text-gradient font-weight-bold">here</a>
                                     </p>
-                                </div>
+                                </div> --}}
                                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                                     <p class="mb-4 text-sm mx-auto">
                                         Don't have an account?
@@ -57,14 +57,20 @@
                             </div>
                         </div>
                         <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+                            <h4 class="mt-2 text-black font-weight-bolder position-relative">Selamat Datang</h4>
+                            <p class="text-black position-relative">
+                                Di Website <br> Pengurus Wilayah Ikatan Perawat Dialisis Indonesia Prov.DKI Jakarta
+                            </p>
                             
-                            <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="background-image: url('{{ asset("img/logos/IPDI/SIMBOL_HEMODIALISIS_1.png") }}'); background-size: cover;">
+                            <div class="position-relative h-100 m-3 px-7 mb-5 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="margin-left:130px !important;
+                            background-image: url('{{ asset("img/logos/IPDI/logo_login.png") }}'); background-size: cover; width: 350px;
+                            height: 300px;">
                                 {{-- <span class="mask bg-gradient-primary opacity-2"></span> --}}
-                                <img src="{{ asset("img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png") }}" class="rounded-3" alt="" srcset="">
-                                <h4 class="mt-5 text-black font-weight-bolder position-relative">Selamat Datang</h4>
-                                <p class="text-black position-relative">The more effortless the writing looks, the more
-                                    effort the writer actually put into the process.</p>
+                                {{-- <img src="{{ asset("img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png") }}" class="rounded-3" alt="" srcset=""> --}}
                             </div>
+                            <p class="text-black position-relative">
+                                Jl. Abdul Rahman Saleh Raya No.24, RT.10/RW.5, Senen, Kec. Senen, <br> Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10410
+                            </p>
                         </div>
                     </div>
                 </div>

@@ -24,7 +24,17 @@ class User extends Authenticatable
         'username',
         'firstname',
         'lastname',
+        'profile',
         'email',
+        'number_phone',
+        'last_edication',
+        'nik',
+        'nira_ppni',
+        'nira_ipdi',
+        'pw_ipdi_provinsi',
+        'nama_perusahaan',
+        'center_dialisis',
+        'alamat_center_dialisis_perusahaan',
         'password',
         'address',
         'city',
@@ -62,9 +72,4 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($value);
     }
-
-    // public function roles()
-    // {
-    //     return $this->hasOne(Role::class, 'id');
-    // }
 }
