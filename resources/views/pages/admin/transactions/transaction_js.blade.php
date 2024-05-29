@@ -43,6 +43,7 @@
         $(document).on('click', '.detail_transaction', function(e) {
             e.preventDefault()
             let transaction_id = $(this).data('transaction_id')
+            // alert(transaction_id)
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -55,11 +56,26 @@
                 dataType: 'json',
                 success: function(res) {
                     $('#form_update_transaction')[0].reset()
+                    $('#update_transaction_id').val(res.data.id)
                     $('#detailTransactionLabel').html('Detail Transaction ' + res.data.number)
                     $('#update_transaction_event').html(res.data.event.name)
                     $('#update_transaction_user').html(res.data.user.username)
                     $('#update_transaction_date').html(res.data.date)
                     $('#update_transaction_status').html(res.data.status)
+                    $('#update_transaction_proof_of_payment').append(`
+                        <a href="{{ asset('uploads/bukti_transaksi/${res.data.proof_of_payment}') }}" target="_blank">Bukti Transaksi</a>
+                    `)
+
+                    let numbering_user = 1
+                    $('#list_data_pererta').empty()
+                    $.each(res.data.transaction_detail, function(i, peserta) {
+                        $('#list_data_pererta').append(`
+                            <tr>
+                                <td>${numbering_user++}</td>
+                                <td>${peserta.user.username}</td>
+                            </tr>
+                        `)
+                    })
                 },
                 error: function(xhr, status, error) {
                     $('#detailTransaction').modal('toggle');
@@ -69,6 +85,31 @@
                         title: "Oops....",
                         text: "Data tidak ditemukan!",
                     })
+                }
+            })
+        })
+
+        $(document).on('click', '#update_transaction', function(e) {
+            e.preventDefault()
+            let update_transaction_id = $('#update_transaction_id').val()
+            // alert(update_transaction_id)
+            $.ajax({
+                url: '{{ route("transaction-approval") }}',
+                type: 'POST',
+                // method: 'POST',
+                // processData: false,
+                // contentType: false,
+                // cache: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    update_transaction_id: update_transaction_id
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+
                 }
             })
         })

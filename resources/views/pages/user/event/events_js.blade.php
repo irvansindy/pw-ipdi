@@ -263,7 +263,7 @@
                     success: function(res) {
                         $.each(res.data, function(i, peserta) {
                             $('#list_peserta').append(`
-                                <option value="${peserta.id}">${peserta.username}</option>
+                                <option value="${peserta.id}">${peserta.username +' - '+ peserta.nama_perusahaan}</option>
                             `)
                         })
                     }
@@ -286,7 +286,8 @@
                 let hotel_name = $(this).data('hotel_name')
                 $('#total_room_hotel').empty()
                 $('#total_room_hotel').append(`
-                   ${hotel_name} - Rp.${price} <input type="number" class="form-control" name="create_room_hotel" id="create_room_hotel" data-price_hotel="${price}" placeholder="jumlah kamar" style="width: 50% !important;"/> 
+                    ${hotel_name} - Rp.${price} <input type="number" class="form-control" name="create_room_hotel" id="create_room_hotel" data-price_hotel="${price}" placeholder="jumlah kamar" style="width: 50% !important;"/> 
+                    <input type="number" class="form-control" name="create_total_night" id="create_total_night" data-price_hotel="${price}" placeholder="jumlah Malam" style="width: 50% !important;"/> 
                 `)
             } else {
                 $('#total_room_hotel').empty()
@@ -305,6 +306,7 @@
             let event_harga = $(this).data('event_harga')
             let harga_hotel = $('input[name="check_event_hotel"]').data('price')
             let total_kamar_hotel = $('#create_room_hotel').val()
+            let total_permalam = $('#create_total_night').val()
             let total_harga_hotel = 0;
             let grand_total_harga = 0;
 
@@ -313,7 +315,7 @@
                 // <input class="form-check-input data_jnns_type" type="radio" name="jnns_type"
                 // event_harga = $('input[name=jnns_type]:checked').parent('.data_jnns_type').attr('data-harga')
                 if($('#check_event_hotel').prop('checked')) {
-                    total_harga_hotel = harga_hotel * total_kamar_hotel
+                    total_harga_hotel = (harga_hotel * total_kamar_hotel) * total_permalam
                     // grand_total_harga = event_harga + total_harga_hotel
                     with_hotel = 1
                 } else {
@@ -330,6 +332,7 @@
             form_data.append('with_hotel', with_hotel);
             form_data.append('harga_hotel', harga_hotel);
             form_data.append('total_kamar_hotel', total_kamar_hotel);
+            form_data.append('total_permalam', total_permalam);
             form_data.append('total_harga_hotel', total_harga_hotel);
             form_data.append('event_harga', event_harga);
             // let data_harga= $('input[name=event_type]:checked').parent('.data_jnns_type').attr('data-harga')

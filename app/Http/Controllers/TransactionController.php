@@ -61,9 +61,10 @@ class TransactionController extends Controller
             $jnns_type = $request->jnns_type;
             $harga_hotel = $request->harga_hotel;
             $total_kamar_hotel = $request->total_kamar_hotel;
+            $total_permalam = $request->total_permalam;
             $total_harga_hotel = $request->total_harga_hotel;
             $event_harga = $request->event_harga;
-            
+            // dd($total_harga_hotel);
             $total_peserta <= 0 ? $total_harga_event = $event_harga : $total_harga_event = $event_harga * $total_peserta;
             
             if ($with_hotel == 0) {
@@ -119,6 +120,7 @@ class TransactionController extends Controller
                     'with_hotel' => $with_hotel,
                     'harga_hotel' => $harga_hotel,
                     'total_room' => $total_kamar_hotel,
+                    'total_night' => $total_permalam,
                     'proof_of_payment' => null
                 ]);
                 $data_user = [
@@ -194,8 +196,8 @@ class TransactionController extends Controller
             ]);
             return FormatResponseJson::success($transaction,'Transaction fetched successfully');
         } catch (\Exception $e) {
-            // return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi', 500);
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
+            return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi', 500);
+            // return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
 }

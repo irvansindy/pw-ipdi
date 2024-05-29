@@ -28,6 +28,10 @@
 
                             <dt class="col-sm-3 text-truncate">Status</dt>
                             <dd class="col-sm-9" id="update_transaction_status"></dd>
+                            
+                            <dt class="col-sm-3 text-truncate">Bukti Transaksi</dt>
+                            <dd class="col-sm-9" id="update_transaction_proof_of_payment"></dd>
+                            
                         </dl>
                         <div class="form-group">
                             <label for="update_transaction_status">Update Status</label>
@@ -35,15 +39,20 @@
                                 <option value="">Success</option>
                             </select>
                         </div>
-                        {{-- <div class="form-group">
-                            <label for="update_transaction_date" class="form-control-label">Date</label>
-                            <input class="form-control" type="datetime-local" name="update_transaction_date" id="update_transaction_date" value="">
-                        </div> --}}
+                        <table class="table table-striped">
+                            <thead>
+                                <th>No</th>
+                                <th>Nama Peserta</th>
+                            </thead>
+                            <tbody id="list_data_pererta">
+                                
+                            </tbody>
+                        </table>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-gradient-primary" id="update_transaction">Update</button>
+                    <button type="button" class="btn bg-gradient-primary" id="update_transaction">Approve</button>
                 </div>
             </form>
         </div>

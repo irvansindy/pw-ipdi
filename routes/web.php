@@ -86,10 +86,6 @@ Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('gue
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
-// Route::group(['middleware' => 'role:user'], function() {
-// 	Route::get('/', [UserContentController::class, 'index'])->name('home');
-// });
-
 Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 
@@ -114,6 +110,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/transaction', [TransactionManagementController::class,'index'])->name('transaction');
 	Route::get('/transaction-fetch', [TransactionManagementController::class,'fetch'])->name('transaction-fetch');
 	Route::get('/transaction-detail', [TransactionManagementController::class,'detail'])->name('transaction-detail');
+	Route::post('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
 
 	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');
 	Route::get('/fetch-vision', [VisionAndMisionController::class,'fetchVision'])->name('fetch-vision');
@@ -132,6 +129,10 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/fetch-organization', [OrganizationStructure::class,'fetchOrganization'])->name('fetch-organization');
 	Route::post('/upload-video', [OrganizationStructure::class,'upload'])->name('upload-video');
 });
+
+Route::get('/send-mail', [TransactionManagementController::class,'sendEmail'])->name('send-mail');
+Route::get('/generate-pdf', [TransactionManagementController::class,'generatePDF'])->name('generate-pdf');
+Route::get('/generate-qrcode', [TransactionManagementController::class,'generateQrCode'])->name('generate-qrcode');
 
 
 Route::group(['middleware' => 'auth'], function () {
