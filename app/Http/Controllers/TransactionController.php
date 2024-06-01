@@ -170,7 +170,7 @@ class TransactionController extends Controller
     public function detailTransaction(Request $request)
     {
         try {
-            $transaction = Transactions::with(['event.eventDetail','transactionDetail.user'])
+            $transaction = Transactions::with(['event.eventDetail','transactionDetail.user', 'user'])
             ->where('user_id', Auth::user()->id)
             ->find($request->transaction_id);
             // ->find(4);

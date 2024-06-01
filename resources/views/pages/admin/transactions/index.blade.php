@@ -9,6 +9,7 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Transaction Management</h6>
+                            {{-- <img src="{{ asset('storage/qrcodes/66575b0ee1013.png') }}" alt="ga ada"> --}}
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">

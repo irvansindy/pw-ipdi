@@ -7,15 +7,14 @@ use Illuminate\Http\Request;
 use App\Helpers\FormatResponseJson;
 use App\Models\Transactions;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\TransactionMail;
 use App\Mail\EventRegisterMail;
+use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-// use Barryvdh\DomPDF\Facade as PDF;
-use Barryvdh\DomPDF\Facade\Pdf;
 class TransactionManagementController extends Controller
 {
     public function index()
     {
+        // phpinfo();
         return view("pages.admin.transactions.index");
     }
 
@@ -41,10 +40,28 @@ class TransactionManagementController extends Controller
     public function approval(Request $request)
     {
         try {
-            $transaction = Transactions::find($request->update_transaction_id)
-            ->update([
+            $transaction = Transactions::find($request->update_transaction_id);
+            // $transaction = Transactions::find($request->update_transaction_id)
+            // ->update([
+            //     'status' => 'success'
+            // ]);
+// dd(public_path('storage/qrcodes/qrcode.png'));
+            // generate QR Code
+            // dd($transaction->number);
+            $data_qrcode = $transaction->number. ', '.$transaction->status;
+            $qrCode = QrCode::format('png')->size(200)->generate($data_qrcode);
+            $filePath = storage_path('app/public/qrcodes/qrcode.png');
+            file_put_contents($filePath, $qrCode);
+            // $path = 'qrcodes/' . uniqid() . '.png';
+            // $direcory = Storage::disk('public')->put($path, $qrCode);
+            $transaction->update([
                 'status' => 'success'
             ]);
+            Mail::to('irvanmuhammad22@gmail.com')->send(new EventRegisterMail([
+                'title' => $transaction->number,
+                'body' => $transaction->status,
+            ]));
+
             return FormatResponseJson::success($transaction,'Transaksi berhasil diapproved');
         } catch (\Throwable $th) {
             //throw $th;

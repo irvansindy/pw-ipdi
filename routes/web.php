@@ -111,6 +111,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/transaction-fetch', [TransactionManagementController::class,'fetch'])->name('transaction-fetch');
 	Route::get('/transaction-detail', [TransactionManagementController::class,'detail'])->name('transaction-detail');
 	Route::post('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
+	// Route::get('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
 
 	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');
 	Route::get('/fetch-vision', [VisionAndMisionController::class,'fetchVision'])->name('fetch-vision');

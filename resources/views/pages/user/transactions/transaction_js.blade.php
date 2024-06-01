@@ -71,6 +71,7 @@
                 async: true,
                 success: function(res) {
                     $('#detail_id').html(res.data.number)
+                    $('#detail_username').html(res.data.user.username)
                     $('#detail_event').html(res.data.event.name)
                     $('#detail_date').html(moment(res.data.event.date).format('lll'))
                     $('#detail_status').html(res.data.status)

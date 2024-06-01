@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 class EventRegisterMail extends Mailable
 {
     use Queueable, SerializesModels;
@@ -31,7 +32,7 @@ class EventRegisterMail extends Mailable
         // );
         return new Envelope(
             subject: 'Registrasi Acara',
-            from: new Address('ipdi.dkijakarta@gmail.com', 'Email data'),
+            from: new Address('ipdi.dkijakarta@gmail.com', 'Email Registration Event'),
         );
     }
 
@@ -44,7 +45,10 @@ class EventRegisterMail extends Mailable
         //     view: 'pages.admin.transactions.mail',
         // );
         return new Content(
-            view: 'test-mail',
+            view: 'template-mail',
+            // with: [
+            //     'data' => $this->data,
+            // ];
         );
     }
 
@@ -55,6 +59,8 @@ class EventRegisterMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromPath(public_path('storage/qrcodes/qrcode.png'))
+        ];
     }
 }

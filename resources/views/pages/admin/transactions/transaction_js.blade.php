@@ -94,15 +94,15 @@
             let update_transaction_id = $('#update_transaction_id').val()
             // alert(update_transaction_id)
             $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
                 url: '{{ route("transaction-approval") }}',
                 type: 'POST',
                 // method: 'POST',
                 // processData: false,
                 // contentType: false,
                 // cache: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 data: {
                     update_transaction_id: update_transaction_id
                 },

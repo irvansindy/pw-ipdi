@@ -21,6 +21,10 @@
                             <p id="detail_id"></p>
                         </div>
                         <div class="col-sm-6">
+                            <span style="font-weight: 700 !important;">Pendaftar</span>
+                            <p id="detail_username"></p>
+                        </div>
+                        <div class="col-sm-6">
                             <span style="font-weight: 700 !important;">Event</span>
                             <p id="detail_event"></p>
                         </div>
