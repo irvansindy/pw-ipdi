@@ -1,5 +1,7 @@
 <script>
     $(document).ready(function() {
+        // Global variable 
+		var getCanvas;
         $('#transaction_list').DataTable({
             processing: true,
             ajax: {
@@ -32,8 +34,10 @@
                     "render": function(item) {
                         if (item.status == 'pending') {
                             return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-success btn-sm mt-2 upload_transaction" data-bs-toggle="modal" data-bs-target="#uploadTransaction">Upload</button>'
-                        } else {
+                        } else if (item.status == 'progress')  {
                             return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
+                        } else if (item.status == 'success') {
+                            return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-danger btn-sm mt-2 qrcode_transaction" data-bs-toggle="modal" data-bs-target="#QrCodeTransaction">Qr Code</button>'
                         }
                     }
                 },
@@ -151,8 +155,58 @@
             })
         })
 
-        $(document).on('click', '.detail_transaction', function(e) {
+        $(document).on('click', '.qrcode_transaction', function(e) {
             let transaction_id = $(this).data('transaction_id')
+            $('#preview_qrcode').show()
+            $('#download_qrcode').hide()
+            $("#ticket_event").empty();
+            // Generate a new QR code
+            const qr_element = document.getElementById('ticket_event');
+            // Buat QR code dengan isi yang diinginkan
+            const qrCode = new QRCode(qr_element, {
+                text: 'https://example.com', // Isi dari QR code (URL, teks, dll)
+                width: 200, // Lebar QR code (dalam piksel)
+                height: 200, // Tinggi QR code (dalam piksel)
+                colorDark: '#000000', // Warna untuk modul QR code (kotak hitam)
+                colorLight: '#ffffff', // Warna untuk latar belakang QR code (kotak putih)
+                correctLevel: QRCode.CorrectLevel.H // Tingkat koreksi error (L, M, Q, H)
+            });
         })
+
+        var element = $("#ticket");
+
+
+        $(document).on('click', '#preview_qrcode', function() {
+            html2canvas(element, {
+				onrendered: function (canvas) {
+					$(".preview_image").append(canvas);
+					getCanvas = canvas;
+				}
+			});
+
+            // console.log(getCanvas);
+            $('#preview_qrcode').hide()
+            $('#download_qrcode').show()
+            var imgageData = getCanvas.toDataURL("image/png", 3);
+            // console.log(imgageData);
+			// Now browser starts downloading  
+			// it instead of just showing it 
+			var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+
+			$("#download_qrcode").attr("download", "ticket.png").attr("href", newData);
+        })
+
+        // $('#download_qrcode').on('click', function () {
+        $(document).on('click', '#download_qrcode', function() {
+			// $("#btn-Convert-Html2Image").on('click', function () {
+			// });
+			var imgageData = getCanvas.toDataURL("image/png", 3);
+            // console.log(imgageData);
+			// Now browser starts downloading  
+			// it instead of just showing it 
+			var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+
+			$("#download_qrcode").attr("download", "ticket.png").attr("href", newData);
+		})
     });
 </script>

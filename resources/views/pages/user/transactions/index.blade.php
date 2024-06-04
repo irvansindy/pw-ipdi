@@ -49,6 +49,7 @@
     </div>
     @include('pages.user.transactions.transaction_detail')
     @include('pages.user.transactions.upload')
+    @include('pages.user.transactions.qrcode')
     @include('layouts.users.footer')
 @endsection
 @push('js')
