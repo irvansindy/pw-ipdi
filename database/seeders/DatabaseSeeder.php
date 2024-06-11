@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             EventDetailSeeder::class,
             EventHotelSeeder::class,
             HotelSeeder::class,
+            VisiSeeder::class,
+            MisiSeeder::class,
         ]);
     }
 }

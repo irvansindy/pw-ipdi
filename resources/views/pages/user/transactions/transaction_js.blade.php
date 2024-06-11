@@ -159,6 +159,7 @@
             let transaction_id = $(this).data('transaction_id')
             $('#preview_qrcode').show()
             $('#download_qrcode').hide()
+            $(".preview_image").empty();
             $("#ticket_event").empty();
             // Generate a new QR code
             const qr_element = document.getElementById('ticket_event');
@@ -183,27 +184,15 @@
 					getCanvas = canvas;
 				}
 			});
-
-            // console.log(getCanvas);
             $('#preview_qrcode').hide()
             $('#download_qrcode').show()
-            var imgageData = getCanvas.toDataURL("image/png", 3);
-            // console.log(imgageData);
-			// Now browser starts downloading  
-			// it instead of just showing it 
-			var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
-
-			$("#download_qrcode").attr("download", "ticket.png").attr("href", newData);
         })
 
         // $('#download_qrcode').on('click', function () {
         $(document).on('click', '#download_qrcode', function() {
-			// $("#btn-Convert-Html2Image").on('click', function () {
-			// });
-			var imgageData = getCanvas.toDataURL("image/png", 3);
-            // console.log(imgageData);
-			// Now browser starts downloading  
-			// it instead of just showing it 
+
+			var imgageData = getCanvas.toDataURL("image/png", 1);
+			// Now browser starts downloading, it instead of just showing it 
 			var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
 
 			$("#download_qrcode").attr("download", "ticket.png").attr("href", newData);

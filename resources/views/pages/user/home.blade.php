@@ -31,7 +31,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <h1 class="text-center">Visi</h1>
-                    <ul class="list-unstyled ms-md-5 mt-md-4">
+                    <ul class="list-unstyled ms-md-5 mt-md-4" id="list_visi">
                         <li>Lorem ipsum dolor sit amet</li>
                         <li>Consectetur adipiscing elit</li>
                         <li>Integer molestie lorem at massa</li>
@@ -51,7 +51,7 @@
                 </div>
                 <div class="col-md-6">
                     <h1 class="text-center">Misi</h1>
-                    <ul class="list-unstyled ms-md-5 mt-md-4">
+                    <ul class="list-unstyled ms-md-5 mt-md-4" id="list_misi">
                         <li>Lorem ipsum dolor sit amet</li>
                         <li>Consectetur adipiscing elit</li>
                         <li>Integer molestie lorem at massa</li>
@@ -245,3 +245,6 @@
     {{-- end berita --}}
     @include('layouts.users.footer')
 @endsection
+@push('js')
+    @include('pages.user.home_js')
+@endpush

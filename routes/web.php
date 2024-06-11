@@ -135,7 +135,6 @@ Route::get('/send-mail', [TransactionManagementController::class,'sendEmail'])->
 Route::get('/generate-pdf', [TransactionManagementController::class,'generatePDF'])->name('generate-pdf');
 Route::get('/generate-qrcode', [TransactionManagementController::class,'generateQrCode'])->name('generate-qrcode');
 
-
 Route::group(['middleware' => 'auth'], function () {
 	Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
 	Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');

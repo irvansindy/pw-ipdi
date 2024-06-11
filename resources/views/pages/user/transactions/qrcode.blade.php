@@ -83,12 +83,9 @@
                 </div>
                 <div class="modal-body container-fluid">
                     <div id="ticket">
-                        {{-- <img src="{{ asset('img/logos/IPDI/logo_login.png') }}" id="logo"> --}}
                         <div class="content">
-                            {{-- <h2>E-Ticket</h2> --}}
                             <h1 class="name_event"></h1>
                             <h4 style="color: white !important;"></h4><br>
-                            {{-- <span id="tagline"></span> --}}
                             <p style="margin-top: 20px;">
                             </p>
                         </div>
@@ -111,7 +108,8 @@
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn bg-gradient-primary" id="preview_qrcode">Proses</button>
-                    <button type="button" class="btn bg-gradient-primary" id="download_qrcode">Download</button>
+                    {{-- <button type="button" class="btn bg-gradient-primary" id="download_qrcode">Download</button> --}}
+                    <a href="#" class="btn btn-primary" id="download_qrcode">Download</a>
                 </div>
             </form>
         </div>
