@@ -19,8 +19,9 @@
                     $('#list_misi').empty()
                     let misi = res.data['misi']
                     $.each(misi, function(i, data) {
+                        // <li>${data.ordering + '. ' + data.content}</li>
                         $('#list_misi').append(`
-                            <li>${data.ordering + '. ' + data.content}</li>
+                            <li>${data.content}</li>
                         `)
                     })
                 }

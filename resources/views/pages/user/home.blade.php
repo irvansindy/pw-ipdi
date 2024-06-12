@@ -37,9 +37,9 @@
                 </div>
                 <div class="col-md-12">
                     <h1 class="text-center">Misi</h1>
-                    <ul class="list-unstyled ms-md-5 mt-md-4" id="list_misi">
+                    <ol type="1" id="list_misi">
                         
-                    </ul>
+                    </ol>
                 </div>
             </div>
         </div>

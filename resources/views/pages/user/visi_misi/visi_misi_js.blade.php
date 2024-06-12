@@ -27,13 +27,17 @@
                             <p class="text-center">Belum ada data</p><br/>
                         `)
                     } else {
+                        $('.list_misi').append(`
+                        <div class="col-md-12">
+                            <ol type="1" id="list_misi">
+                            </ol>
+                        </div>
+                        `)
                         $.each(res.data['misi'], function(i,data) {
-                            $('.list_misi').append(`
-                            <div class="col-md-12">
-                                <p class="text-left px-3">${data.ordering +'. '+ data.content}</p><br/>
-                            </div>
-                            `)
+                            $('#list_misi').append(`
+                            <li>${data.content}</li>
                             
+                            `)
                         })
                     }
                 }
