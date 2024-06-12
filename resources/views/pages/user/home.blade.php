@@ -29,44 +29,16 @@
     <section>
         <div class="container mt-6">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <h1 class="text-center">Visi</h1>
                     <ul class="list-unstyled ms-md-5 mt-md-4" id="list_visi">
-                        <li>Lorem ipsum dolor sit amet</li>
-                        <li>Consectetur adipiscing elit</li>
-                        <li>Integer molestie lorem at massa</li>
-                        <li>Facilisis in pretium nisl aliquet</li>
-                        <li>Nulla volutpat aliquam velit
-                            <ul>
-                                <li>Phasellus iaculis neque</li>
-                                <li>Purus sodales ultricies</li>
-                                <li>Vestibulum laoreet porttitor sem</li>
-                                <li>Ac tristique libero volutpat at</li>
-                            </ul>
-                        </li>
-                        <li>Faucibus porta lacus fringilla vel</li>
-                        <li>Aenean sit amet erat nunc</li>
-                        <li>Eget porttitor lorem</li>
+                        
                     </ul>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <h1 class="text-center">Misi</h1>
                     <ul class="list-unstyled ms-md-5 mt-md-4" id="list_misi">
-                        <li>Lorem ipsum dolor sit amet</li>
-                        <li>Consectetur adipiscing elit</li>
-                        <li>Integer molestie lorem at massa</li>
-                        <li>Facilisis in pretium nisl aliquet</li>
-                        <li>Nulla volutpat aliquam velit
-                            <ul>
-                                <li>Phasellus iaculis neque</li>
-                                <li>Purus sodales ultricies</li>
-                                <li>Vestibulum laoreet porttitor sem</li>
-                                <li>Ac tristique libero volutpat at</li>
-                            </ul>
-                        </li>
-                        <li>Faucibus porta lacus fringilla vel</li>
-                        <li>Aenean sit amet erat nunc</li>
-                        <li>Eget porttitor lorem</li>
+                        
                     </ul>
                 </div>
             </div>

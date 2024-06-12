@@ -29,8 +29,8 @@
                     } else {
                         $.each(res.data['misi'], function(i,data) {
                             $('.list_misi').append(`
-                            <div class="col-md-6">
-                                <p class="text-center px-3">${data.ordering +'. '+ data.content}</p><br/>
+                            <div class="col-md-12">
+                                <p class="text-left px-3">${data.ordering +'. '+ data.content}</p><br/>
                             </div>
                             `)
                             
