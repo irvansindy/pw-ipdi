@@ -151,4 +151,9 @@ class UserContentController extends Controller
         }
     }
 
+    public function organizationalStructure()
+    {
+        return view('pages.user.organization.index');
+    }
+
 }

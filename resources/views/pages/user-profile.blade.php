@@ -247,14 +247,14 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Central Dialisis</label>
+                                        <label for="example-text-input" class="form-control-label">Center Dialisis</label>
                                         <input class="form-control" type="text" name="center_dialisis"
                                             value="{{ old('center_dialisis', auth()->user()->center_dialisis) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Alamat Central Dialisis/Perusahaan</label>
+                                        <label for="example-text-input" class="form-control-label">Alamat Center Dialisis/Perusahaan</label>
                                         <input class="form-control" type="text" name="alamat_center_dialisis_perusahaan"
                                             value="{{ old('alamat_center_dialisis_perusahaan', auth()->user()->alamat_center_dialisis_perusahaan) }}">
                                     </div>

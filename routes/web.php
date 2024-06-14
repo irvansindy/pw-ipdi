@@ -56,6 +56,8 @@ Route::get('/fetch-visi-misi', [userVisiMision::class, 'visionAndMision'])->name
 Route::get('/sejarah', [userHistory::class, 'index'])->name('sejarah');
 Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-sejarah');
 
+Route::get('struktur-organisasi', [UserContentController::class,'organizationalStructure'])->name('struktur-organisasi');
+
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 
 
