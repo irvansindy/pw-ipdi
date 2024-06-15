@@ -32,6 +32,7 @@ class User extends Authenticatable
         'nira_ppni',
         'nira_ipdi',
         'pw_ipdi_provinsi',
+        'pw_ipdi_kabupaten',
         'nama_perusahaan',
         'center_dialisis',
         'alamat_center_dialisis_perusahaan',

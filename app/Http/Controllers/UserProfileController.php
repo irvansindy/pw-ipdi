@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-
+use App\Models\MasterProvinsi;
+use App\Models\MasterKabupaten;
 class UserProfileController extends Controller
 {
     public function show()
     {
-        return view('pages.user-profile');
+        $masterProvinsi = MasterProvinsi::all();
+        $masterKabupaten = MasterKabupaten::all();
+        return view('pages.user-profile', compact('masterProvinsi','masterKabupaten'));
     }
 
     public function update(Request $request)
@@ -37,6 +40,7 @@ class UserProfileController extends Controller
             'nira_ppni' => $request->get('nira_ppni'),
             'nira_ipdi' => $request->get('nira_ipdi'),
             'pw_ipdi_provinsi' => $request->get('pw_ipdi_provinsi'),
+            'pw_ipdi_kabupaten' => $request->get('pw_ipdi_kabupaten'),
             'nama_perusahaan' => $request->get('nama_perusahaan'),
             'center_dialisis' => $request->get('center_dialisis'),
             'alamat_center_dialisis_perusahaan' => $request->get('alamat_center_dialisis_perusahaan'),

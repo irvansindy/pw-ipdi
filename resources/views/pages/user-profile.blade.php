@@ -1,5 +1,5 @@
 {{-- @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100']) --}}
-@extends('layouts.users.app')
+@extends('layouts.users.app', ['title'=>'Profile'])
 
 @section('content')
     <style>
@@ -192,7 +192,8 @@
                                     </div>
 
                                     </hr>
-                                    <p class="text-danger text-center small">file photo harus berjenis: jpeg/jpg/png, max size: 1024kb</p>
+                                    <p class="text-danger text-center small">file photo harus berjenis: jpeg/jpg/png, max
+                                        size: 1024kb</p>
                                 </div>
                             </div>
                             <div class="row">
@@ -234,8 +235,14 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">PW IPDI Provinsi</label>
-                                        <input class="form-control" type="text" name="pw_ipdi_provinsi"
-                                            value="{{ old('pw_ipdi_provinsi', auth()->user()->pw_ipdi_provinsi) }}">
+                                        <input type="hidden" name="pw_ipdi_provinsi_current" id="pw_ipdi_provinsi_current" value="{{ auth()->user()->pw_ipdi_provinsi }}">
+                                        <select class="form-control" name="pw_ipdi_provinsi" id="pw_ipdi_provinsi">
+                                            @forelse ($masterProvinsi as $provinsi)
+                                                <option value="{{ $provinsi->id }}" {{ $provinsi->id == auth()->user()->pw_ipdi_provinsi ? 'selected' : '' }}>{{ $provinsi->name }}</option>
+                                            @empty
+                                                <option value="hidden">Select One</option>
+                                            @endforelse
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -243,6 +250,22 @@
                                         <label for="example-text-input" class="form-control-label">Nama Perusahaan</label>
                                         <input class="form-control" type="text" name="nama_perusahaan"
                                             value="{{ old('nama_perusahaan', auth()->user()->nama_perusahaan) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6" id="select_kabupaten">
+                                    <div class="form-group">
+                                        <label for="example-text-input" class="form-control-label">PW IPDI Kota</label>
+                                        <select class="form-control" name="pw_ipdi_kabupaten" id="pw_ipdi_kabupaten">
+                                            @if (auth()->user()->pw_ipdi_kabupaten == null)
+                                                <option value="hidden">Select One</option>
+                                                
+                                            @endif
+                                            @forelse ($masterKabupaten as $kabupaten)
+                                                <option value="{{ $kabupaten->id }}" {{ $kabupaten->id == auth()->user()->pw_ipdi_kabupaten ? 'selected' : '' }}>{{ $kabupaten->name }}</option>
+                                            @empty
+                                                <option value="hidden">Select One</option>
+                                            @endforelse
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -254,8 +277,10 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Alamat Center Dialisis/Perusahaan</label>
-                                        <input class="form-control" type="text" name="alamat_center_dialisis_perusahaan"
+                                        <label for="example-text-input" class="form-control-label">Alamat Center
+                                            Dialisis/Perusahaan</label>
+                                        <input class="form-control" type="text"
+                                            name="alamat_center_dialisis_perusahaan"
                                             value="{{ old('alamat_center_dialisis_perusahaan', auth()->user()->alamat_center_dialisis_perusahaan) }}">
                                     </div>
                                 </div>
@@ -268,7 +293,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Pendidikan Terakhir</label>
+                                        <label for="example-text-input" class="form-control-label">Pendidikan
+                                            Terakhir</label>
                                         <input class="form-control" type="text" name="last_edication"
                                             value="{{ old('last_edication', auth()->user()->last_edication) }}">
                                     </div>
@@ -322,7 +348,7 @@
                                 <button type="submit" class="btn btn-primary btn-sm ms-auto">Save</button>
                             </div>
                         </div>
-                        
+
                     </form>
                 </div>
             </div>
@@ -400,70 +426,23 @@
             }
         });
 
-        // Vanilla Script Version
-        /* document.addEventListener("change", function(event) {
-          if (event.target.classList.contains("uploadProfileInput")) {
-            var triggerInput = event.target;
-            var currentImg = triggerInput.closest(".pic-holder").querySelector(".pic").src;
-            var holder = triggerInput.closest(".pic-holder");
-            var wrapper = triggerInput.closest(".profile-pic-wrapper");
-            
-            var alerts = wrapper.querySelectorAll('[role="alert"]');
-            alerts.forEach(function(alert) {
-              alert.remove();
-            });
-
-            triggerInput.blur();
-            var files = triggerInput.files || [];
-            if (!files.length || !window.FileReader) {
-              return;
-            }
-            
-            if (/^image/.test(files[0].type)) {
-              var reader = new FileReader();
-              reader.readAsDataURL(files[0]);
-
-              reader.onloadend = function() {
-                holder.classList.add("uploadInProgress");
-                holder.querySelector(".pic").src = this.result;
-
-                var loader = document.createElement("div");
-                loader.classList.add("upload-loader");
-                loader.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>';
-                holder.appendChild(loader);
-
-                setTimeout(function() {
-                  holder.classList.remove("uploadInProgress");
-                  loader.remove();
-
-                  var random = Math.random();
-                  if (random < 0.9) {
-                    wrapper.innerHTML += '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Profile image updated successfully</div>';
-                    triggerInput.value = "";
-                    setTimeout(function() {
-                      wrapper.querySelector('[role="alert"]').remove();
-                    }, 3000);
-                  } else {
-                    holder.querySelector(".pic").src = currentImg;
-                    wrapper.innerHTML += '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
-                    triggerInput.value = "";
-                    setTimeout(function() {
-                      wrapper.querySelector('[role="alert"]').remove();
-                    }, 3000);
-                  }
-                }, 1500);
-              };
+        $('#pw_ipdi_provinsi').select2()
+        $('#pw_ipdi_kabupaten').select2()
+        $(document).ready(function() {
+            if ($('#pw_ipdi_provinsi_current').val() == 17) {
+                $('#select_kabupaten').show()
             } else {
-              wrapper.innerHTML += '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>';
-              setTimeout(function() {
-                var invalidAlert = wrapper.querySelector('[role="alert"]');
-                if (invalidAlert) {
-                  invalidAlert.remove();
-                }
-              }, 3000);
+                $('#select_kabupaten').hide()
             }
-          }
-        });
-        */
+
+            $(document).on('change','#pw_ipdi_provinsi', function() {
+                if ($(this).val() == 17) {
+                    $('#select_kabupaten').show()
+                } else {
+                    $('#select_kabupaten').hide()
+                    $('#pw_ipdi_kabupaten').val('')
+                }
+            })
+        })
     </script>
 @endpush
