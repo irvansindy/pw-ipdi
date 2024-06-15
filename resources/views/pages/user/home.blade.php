@@ -93,11 +93,11 @@
                                 <div class="full-background"
                                     style="background-image: url('{{ asset('img/carousel/3.png') }}')">
                                 </div>
-                                <div class="card-body pt-6">
+                                {{-- <div class="card-body pt-6">
                                     <h4 class="text-white">Search and Discovery</h4>
                                     <p>Website visitors today demand a frictionless user expericence — especially when using
                                         search. Because of the hight standards.</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </a>
                         <a href="javascript:;">
@@ -105,11 +105,11 @@
                                 <div class="full-background"
                                     style="background-image: url('{{ asset('img/carousel/4.png') }}')">
                                 </div>
-                                <div class="card-body pt-6">
+                                {{-- <div class="card-body pt-6">
                                     <h4 class="text-white">Search and Discovery</h4>
                                     <p>Website visitors today demand a frictionless user expericence — especially when using
                                         search. Because of the hight standards.</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </a>
                         <a href="javascript:;">
@@ -117,11 +117,11 @@
                                 <div class="full-background"
                                     style="background-image: url('{{ asset('img/carousel/5.png') }}')">
                                 </div>
-                                <div class="card-body pt-6">
+                                {{-- <div class="card-body pt-6">
                                     <h4 class="text-white">Search and Discovery</h4>
                                     <p>Website visitors today demand a frictionless user expericence — especially when using
                                         search. Because of the hight standards.</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </a>
                     </div>
@@ -178,11 +178,11 @@
                                 <div class="full-background"
                                     style="background-image: url('{{ asset('img/carousel/1.png') }}')">
                                 </div>
-                                <div class="card-body pt-6">
+                                {{-- <div class="card-body pt-6">
                                     <h4 class="text-white">Search and Discovery</h4>
                                     <p>Website visitors today demand a frictionless user expericence — especially when using
                                         search. Because of the hight standards.</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </a>
                         <a href="javascript:;">
@@ -190,11 +190,11 @@
                                 <div class="full-background"
                                     style="background-image: url('{{ asset('img/carousel/2.png') }}')">
                                 </div>
-                                <div class="card-body pt-6">
+                                {{-- <div class="card-body pt-6">
                                     <h4 class="text-white">Search and Discovery</h4>
                                     <p>Website visitors today demand a frictionless user expericence — especially when using
                                         search. Because of the hight standards.</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </a>
                         <a href="javascript:;">
@@ -202,11 +202,11 @@
                                 <div class="full-background"
                                     style="background-image: url('{{ asset('img/carousel/3.png') }}')">
                                 </div>
-                                <div class="card-body pt-6">
+                                {{-- <div class="card-body pt-6">
                                     <h4 class="text-white">Search and Discovery</h4>
                                     <p>Website visitors today demand a frictionless user expericence — especially when using
                                         search. Because of the hight standards.</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </a>
                     </div>

@@ -7,8 +7,8 @@
             font-weight: 600;
             color: #163172;
             letter-spacing: 1px;">
-            <img src="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}" class="rounded-3" alt="Logo"
-                style="width: 45px; height: 45px;">
+            {{-- <img src="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}" class="rounded-3" alt="Logo" style="width: 45px; height: 45px;"> --}}
+            <img src="{{ asset('img/logos/IPDI/logo_login.png') }}" class="rounded-3" alt="Logo" style="width: 45px; height: 45px;">
             PW IPDI DKI JAKARTA
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"

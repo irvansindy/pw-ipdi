@@ -10,7 +10,7 @@
                         <h3>Struktur Organisasi</h3>
                     </div>
                 </div>
-                <div class="card-body px-0 pt-0 pb-2" id="content_visi">
+                <div class="card-body px-2 pt-0 pb-2" id="content_visi">
                     {{-- <div class="embed-responsive embed-responsive-16by9">  --}}
                     <div class="ratio ratio-16x9">
                         <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/UqU2ACpvDe4" allowfullscreen> 
