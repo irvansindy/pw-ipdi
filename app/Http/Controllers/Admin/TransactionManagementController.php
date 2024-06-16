@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\FormatResponseJson;
 use App\Models\Transactions;
+use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EventRegisterMail;
 use Illuminate\Support\Facades\Storage;
@@ -41,19 +42,14 @@ class TransactionManagementController extends Controller
     {
         try {
             $transaction = Transactions::find($request->update_transaction_id);
-            // $transaction = Transactions::find($request->update_transaction_id)
-            // ->update([
-            //     'status' => 'success'
-            // ]);
-// dd(public_path('storage/qrcodes/qrcode.png'));
+            
+            $list_transaction = TransactionDetail::where('transaction_id', $transaction->id)->get();
             // generate QR Code
-            // dd($transaction->number);
-            $data_qrcode = $transaction->number. ', '.$transaction->status;
-            $qrCode = QrCode::format('png')->size(200)->generate($data_qrcode);
-            $filePath = storage_path('app/public/qrcodes/qrcode.png');
-            file_put_contents($filePath, $qrCode);
-            // $path = 'qrcodes/' . uniqid() . '.png';
-            // $direcory = Storage::disk('public')->put($path, $qrCode);
+            // $data_qrcode = $transaction->number. ', '.$transaction->status;
+            // $qrCode = QrCode::format('png')->size(200)->generate($data_qrcode);
+            // $filePath = storage_path('app/public/qrcodes/qrcode.png');
+            // file_put_contents($filePath, $qrCode);
+
             $transaction->update([
                 'status' => 'success'
             ]);

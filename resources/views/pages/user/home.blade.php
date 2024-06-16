@@ -199,41 +199,16 @@
                 <div class="col-md-4">
                     <div class="row">
                         <a href="javascript:;">
-                            <div class="card card-background move-on-hover mb-4">
-                                <div class="full-background"
-                                    style="background-image: url('{{ asset('img/carousel/1.png') }}')">
-                                </div>
-                                {{-- <div class="card-body pt-6">
-                                    <h4 class="text-white">Search and Discovery</h4>
-                                    <p>Website visitors today demand a frictionless user expericence — especially when using
-                                        search. Because of the hight standards.</p>
-                                </div> --}}
+                            <div class="card move-on-hover mb-4">
+                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/4.png') }}" style="height: 10% !important;" loading="lazy">
                             </div>
                         </a>
                         <a href="javascript:;">
-                            <div class="card card-background move-on-hover mb-4">
-                                <div class="full-background"
-                                    style="background-image: url('{{ asset('img/carousel/2.png') }}')">
-                                </div>
-                                {{-- <div class="card-body pt-6">
-                                    <h4 class="text-white">Search and Discovery</h4>
-                                    <p>Website visitors today demand a frictionless user expericence — especially when using
-                                        search. Because of the hight standards.</p>
-                                </div> --}}
+                            <div class="card move-on-hover mb-4">
+                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/5.png') }}" style="height: 10% !important;" loading="lazy">
                             </div>
                         </a>
-                        <a href="javascript:;">
-                            <div class="card card-background move-on-hover mb-4">
-                                <div class="full-background"
-                                    style="background-image: url('{{ asset('img/carousel/3.png') }}')">
-                                </div>
-                                {{-- <div class="card-body pt-6">
-                                    <h4 class="text-white">Search and Discovery</h4>
-                                    <p>Website visitors today demand a frictionless user expericence — especially when using
-                                        search. Because of the hight standards.</p>
-                                </div> --}}
-                            </div>
-                        </a>
+                        
                     </div>
                 </div>
             </div>
