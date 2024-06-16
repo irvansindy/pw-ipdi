@@ -143,7 +143,7 @@
                     <div class="row">
                         <a href="javascript:;">
                             <div class="card move-on-hover mb-4">
-                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/WKD Maret 2024 (3).png') }}" style="height: 10% !important;" loading="lazy">
+                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/WKD Maret 2024 (2).png') }}" style="height: 10% !important;" loading="lazy">
                             </div>
                         </a>
                         <a href="javascript:;">
