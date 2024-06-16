@@ -31,13 +31,13 @@
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="text-center">Visi</h1>
-                    <ul class="list-unstyled ms-md-5 mt-md-4" id="list_visi">
+                    <ul class="list-unstyled ms-md-5 mt-md-4" id="list_visi" style="text-align: justify !important;">
                         
                     </ul>
                 </div>
                 <div class="col-md-12">
                     <h1 class="text-center">Misi</h1>
-                    <ol type="1" id="list_misi">
+                    <ol type="1" id="list_misi" style="text-align: justify !important;">
                         
                     </ol>
                 </div>
