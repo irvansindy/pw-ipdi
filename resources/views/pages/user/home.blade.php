@@ -76,7 +76,7 @@
                                     JNNS XVI
                                 </a>
                             </h5>
-                            <p>
+                            <p align="justify">
                                 Jakarta Nephrology Nursing Symposium (JNNS) XVI 02 – 03 September 2023 merupakan Program PITWIL IPDI DKI Jakarta setiap Tahunnnya, dalam rangka update Ilmu dan Tekhnologi di bidang Dialisis guna meningkatkan Pelayanan Dialisis yang Profesional.
                             </p>
                             {{-- <a href="javascript:;" class="text-info icon-move-right">Read More
@@ -132,7 +132,7 @@
                                     WKD 2024
                                 </a>
                             </h5>
-                            <p>
+                            <p align="justify">
                                 Pada setiap tahun, World Kidney Day diperingati untuk meningkatkan kesadaran tentang pentingnya kesehatan ginjal dan mengurangi dampak penyakit ginjal di seluruh dunia. Hari ini berfokus pada mendorong pencegahan, deteksi dini, dan pengobatan penyakit ginjal. Dengan mengangkat tema berbeda setiap tahunnya, World Kidney Day menyoroti isu-isu yang berkaitan dengan kesehatan ginjal, termasuk pentingnya gaya hidup sehat, peran penting ginjal dalam tubuh, dan bagaimana mengurangi faktor risiko seperti hipertensi dan diabetes. Mari bersama-sama menjaga kesehatan ginjal kita demi kualitas hidup yang lebih baik.
                             </p>
                         </div>
@@ -186,7 +186,7 @@
                             <h5>
                                 <a href="javascript:;" class="text-dark font-weight-bold">Pelantikan PW IPDI DKI Jakarta Periode 2023-2028</a>
                             </h5>
-                            <p>
+                            <p align="justify">
                                 Pada tanggal 03 September 2023 acara Pembacaan dan Penandatanganan Naskah Pelantikan PW IPDI DKI Jakarta Periode 2023-2028 di Hotel Ciputra Jakarta, dan dihadiri oleh Ketua DPW PPNI DKI Jakarta (Jajang Rahmat Solihin), Ketua IPDI (Syamsul Bakhri), Wakil Ketua Organisasi dan Kaderisasi (Yudi Hadiansyah), Ketua PW IPDI DKI (Agus Suwoko).
                             </p>
                             {{-- <a href="javascript:;" class="text-info icon-move-right">Read More
