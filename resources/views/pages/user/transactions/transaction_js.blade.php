@@ -37,7 +37,7 @@
                         } else if (item.status == 'progress')  {
                             return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
                         } else if (item.status == 'success') {
-                            return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-danger btn-sm mt-2 qrcode_transaction" data-bs-toggle="modal" data-bs-target="#QrCodeTransaction">Qr Code</button>'
+                            return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.id+'" data-trans_number="'+item.number+'" data-username="{{ Auth::user()->username }}" class="btn btn-outline-danger btn-sm mt-2 qrcode_transaction" data-bs-toggle="modal" data-bs-target="#QrCodeTransaction">Qr Code</button>'
                         }
                     }
                 },
@@ -92,7 +92,7 @@
                         $('.is_with_hotel').append(`
                         <div class="col-sm-6">
                             <span style="font-weight: 700 !important;">Jumlah Kamar Hotel</span>
-                            <p id="">${res.data.total_room + `Room`}</p>
+                            <p id="">${res.data.total_room + ` Room`}</p>
                         </div>
                         `)
                     } else {
@@ -157,45 +157,58 @@
 
         $(document).on('click', '.qrcode_transaction', function(e) {
             let transaction_id = $(this).data('transaction_id')
+            let username = $(this).data('username')
+            let trans_number = $(this).data('trans_number')
+            $('#ticket').hide()
             $('#preview_qrcode').show()
             $('#download_qrcode').hide()
             $(".preview_image").empty();
             $("#ticket_event").empty();
+            $("#ticket_even2").empty();
+            $("#id_name").html(username);
+            $("#id_nira_ipdi").html(trans_number);
+
             // Generate a new QR code
             const qr_element = document.getElementById('ticket_event');
+            const qr_element2 = document.getElementById('ticket_event2');
             // Buat QR code dengan isi yang diinginkan
             const qrCode = new QRCode(qr_element, {
-                text: 'https://example.com', // Isi dari QR code (URL, teks, dll)
+                text: trans_number+ ' - '+username, // Isi dari QR code (URL, teks, dll)
                 width: 200, // Lebar QR code (dalam piksel)
                 height: 200, // Tinggi QR code (dalam piksel)
                 colorDark: '#000000', // Warna untuk modul QR code (kotak hitam)
                 colorLight: '#ffffff', // Warna untuk latar belakang QR code (kotak putih)
                 correctLevel: QRCode.CorrectLevel.H // Tingkat koreksi error (L, M, Q, H)
             });
+            const qrCode2 = new QRCode(qr_element2, {
+                text: trans_number+ ' - '+username, // Isi dari QR code (URL, teks, dll)
+                width: 200, // Lebar QR code (dalam piksel)
+                height: 200, // Tinggi QR code (dalam piksel)
+                colorDark: '#000000', // Warna untuk modul QR code (kotak hitam)
+                colorLight: '#ffffff', // Warna untuk latar belakang QR code (kotak putih)
+                correctLevel: QRCode.CorrectLevel.H // Tingkat koreksi error (L, M, Q, H)
+            });
+            $('#ticket').empty()
         })
 
         var element = $("#ticket");
 
-
-        $(document).on('click', '#preview_qrcode', function() {
-            html2canvas(element, {
-				onrendered: function (canvas) {
-					$(".preview_image").append(canvas);
-					getCanvas = canvas;
-				}
-			});
-            $('#preview_qrcode').hide()
-            $('#download_qrcode').show()
-        })
-
-        // $('#download_qrcode').on('click', function () {
-        $(document).on('click', '#download_qrcode', function() {
-
-			var imgageData = getCanvas.toDataURL("image/png", 1);
-			// Now browser starts downloading, it instead of just showing it 
-			var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
-
-			$("#download_qrcode").attr("download", "ticket.png").attr("href", newData);
-		})
+        document.getElementById("preview_qrcode").addEventListener("click", function() {
+            html2canvas(document.getElementById("data_ticket"), {
+                // allowTaint: true,
+                allowTaint: false,
+                useCORS: true,
+                onrendered: function(canvas) {
+                    var anchorTag = document.createElement("a");
+                    anchorTag.download = "qrcode.jpg";
+                    anchorTag.href = canvas.toDataURL();
+                    anchorTag.target = '_blank';
+                    anchorTag.click();
+                }
+            })
+            
+            // .then(function (canvas) {
+            // });
+        });
     });
 </script>

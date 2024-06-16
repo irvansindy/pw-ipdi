@@ -1,4 +1,4 @@
-@extends('layouts.users.app')
+@extends('layouts.users.app', ['title' => 'List Transaksi'])
 
 @section('content')
     @include('layouts.users.navbar')

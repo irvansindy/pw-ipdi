@@ -1,7 +1,7 @@
 {{-- modal --}}
 <style>
     #ticket {
-        background-image: url('img/logos/bg/bg_ticket.png');
+        background-image: url('img/logos/bg/bg_qrcode.jpg');
         height: 640px;
         /* width: 900px; */
         background-position: center;
@@ -63,21 +63,45 @@
         text-align: center;
     }
 
-    #name {
+    .name_member {
         font-size: 26px;
         font-weight: bold;
     }
+
+    .image-container {
+        position: relative;
+    }
+
+    .overlay-text-left,
+    .overlay-text-right {
+        position: absolute;
+        color: white;
+        /* background-color: rgba(0, 0, 0, 0.5); */
+        padding: 10px;
+    }
+
+    .overlay-text-left {
+        left: 100px;
+        top: 70%;
+        transform: translateY(-50%);
+    }
+
+    .overlay-text-right {
+        right: 150px;
+        top: 70%;
+        transform: translateY(-50%);
+    }
 </style>
-<div class="modal fade" id="QrCodeTransaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"  role="dialog" aria-labelledby="QrCodeTransaction_label" aria-hidden="true">
-    {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered me-lg-8" role="document"> --}}
-        {{-- <img src="{{ asset('img/logos/bg/background_ticket.png') }}" alt=""> --}}
+<div class="modal fade" id="QrCodeTransaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="QrCodeTransaction_label" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <form id="form_upload_file">
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Qr Code transaksi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #172b4d !important;">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="color: #172b4d !important;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -103,13 +127,29 @@
                             </div>
                         </div>
                     </div>
-                    <div class="preview_image"></div>
+                    <div id="data_ticket">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="image-container">
+                                    <img src="{{ asset('img/logos/bg/bg_ticket.png') }}" class="img-fluid"
+                                        alt="Gambar">
+                                    <div class="overlay-text-left">
+                                        <div id="ticket_event2" style=""></div>
+                                    </div>
+                                    <div class="overlay-text-right">
+                                        <p class="identitas name_member" id="id_name"></p>
+                                        <span class="name_member" id="id_nira_ipdi" style="text-align: center !important;"></span>
+                                    <!-- <h2 class="identitas name_member">100132</h2> -->
+                                        <p class="identitas">This e-ticket is valid for one person only
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn bg-gradient-primary" id="preview_qrcode">Proses</button>
-                    {{-- <button type="button" class="btn bg-gradient-primary" id="download_qrcode">Download</button> --}}
-                    <a href="#" class="btn btn-primary" id="download_qrcode">Download</a>
+                    <button type="button" class="btn bg-gradient-primary" id="preview_qrcode">Download</button>
                 </div>
             </form>
         </div>
