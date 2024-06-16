@@ -20,6 +20,6 @@ class TransactionDetail extends Model
     }
     public function transactions()
     {
-        return $this->hasOne(Transactions::class, "id","transaction_id");
+        return $this->hasMany(Transactions::class, "id","transaction_id");
     }
 }

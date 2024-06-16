@@ -60,7 +60,7 @@ class EventRegisterMail extends Mailable
     public function attachments(): array
     {
         return [
-            Attachment::fromPath(public_path('storage/qrcodes/qrcode.png'))
+            // Attachment::fromPath(public_path('storage/qrcodes/qrcode.png'))
         ];
     }
 }

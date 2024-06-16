@@ -109,7 +109,20 @@
                 dataType: 'json',
                 async: true,
                 success: function(res) {
-
+                    $('#detailTransaction').modal('hide')
+                    Swal.fire({
+                        icon: "success",
+                        title: 'Success!',
+                        text: res.meta.message,
+                    })
+                },
+                error: function(xhr) {
+                    let response_error = JSON.parse(xhr.responseText)
+                    Swal.fire({
+                        icon: "error",
+                        title: 'Error!',
+                        text: 'gagal memuat data, silahkan hubungi admin.',
+                    })
                 }
             })
         })

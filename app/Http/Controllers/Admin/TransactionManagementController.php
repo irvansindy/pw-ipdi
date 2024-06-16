@@ -42,23 +42,30 @@ class TransactionManagementController extends Controller
     {
         try {
             $transaction = Transactions::find($request->update_transaction_id);
+            // $transaction = Transactions::find($request->update_transaction_id);
+            // dd($transaction);
             
-            $list_transaction = TransactionDetail::where('transaction_id', $transaction->id)->get();
+            $list_transaction = TransactionDetail::with(['user'])->where('transaction_details.transaction_id', $transaction->id)->get();
+            // dd($list_transaction['0']['user']->email);
             // generate QR Code
             // $data_qrcode = $transaction->number. ', '.$transaction->status;
             // $qrCode = QrCode::format('png')->size(200)->generate($data_qrcode);
             // $filePath = storage_path('app/public/qrcodes/qrcode.png');
             // file_put_contents($filePath, $qrCode);
 
+            for ($i=0; $i < count($list_transaction); $i++) { 
+                Mail::to($list_transaction[$i]['user']->email)->send(new EventRegisterMail([
+                    'title' => $transaction->number,
+                    'body' => 'Selamat kamu sudah terdaftar dengan nomor registrasi '.$transaction->number,
+                    'footer' => 'Silahkan cek halaman riwayat transaksi sesuai nomor registrasi untuk men-download tiket acara.',
+                ]));
+            }
+
             $transaction->update([
                 'status' => 'success'
             ]);
-            Mail::to('irvanmuhammad22@gmail.com')->send(new EventRegisterMail([
-                'title' => $transaction->number,
-                'body' => $transaction->status,
-            ]));
 
-            return FormatResponseJson::success($transaction,'Transaksi berhasil diapproved');
+            return FormatResponseJson::success($list_transaction,'Transaksi berhasil diapproved');
         } catch (\Throwable $th) {
             //throw $th;
             return FormatResponseJson::error(null, $th->getMessage(), 500);
