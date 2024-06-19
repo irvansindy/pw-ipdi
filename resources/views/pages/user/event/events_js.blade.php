@@ -71,6 +71,9 @@
                                 </div>
                             </div>
                         `)
+                        if (card.category_event_id != 1) {
+                            $('.event-register').hide()
+                        }
                     })
 
                 },
