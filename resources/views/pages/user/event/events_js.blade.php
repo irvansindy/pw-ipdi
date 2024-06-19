@@ -60,7 +60,7 @@
                                                 <span>Tanggal acara</span>
                                                 <div class="stats">
                                                     <small>${moment(card.date).format('DD-MM-YYYY')}</small> - 
-                                                    <small>${card.date_end != null ? card.date_end : ''} WIB</small>
+                                                    <small>${card.date_end != null ? moment(card.date_end).format('DD-MM-YYYY') : ''} WIB</small>
                                                 </div>
                                             </div>
                                             <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
