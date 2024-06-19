@@ -236,12 +236,21 @@
                 },
                 error: function(xhr) {
                     let response_error = JSON.parse(xhr.responseText)
-                    // alert(response_error.meta.message)
-                    Swal.fire({
-                        icon: "warning",
-                        title: 'Alert!',
-                        text: response_error.meta.message,
-                    })
+                    // alert(response_error.message)
+                    if (response_error.message == 'Unauthenticated.') {
+                        Swal.fire({
+                            icon: "warning",
+                            title: 'Alert!',
+                            text: 'Silahkan login dahulu.',
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: "warning",
+                            title: 'Alert!',
+                            text: response_error.meta.message,
+                        })
+
+                    }
                 }
             })
         })
