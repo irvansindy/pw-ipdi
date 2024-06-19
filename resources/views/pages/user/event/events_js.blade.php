@@ -4,7 +4,7 @@
     $(document).ready(function() {
         // fetch-categories
         $.ajax({
-            url: '{{ route("fetch-categories") }}',
+            url: '{{ route('fetch-categories') }}',
             type: 'GET',
             dataType: 'json',
             async: true,
@@ -25,7 +25,7 @@
 
         function fetchAllEvent() {
             $.ajax({
-                url: '{{ route("fetch-events") }}',
+                url: '{{ route('fetch-events') }}',
                 type: 'GET',
                 dataType: 'json',
                 async: true,
@@ -59,7 +59,8 @@
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
                                                 <div class="stats">
-                                                    <small>${moment(card.date).format('DD-MM-YYYY')} WIB</small>
+                                                    <small>${moment(card.date).format('DD-MM-YYYY')}</small> - 
+                                                    <small>${card.date_end != null ? card.date_end : ''} WIB</small>
                                                 </div>
                                             </div>
                                             <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
@@ -70,12 +71,6 @@
                                 </div>
                             </div>
                         `)
-                        if (card.category_event_id != 1) {
-                            $('.card-footer').empty()
-                        } 
-                        // else if (card.category_event_id == 1) {
-                        //     $('.stats> small>')
-                        // }
                     })
 
                 },
@@ -89,7 +84,7 @@
             let search_events = $('#search_events').val()
             let filter_events = $('#filter_events').val()
             $.ajax({
-                url: '{{ route("fetch-events") }}',
+                url: '{{ route('fetch-events') }}',
                 type: 'GET',
                 data: {
                     search: search_events,
@@ -153,7 +148,7 @@
             $('#form_create_data_event')[0].reset()
             // alert(category_id)
             $.ajax({
-                url: '{{ route("check-transaction") }}',
+                url: '{{ route('check-transaction') }}',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -163,7 +158,7 @@
                 },
                 dataType: 'json',
                 async: true,
-                success:function(res){
+                success: function(res) {
                     // if (res.data[2].address == null || res.data[2].city == null || res.data[2].country == null || res.data[2].postal == null) {
                     //     Swal.fire({
                     //         icon: "warning",
@@ -207,11 +202,12 @@
                         $('#name_event').html(res.data[1].name)
                         $('#title_event').html(res.data[1].title)
 
-                        let price_event = res.data[1].price.replace(/(\d)(?=(\d{3})+\b)/g, '$1.');
-                        $('#price_event').html('Rp.'+price_event)
+                        let price_event = res.data[1].price.replace(/(\d)(?=(\d{3})+\b)/g,
+                            '$1.');
+                        $('#price_event').html('Rp.' + price_event)
                         $('#price_event').attr('data-price_data', res.data[1].price)
-                        
-                        $('#quota_event').html(res.data[1].quota+' Audien/Peserta')
+
+                        $('#quota_event').html(res.data[1].quota + ' Audien/Peserta')
                         if (res.data[1].hotel != null) {
                             $('.event_hotel').empty()
                             $('.event_hotel').append(`
@@ -225,13 +221,17 @@
                             `)
                         }
                         // $('#desc_event').html(res.data[1].description)
-                        let date_event = moment(res.data[1].date).format('D-MM-YYYY')+' WIB'
+                        let date_event = moment(res.data[1].date).format('D-MM-YYYY') +
+                            ' WIB'
                         $('#date_event').html(date_event)
-                        let last_register = moment(res.data[1].last_register).format('D-MM-YYYY')+' WIB'
+                        let last_register = moment(res.data[1].last_register).format(
+                            'D-MM-YYYY') + ' WIB'
                         $('#last_register').html(last_register)
                         $('#create_transaction_event').data('event_id', res.data[1].id);
-                        $('#create_transaction_event').data('event_harga', res.data[1].price);
-                        let bank_data = res.data[3][0].name+'('+res.data[3][0].account_number+')'+' a/n '+res.data[3][0].account_name
+                        $('#create_transaction_event').data('event_harga', res.data[1]
+                            .price);
+                        let bank_data = res.data[3][0].name + '(' + res.data[3][0]
+                            .account_number + ')' + ' a/n ' + res.data[3][0].account_name
                         $('#bank_account_number').html(bank_data)
                     } else {
                         Swal.fire({
@@ -270,9 +270,9 @@
                 $('#list_peserta').empty()
                 $.ajax({
                     headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route("fetch-peserta") }}',
+                    url: '{{ route('fetch-peserta') }}',
                     type: 'GET',
                     dataType: 'json',
                     async: true,
@@ -284,7 +284,7 @@
                         })
                     }
                 })
-            } else if(data == 'mandiri') {
+            } else if (data == 'mandiri') {
                 $('#form_data_peserta').hide()
                 $('#list_peserta').empty()
             }
@@ -296,7 +296,7 @@
         })
 
         $(document).on('change', '#check_event_hotel', function() {
-            if($('#check_event_hotel').prop('checked')) {
+            if ($('#check_event_hotel').prop('checked')) {
                 let value = $('#check_event_hotel').val()
                 let price = $(this).data('price')
                 let hotel_name = $(this).data('hotel_name')
@@ -310,7 +310,7 @@
             }
         })
 
-        $(document).on('change','#create_room_hotel', function(e) {
+        $(document).on('change', '#create_room_hotel', function(e) {
             let price_hotel = $(this).data('price_hotel')
             let create_room_hotel = $('#create_room_hotel').val()
         })
@@ -330,7 +330,7 @@
                 event_harga = $('input[name="jnns_type"]:checked').data('harga')
                 // <input class="form-check-input data_jnns_type" type="radio" name="jnns_type"
                 // event_harga = $('input[name=jnns_type]:checked').parent('.data_jnns_type').attr('data-harga')
-                if($('#check_event_hotel').prop('checked')) {
+                if ($('#check_event_hotel').prop('checked')) {
                     total_harga_hotel = (harga_hotel * total_kamar_hotel) * total_permalam
                     // grand_total_harga = event_harga + total_harga_hotel
                     with_hotel = 1
@@ -338,7 +338,7 @@
                     // grand_total_harga = event_harga
                     with_hotel = 0
                 }
-                
+
             } else {
                 // grand_total_harga = $('#price_event').data('price_data')
                 // grand_total_harga = 'gratis'
@@ -355,7 +355,7 @@
             // let data_harga= $('.data_jnns_type').attr('data-harga')
             // alert(grand_total_harga)
             $.ajax({
-                url: '{{ route("create-transaction") }}',
+                url: '{{ route('create-transaction') }}',
                 type: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
