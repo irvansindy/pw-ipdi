@@ -53,12 +53,13 @@
                                         </p>
                                         
                                     </div>
+                                    
                                     <div class="card-footer">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
                                                 <div class="stats">
-                                                    <small>${moment(card.date).format('DD-MM-YYYY h:mm:ss')} WIB</small>
+                                                    <small>${moment(card.date).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
                                             <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
@@ -69,6 +70,12 @@
                                 </div>
                             </div>
                         `)
+                        if (card.category_event_id != 1) {
+                            $('.card-footer').empty()
+                        } 
+                        // else if (card.category_event_id == 1) {
+                        //     $('.stats> small>')
+                        // }
                     })
 
                 },
@@ -218,9 +225,9 @@
                             `)
                         }
                         // $('#desc_event').html(res.data[1].description)
-                        let date_event = moment(res.data[1].date).format('D-MM-YYYY, h:mm:ss')+' WIB'
+                        let date_event = moment(res.data[1].date).format('D-MM-YYYY')+' WIB'
                         $('#date_event').html(date_event)
-                        let last_register = moment(res.data[1].date).format('D-MM-YYYY, h:mm:ss')+' WIB'
+                        let last_register = moment(res.data[1].last_register).format('D-MM-YYYY')+' WIB'
                         $('#last_register').html(last_register)
                         $('#create_transaction_event').data('event_id', res.data[1].id);
                         $('#create_transaction_event').data('event_harga', res.data[1].price);
