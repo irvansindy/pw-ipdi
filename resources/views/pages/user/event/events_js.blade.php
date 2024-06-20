@@ -225,10 +225,9 @@
                             `)
                         }
                         // $('#desc_event').html(res.data[1].description)
-                        let date_event = moment(res.data[1].date).format('D-MM-YYYY')+' WIB sampai '+ moment(res.data[1].date_end).format('D-MM-YYYY')+' WIB'
+                        let date_event = moment(res.data[1].date).format('D-MM-YYYY')+' sampai '+ moment(res.data[1].date_end).format('D-MM-YYYY')
                         $('#date_event').html(date_event)
-                        let last_register = moment(res.data[1].last_register).format(
-                            'D-MM-YYYY') + ' WIB'
+                        let last_register = moment(res.data[1].last_register).format('D-MM-YYYY')
                         $('#last_register').html(last_register)
                         $('#create_transaction_event').data('event_id', res.data[1].id);
                         $('#create_transaction_event').data('event_harga', res.data[1]
