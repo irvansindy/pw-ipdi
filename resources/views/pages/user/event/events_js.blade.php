@@ -225,8 +225,7 @@
                             `)
                         }
                         // $('#desc_event').html(res.data[1].description)
-                        let date_event = moment(res.data[1].date).format('D-MM-YYYY') +
-                            ' WIB'
+                        let date_event = moment(res.data[1].date).format('D-MM-YYYY')+' WIB dan atau sampai '+ moment(res.data[1].date_end).format('D-MM-YYYY')
                         $('#date_event').html(date_event)
                         let last_register = moment(res.data[1].last_register).format(
                             'D-MM-YYYY') + ' WIB'
