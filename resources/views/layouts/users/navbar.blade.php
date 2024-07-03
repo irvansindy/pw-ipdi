@@ -74,9 +74,14 @@
                                     @csrf
                                     <a href="{{ route('logout') }}"
                                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                                        class="btn btn-primary px-0">
+                                        Logout
+                                    </a>
+                                    {{-- <a href="{{ route('logout') }}"
+                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                         class="nav-link text-white font-weight-bold px-0">
                                         <span class="d-sm-inline d-none  text-primary">Log out</span>
-                                    </a>
+                                    </a> --}}
                                 </form>
                             </li>
                         </ul>
