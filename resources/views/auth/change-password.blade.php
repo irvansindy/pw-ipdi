@@ -3,9 +3,9 @@
 @section('content')
     <div class="container position-sticky z-index-sticky top-0">
         <div class="row">
-            <div class="col-12">
+            {{-- <div class="col-12">
                 @include('layouts.navbars.guest.navbar')
-            </div>
+            </div> --}}
         </div>
     </div>
     <main class="main-content  mt-0">
@@ -45,7 +45,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div
+                        <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+                            <h4 class="mt-2 text-black font-weight-bolder position-relative">Selamat Datang</h4>
+                            <p class="text-black position-relative">
+                                Di Website <br> Pengurus Wilayah Ikatan Perawat Dialisis Indonesia Prov.DKI Jakarta
+                            </p>
+                            
+                            <div class="position-relative h-100 m-3 px-7 mb-5 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="margin-left:130px !important;
+                            background-image: url('{{ asset("img/logos/IPDI/logo_login.png") }}'); background-size: cover; width: 350px;
+                            height: 300px;">
+                            </div>
+                            <p class="text-black position-relative">
+                                Jl. Abdul Rahman Saleh Raya No.24, RT.10/RW.5, Senen, Kec. Senen, <br> Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10410
+                            </p>
+                        </div>
+                        {{-- <div
                             class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
                             <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden"
                                 style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg');
@@ -56,7 +70,7 @@
                                 <p class="text-white position-relative">The more effortless the writing looks, the more
                                     effort the writer actually put into the process.</p>
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

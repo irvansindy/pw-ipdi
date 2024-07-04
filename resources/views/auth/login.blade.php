@@ -65,8 +65,6 @@
                             <div class="position-relative h-100 m-3 px-7 mb-5 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="margin-left:130px !important;
                             background-image: url('{{ asset("img/logos/IPDI/logo_login.png") }}'); background-size: cover; width: 350px;
                             height: 300px;">
-                                {{-- <span class="mask bg-gradient-primary opacity-2"></span> --}}
-                                {{-- <img src="{{ asset("img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png") }}" class="rounded-3" alt="" srcset=""> --}}
                             </div>
                             <p class="text-black position-relative">
                                 Jl. Abdul Rahman Saleh Raya No.24, RT.10/RW.5, Senen, Kec. Senen, <br> Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10410
