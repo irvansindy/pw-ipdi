@@ -52,4 +52,8 @@ class UserProfileController extends Controller
         ]);
         return back()->with('succes', 'Profile succesfully updated');
     }
+    public function resetPassword()
+    {
+        
+    }
 }
