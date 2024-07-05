@@ -60,11 +60,11 @@ class TransactionController extends Controller
             $with_hotel = $request->with_hotel;
             $jnns_type = $request->jnns_type;
             $harga_hotel = $request->harga_hotel;
-            $total_kamar_hotel = $request->total_kamar_hotel;
-            $total_permalam = $request->total_permalam;
-            $total_harga_hotel = $request->total_harga_hotel;
+            $total_kamar_hotel = $request->total_kamar_hotel == 'undifined' || NULL  ? $request->total_kamar_hotel : NULL;
+            $total_permalam = $request->total_permalam == 'undifined' || NULL ? $request->total_permalam : NULL;
+            $total_harga_hotel = $request->total_harga_hotel == 'undifined' || NULL ? $request->total_harga_hotel : NULL;
             $event_harga = $request->event_harga;
-            // dd($total_harga_hotel);
+            // dd($total_kamar_hotel);
             $total_peserta <= 0 ? $total_harga_event = $event_harga : $total_harga_event = $event_harga * $total_peserta;
             
             if ($with_hotel == 0) {
@@ -103,12 +103,6 @@ class TransactionController extends Controller
                 $date_trans = now()->format('y/m/d');
                 $numbering = $check_total_current_transaction + 1;
                 $result_number = $code_trans.'-'.$date_trans.'/'.$numbering;
-                // dd($result_number);
-                // if ($category_id == 1) {
-                //     $price = $event_harga;
-                // } else {
-                //     $price = null;
-                // }
 
                 $create_transaction = Transactions::create([
                     'number' => $result_number,

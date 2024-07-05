@@ -71,10 +71,6 @@
                                 </div>
                             </div>
                         `)
-                        // if (card.category_event_id != 1) {
-                        //     $('.event-register').hide()
-                        //     $('.card-footer').hide()
-                        // }
                     })
 
                 },
@@ -163,6 +159,7 @@
                 dataType: 'json',
                 async: true,
                 success: function(res) {
+                    // validation for check kelengkapan data user
                     // if (res.data[2].address == null || res.data[2].city == null || res.data[2].country == null || res.data[2].postal == null) {
                     //     Swal.fire({
                     //         icon: "warning",
@@ -174,14 +171,20 @@
                     //     })
                     // } else {
                     // }
+                    var Rupiah = Intl.NumberFormat('en-ID', {
+                        style: 'currency',
+                        currency: 'idr',
+                        maximumSignificantDigits: 3,
+                    });
                     $('.list_type_jnns').empty()
                     $('.event_hotel').empty()
                     harga_event = res.data[1].price
-                    // alert(category_id)
                     if (category_id == 1) {
                         $('#price_event').hide()
                         $('.price_event').hide()
                         $('.list_type_jnns').empty()
+                        
+
                         if (res.data[1].event_detail.length != 0) {
                             $('.list_type_jnns').append(`<p>Pilihan :</p>`)
                             $.each(res.data[1].event_detail, function(i, detail) {
@@ -189,7 +192,7 @@
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input data_jnns_type" type="radio" name="jnns_type"
                                         id="jnns_${detail.name}" value="${detail.id}" data-harga="${detail.price}">
-                                    <label class="form-check-label" for="jnns_${detail.name}">${detail.name+' - '+detail.price}</label>
+                                    <label class="form-check-label" for="jnns_${detail.name}">${detail.name+' - '+Rupiah.format(detail.price)}</label>
                                 </div>
                                 `)
                             })
@@ -208,8 +211,8 @@
 
                         let price_event = res.data[1].price.replace(/(\d)(?=(\d{3})+\b)/g,
                             '$1.');
-                        $('#price_event').html('Rp.' + price_event)
-                        $('#price_event').attr('data-price_data', res.data[1].price)
+                        $('#price_event').html(Rupiah.format(res.data[1].price))
+                        $('#price_event').attr('data-price_data', Rupiah.format(res.data[1].price))
 
                         $('#quota_event').html(res.data[1].quota + ' Audien/Peserta')
                         if (res.data[1].hotel != null) {
@@ -302,10 +305,15 @@
                 let value = $('#check_event_hotel').val()
                 let price = $(this).data('price')
                 let hotel_name = $(this).data('hotel_name')
+                var Rupiah = Intl.NumberFormat('en-ID', {
+                        style: 'currency',
+                        currency: 'idr',
+                        maximumSignificantDigits: 3,
+                    });
                 $('#total_room_hotel').empty()
                 $('#total_room_hotel').append(`
-                    ${hotel_name} - Rp.${price} <input type="number" class="form-control" name="create_room_hotel" id="create_room_hotel" data-price_hotel="${price}" placeholder="jumlah kamar" style="width: 50% !important;"/> 
-                    <input type="number" class="form-control" name="create_total_night" id="create_total_night" data-price_hotel="${price}" placeholder="jumlah Malam" style="width: 50% !important;"/> 
+                    ${hotel_name} - ${Rupiah.format(price)} <input type="number" class="form-control" name="create_room_hotel" id="create_room_hotel" data-price_hotel="${price}" placeholder="jumlah kamar" style="width: 50% !important;" required/> 
+                    <input type="number" class="form-control" name="create_total_night" id="create_total_night" data-price_hotel="${price}" placeholder="jumlah Malam" style="width: 50% !important;" required/> 
                 `)
             } else {
                 $('#total_room_hotel').empty()
