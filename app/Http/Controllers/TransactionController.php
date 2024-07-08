@@ -83,11 +83,11 @@ class TransactionController extends Controller
                 // generate transaction number
                 $code_trans = '';
                 if ($category_id == 1) {
-                    if ($jnns_type == 1) {
+                    if ($jnns_type == 4) {
                         $code_trans = 'JNNS-SYMP';
-                    } else if ($jnns_type == 2) {
+                    } else if ($jnns_type == 5) {
                         $code_trans = 'JNNS-WS';
-                    } else if ($jnns_type == 3) {
+                    } else if ($jnns_type == 6) {
                         $code_trans = 'JNNS-PKT';
                     }
                 } else if ($category_id == 2) {
