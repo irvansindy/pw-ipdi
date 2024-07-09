@@ -1,5 +1,5 @@
 {{-- @extends('layouts.app') --}}
-@extends('layouts.users.app')
+@extends('layouts.users.app', ['title' => 'Events'])
 
 @section('content')
     @include('layouts.users.navbar')

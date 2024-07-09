@@ -66,7 +66,7 @@ class TransactionController extends Controller
             $total_permalam = $request->total_permalam == 'undifined' || NULL ? $request->total_permalam : NULL;
             $total_harga_hotel = $request->total_harga_hotel == 'undifined' || NULL ? $request->total_harga_hotel : NULL;
             $event_harga = $request->event_harga;
-            // dd($total_kamar_hotel);
+            dd($event_harga);
             $total_peserta <= 0 ? $total_harga_event = $event_harga : $total_harga_event = $event_harga * $total_peserta;
             
             if ($with_hotel == 0) {

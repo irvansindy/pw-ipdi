@@ -329,7 +329,7 @@
         $(document).on('click', '#create_transaction_event', function(e) {
             e.preventDefault()
             let id = $(this).data('event_id')
-            // alert(id)
+            alert(id)
             let event_harga = $(this).data('event_harga')
             let harga_hotel = $('input[name="check_event_hotel"]').data('price')
             let total_kamar_hotel = $('#create_room_hotel').val()
