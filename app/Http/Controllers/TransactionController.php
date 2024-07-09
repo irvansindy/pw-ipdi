@@ -56,7 +56,7 @@ class TransactionController extends Controller
             $category_id = $request->category_id;
             $event_type = $request->event_type;
             $list_peserta = $request->list_peserta;
-            dd($list_peserta);
+            // dd($list_peserta);
 
             $list_peserta != null ? $total_peserta = count($list_peserta) : $total_peserta = 0;
             $with_hotel = $request->with_hotel;
@@ -137,10 +137,10 @@ class TransactionController extends Controller
                         ];
                         array_push($data_peserta, $each_peserta);
                     }
-                    TransactionDetail::insert($data_peserta);
+                    $trans_detail = TransactionDetail::insert($data_peserta);
                 }                
                 DB::commit();
-                return FormatResponseJson::success($create_transaction, 'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.');
+                return FormatResponseJson::success([$create_transaction, $trans_detail], 'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.');
             } else {
                 DB::rollBack();
                 return FormatResponseJson::error(null, 'Gagal melakukan transaksi', 400);
