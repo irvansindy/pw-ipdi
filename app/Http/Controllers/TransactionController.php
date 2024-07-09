@@ -56,6 +56,8 @@ class TransactionController extends Controller
             $category_id = $request->category_id;
             $event_type = $request->event_type;
             $list_peserta = $request->list_peserta;
+            dd($list_peserta);
+
             $list_peserta != null ? $total_peserta = count($list_peserta) : $total_peserta = 0;
             $with_hotel = $request->with_hotel;
             $jnns_type = $request->jnns_type;
@@ -123,6 +125,7 @@ class TransactionController extends Controller
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 TransactionDetail::create($data_user);
+
                 if ($list_peserta != null) {
                     $data_peserta = [];
                     $each_peserta = [];
