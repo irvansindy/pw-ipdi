@@ -337,7 +337,7 @@
             let total_harga_hotel = 0;
             let grand_total_harga = 0;
 
-            if (id == 1) {
+            if (id == 6) {
                 event_harga = $('input[name="jnns_type"]:checked').data('harga')
                 // <input class="form-check-input data_jnns_type" type="radio" name="jnns_type"
                 // event_harga = $('input[name=jnns_type]:checked').parent('.data_jnns_type').attr('data-harga')
