@@ -125,7 +125,7 @@ class TransactionController extends Controller
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 TransactionDetail::create($data_user);
-                dd(count($list_peserta));
+                dd(is_countable($list_peserta), count($list_peserta));
                 if ($list_peserta != null) {
                     $data_peserta = [];
                     $each_peserta = [];
@@ -149,7 +149,7 @@ class TransactionController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
+            return FormatResponseJson::error(null, $e->getMessage(), 500);
         }
     }
     public function viewTransaction()
