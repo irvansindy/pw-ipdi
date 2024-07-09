@@ -154,7 +154,8 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 data: {
-                    event_id: event_id
+                    event_id: event_id,
+                    category_id:category_id
                 },
                 dataType: 'json',
                 async: true,

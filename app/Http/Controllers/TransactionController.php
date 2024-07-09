@@ -125,7 +125,7 @@ class TransactionController extends Controller
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 TransactionDetail::create($data_user);
-
+                dd(count($list_peserta));
                 if ($list_peserta != null) {
                     $data_peserta = [];
                     $each_peserta = [];
@@ -138,6 +138,8 @@ class TransactionController extends Controller
                         array_push($data_peserta, $each_peserta);
                     }
                     $trans_detail = TransactionDetail::insert($data_peserta);
+
+                    // dd($trans_detail);
                 }                
                 DB::commit();
                 return FormatResponseJson::success([$create_transaction, $trans_detail], 'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.');
