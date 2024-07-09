@@ -122,7 +122,7 @@ class TransactionController extends Controller
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 TransactionDetail::create($data_user);
-                dd(is_countable($list_peserta), count($list_peserta));
+                // dd(is_countable($list_peserta), count($list_peserta));
                 if ($list_peserta != null) {
                     $data_peserta = [];
                     $each_peserta = [];
