@@ -65,8 +65,8 @@ class TransactionController extends Controller
             $total_kamar_hotel = $request->total_kamar_hotel == 'undifined' || NULL  ? $request->total_kamar_hotel : NULL;
             $total_permalam = $request->total_permalam == 'undifined' || NULL ? $request->total_permalam : NULL;
             $total_harga_hotel = $request->total_harga_hotel == 'undifined' || NULL ? $request->total_harga_hotel : NULL;
-            $event_harga = $request->event_harga;
-            dd($event_harga);
+            $event_harga = intval($request->event_harga);
+            // dd($event_harga);
             $total_peserta <= 0 ? $total_harga_event = $event_harga : $total_harga_event = $event_harga * $total_peserta;
             
             if ($with_hotel == 0) {
@@ -74,10 +74,7 @@ class TransactionController extends Controller
             } else if ($with_hotel == 1) {
                 $grand_total_harga = $total_harga_event + $total_harga_hotel;
             }
-            // $jnns_type = $request->jnns_type;
-            // $jnns_harga = $request->jnns_harga;
-            // dd($request->all());
-            // dd($grand_total_harga);
+            
             $check_total_current_transaction = Transactions::where('event_id', $id)->count();
             $check_quota_event = Events::where('id', $id)->get();
             
