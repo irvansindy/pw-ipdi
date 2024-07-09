@@ -10,3 +10,14 @@ hasil diskusi 30 maret 2024 :
     export data anggota lama,
     module bantuan berisi user knowledge,
     penambahan fitur batch transaksi iuran dan event,
+
+revisi tgl 9 Juli 2024 :
+    function method delete user,
+    function method delete transaction event,
+    function view bukti pembayaran di riwayat transaksi user,
+    export excel data transaksi event,
+    penambahan data pada list user kolektif event,
+    revisi iuran, ada metode untuk pengecekan anggota lama dan baru,
+    penambahan flag anggota baru atau lama pada halaman admin bagian user management,
+    function export excel data user account (admin site),
+    function delete data user account (admin site)

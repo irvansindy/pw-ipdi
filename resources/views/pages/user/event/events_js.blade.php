@@ -54,7 +54,7 @@
                                         
                                     </div>
                                     
-                                    <div class="card-footer" style="display: ${card.category_event_id != 1 ? 'none' : ''}">
+                                    <div class="card-footer" style="display: ${card.category_event_id != 11 ? 'none' : ''}">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
@@ -68,6 +68,7 @@
                                             </button> 
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         `)
@@ -100,7 +101,7 @@
                                 <div class="card shadow">
                                     <div class="card-header p-0 mx-3 mt-3 position-relative z-index-1">
                                         <a href="javascript:;" class="d-block">
-                                            <img src="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}" class="img-fluid border-radius-lg" loading="lazy">
+                                            <img src="{{ asset('img/logos/IPDI/event/${card.image}') }}" class="img-fluid border-radius-lg" loading="lazy">
                                         </a>
                                     </div>
                                     <div class="card-body pt-2">
@@ -116,19 +117,22 @@
                                         </p>
                                         
                                     </div>
-                                    <div class="card-footer">
+
+                                    <div class="card-footer" style="display: ${card.category_event_id != 11 ? 'none' : ''}">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
                                                 <div class="stats">
-                                                    <small>${moment(card.date).format('DD-MM-YYYY h:mm:ss')} WIB</small>
+                                                    <small>${moment(card.date).format('DD-MM-YYYY')} </small> - 
+                                                    <small>${moment(card.date_end).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}"data-category_event_id="${card.category_event_id}">
+                                            <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
                                                 Register
                                             </button> 
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         `)
@@ -139,6 +143,20 @@
                 }
             })
         })
+
+        // <div class="card-footer">
+        //     <div class="author d-flex justify-content-between">
+        //         <div class="name ps-1">
+        //             <span>Tanggal acara</span>
+        //             <div class="stats">
+        //                 <small>${moment(card.date).format('DD-MM-YYYY h:mm:ss')} WIB</small>
+        //             </div>
+        //         </div>
+        //         <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}"data-category_event_id="${card.category_event_id}">
+        //             Register
+        //         </button> 
+        //     </div>
+        // </div>
 
         $(document).on('click', '.event-register', function(e) {
             e.preventDefault()
