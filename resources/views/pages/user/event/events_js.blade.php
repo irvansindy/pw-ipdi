@@ -54,7 +54,7 @@
                                         
                                     </div>
                                     
-                                    <div class="card-footer" style="display: ${card.category_event_id != 11 ? 'none' : ''}">
+                                    <div class="card-footer" style="display: ${card.category_event_id != 6 ? 'none' : ''}">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
@@ -118,7 +118,7 @@
                                         
                                     </div>
 
-                                    <div class="card-footer" style="display: ${card.category_event_id != 11 ? 'none' : ''}">
+                                    <div class="card-footer" style="display: ${card.category_event_id != 6 ? 'none' : ''}">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
