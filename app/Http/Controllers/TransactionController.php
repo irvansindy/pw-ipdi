@@ -134,12 +134,12 @@ class TransactionController extends Controller
                         ];
                         array_push($data_peserta, $each_peserta);
                     }
-                    $trans_detail = TransactionDetail::insert($data_peserta);
+                    TransactionDetail::insert($data_peserta);
 
                     // dd($trans_detail);
                 }                
                 DB::commit();
-                return FormatResponseJson::success([$create_transaction, $trans_detail], 'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.');
+                return FormatResponseJson::success($create_transaction, 'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.');
             } else {
                 DB::rollBack();
                 return FormatResponseJson::error(null, 'Gagal melakukan transaksi', 400);

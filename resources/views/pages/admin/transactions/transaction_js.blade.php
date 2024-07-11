@@ -34,7 +34,7 @@
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
+                        return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#deleteTransaction">Delete</button>'
                     }
                 },
             ]
@@ -119,6 +119,41 @@
                 },
                 error: function(xhr) {
                     let response_error = JSON.parse(xhr.responseText)
+                    Swal.fire({
+                        icon: "error",
+                        title: 'Error!',
+                        text: 'gagal memuat data, silahkan hubungi admin.',
+                    })
+                }
+            })
+        })
+
+        $(document).on('click', '.delete_transaction', function(e) {
+            e.preventDefault()
+            let transaction_id = $(this).data('transaction_id')
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("delete-transaction") }}',
+                type: 'POST',
+                data: {
+                    transaction_id: transaction_id
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+                    // $('#detailTransaction').modal('hide')
+                    $('#transaction_management').DataTable().ajax.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: 'Success!',
+                        text: res.meta.message,
+                    })
+                },
+                error: function(xhr) {
+                    let response_error = JSON.parse(xhr.responseText)
+                    console.log(response_error)
                     Swal.fire({
                         icon: "error",
                         title: 'Error!',

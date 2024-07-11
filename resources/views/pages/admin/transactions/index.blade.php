@@ -9,7 +9,9 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Transaction Management</h6>
-                            {{-- <img src="{{ asset('storage/qrcodes/66575b0ee1013.png') }}" alt="ga ada"> --}}
+                            <a href="{{ route('export-excel') }}" class="btn bg-gradient-success ms-auto" id="refresh_transaction">
+                                <i class="fas fa-file-excel"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">

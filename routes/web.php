@@ -113,6 +113,8 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/transaction-fetch', [TransactionManagementController::class,'fetch'])->name('transaction-fetch');
 	Route::get('/transaction-detail', [TransactionManagementController::class,'detail'])->name('transaction-detail');
 	Route::post('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
+	Route::post('/delete-transaction', [TransactionManagementController::class,'deleteTransaction'])->name('delete-transaction');
+	Route::get('/export-excel', [TransactionManagementController::class,'exportExcel'])->name('export-excel');
 	// Route::get('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
 
 	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');

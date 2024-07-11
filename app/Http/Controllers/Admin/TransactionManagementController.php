@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\EventRegisterMail;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
+use App\Exports\TransactionExport;
+use Maatwebsite\Excel\Facades\Excel;
 class TransactionManagementController extends Controller
 {
     public function index()
@@ -42,16 +46,8 @@ class TransactionManagementController extends Controller
     {
         try {
             $transaction = Transactions::find($request->update_transaction_id);
-            // $transaction = Transactions::find($request->update_transaction_id);
-            // dd($transaction);
             
             $list_transaction = TransactionDetail::with(['user'])->where('transaction_details.transaction_id', $transaction->id)->get();
-            // dd($list_transaction['0']['user']->email);
-            // generate QR Code
-            // $data_qrcode = $transaction->number. ', '.$transaction->status;
-            // $qrCode = QrCode::format('png')->size(200)->generate($data_qrcode);
-            // $filePath = storage_path('app/public/qrcodes/qrcode.png');
-            // file_put_contents($filePath, $qrCode);
 
             for ($i=0; $i < count($list_transaction); $i++) { 
                 Mail::to($list_transaction[$i]['user']->email)->send(new EventRegisterMail([
@@ -76,12 +72,6 @@ class TransactionManagementController extends Controller
         $qr_code = QrCode::size(300)->generate('testing qrcode');
         return $qr_code;
     }
-    // public function generatePDF()
-    // {
-    //     $qrCode = $this->generateQrCode('testing');
-    //     $pdf = PDF::loadView('pdf.template', ['qrCode' => $qrCode]);
-    //     return $pdf->stream('qrcode.pdf');
-    // }
     public function sendEmail()
     {
         $qr_code = $this->generateQrCode();
@@ -89,5 +79,30 @@ class TransactionManagementController extends Controller
             'title' => 'The Title',
             'body' => 'The Body',
         ]));
+    }
+    public function deleteTransaction(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $transaction = Transactions::find($request->transaction_id);   
+            $transaction_detail = TransactionDetail::where('transaction_id', $request->transaction_id)->get()->each->delete();;
+            // dd($transaction->id);
+            if ($transaction->proof_of_payment != null) {
+                if (File::exists(public_path('uploads/bukti_transaksi/'.$transaction->proof_of_payment))) {
+                    // dd($delete_attachment[$i]->document);
+                    File::delete(public_path('uploads/bukti_transaksi/'.$transaction->proof_of_payment));
+                }
+            }
+            $transaction->delete();
+            DB::commit();
+            return FormatResponseJson::success($transaction,'Transaksi berhasil dihapus');
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
+    public function exportExcel()
+    {
+        return Excel::download(new TransactionExport, 'list_transaksi.xlsx');
     }
 }
