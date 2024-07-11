@@ -70,32 +70,6 @@
                     <span class="nav-link-text ms-1">Organisasi</span>
                 </a>
             </li>
-            {{-- <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#menu_visi_misi">
-                    <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-single-copy-04 text-dark text-sm opacity-10"></i>
-                    </div>
-                    <span class="nav-link-text ms-1">Visi & Misi</span>
-                </a>
-                <ul class="collapse nav flex-column ms-2 ps-1" id="menu_visi_misi" data-bs-parent="#master_menu">
-                    <li class="w-100">
-                        <a href="{{ route('vision-mision') }}" class="nav-link ">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-align-left-2 text-dark text-sm opacity-10"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Visi</span>
-                        </a>
-                    </li>
-                    <li class="w-100">
-                        <a href="#" class="nav-link ">
-                            <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                                <i class="ni ni-align-left-2 text-dark text-sm opacity-10"></i>
-                            </div>
-                            <span class="nav-link-text ms-1">Misi</span>
-                        </a>
-                    </li>
-                </ul>
-            </li> --}}
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'iuran' ? 'active' : '' }}" href="{{ route('iuran') }}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -112,14 +86,14 @@
                     <span class="nav-link-text ms-1">Events</span>
                 </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'transaction' ? 'active' : '' }}" href="{{ route('transaction') }}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-money-coins text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Transaksi Iuran</span>
                 </a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'transaction' ? 'active' : '' }}" href="{{ route('transaction') }}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

@@ -62,6 +62,7 @@
                     $('#update_transaction_user').html(res.data.user.username)
                     $('#update_transaction_date').html(res.data.date)
                     $('#update_transaction_status').html(res.data.status)
+                    $('#update_transaction_proof_of_payment').empty()
                     $('#update_transaction_proof_of_payment').append(`
                         <a href="{{ asset('uploads/bukti_transaksi/${res.data.proof_of_payment}') }}" target="_blank">Bukti Transaksi</a>
                     `)

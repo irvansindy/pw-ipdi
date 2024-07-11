@@ -33,12 +33,6 @@
                             <dd class="col-sm-9" id="update_transaction_proof_of_payment"></dd>
                             
                         </dl>
-                        <div class="form-group">
-                            <label for="update_transaction_status">Update Status</label>
-                            <select name="update_transaction_status" id="update_transaction_status" class="form-control" style="width: 50% !important;">
-                                <option value="">Success</option>
-                            </select>
-                        </div>
                         <table class="table table-striped">
                             <thead>
                                 <th>No</th>
