@@ -90,9 +90,11 @@ Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middle
 
 Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
-
 	Route::get('/users', [UserManagementController::class, 'index'])->name('users');
+	Route::get('/fetch-users', [UserManagementController::class, 'fetch'])->name('fetch-users');
+	Route::get('/users-export-excel', [UserManagementController::class, 'exportExcel'])->name('users-export-excel');
 	Route::get('/roles', [RoleManagementController::class, 'index'])->name('roles');
+	Route::post('/delete-user', [UserManagementController::class, 'delete'])->name('delete-user');
 	Route::post('/role-store', [RoleManagementController::class, 'store'])->name('role-store');
 	
 	Route::get('/event', [EventManagementController::class, 'index'])->name('event');
@@ -114,7 +116,7 @@ Route::group(['middleware' => ['auth', 'role:admin']], function() {
 	Route::get('/transaction-detail', [TransactionManagementController::class,'detail'])->name('transaction-detail');
 	Route::post('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
 	Route::post('/delete-transaction', [TransactionManagementController::class,'deleteTransaction'])->name('delete-transaction');
-	Route::get('/export-excel', [TransactionManagementController::class,'exportExcel'])->name('export-excel');
+	Route::get('/transaction-export-excel', [TransactionManagementController::class,'exportExcel'])->name('transaction-export-excel');
 	// Route::get('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
 
 	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');

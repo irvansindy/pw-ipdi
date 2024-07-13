@@ -1,5 +1,5 @@
 
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100', 'title' => 'User Management'])
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'User Management'])
@@ -10,6 +10,9 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Users Management</h6>
+                            <a href="{{ route('users-export-excel') }}" class="btn bg-gradient-success ms-auto" id="user_export_excel">
+                                <i class="fas fa-file-excel"></i>
+                            </a>
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
@@ -24,37 +27,13 @@
                                             Name 
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Status
+                                            Email
                                         </th>
                                         <th class="text-secondary opacity-7"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
-                                        $no = 1;
-                                    @endphp
-                                    @foreach ($users as $key => $user)
-                                        <tr>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-secondary text-xs font-weight-bold">{{ $no++ }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-primary text-xs font-weight-bold">{{ $user->username }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">
-                                                <span
-                                                    class="text-primary text-xs font-weight-bold">status</span>
-                                            </td>
-                                            <td class="align-middle">
-                                                <a href="javascript::" class="text-info font-weight-bold text-xs mr-3"
-                                                    data-toggle="tooltip" data-original-title="Edit user">
-                                                    Edit
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -63,7 +42,8 @@
             </div>
         </div>
     </div>
-    @include('pages.admin.users.create')
+    @include('pages.admin.users.edit')
+    @include('pages.admin.users.delete')
 @endsection
 @push('js')
     @include('pages.admin.users.users_js')
