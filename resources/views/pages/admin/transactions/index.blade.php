@@ -52,6 +52,7 @@
         </div>
     </div>
     @include('pages.admin.transactions.update')
+    @include('pages.admin.transactions.delete')
 @endsection
 @push('js')
     @include('pages.admin.transactions.transaction_js')

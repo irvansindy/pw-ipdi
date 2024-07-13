@@ -22,7 +22,6 @@ class TransactionManagementController extends Controller
         // phpinfo();
         return view("pages.admin.transactions.index");
     }
-
     public function fetch()
     {
         try {
@@ -85,7 +84,7 @@ class TransactionManagementController extends Controller
         try {
             DB::beginTransaction();
             $transaction = Transactions::find($request->transaction_id);   
-            $transaction_detail = TransactionDetail::where('transaction_id', $request->transaction_id)->get()->each->delete();;
+            TransactionDetail::where('transaction_id', $request->transaction_id)->get()->each->delete();;
             // dd($transaction->id);
             if ($transaction->proof_of_payment != null) {
                 if (File::exists(public_path('uploads/bukti_transaksi/'.$transaction->proof_of_payment))) {
