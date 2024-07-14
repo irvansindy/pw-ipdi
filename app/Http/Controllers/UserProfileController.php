@@ -29,6 +29,8 @@ class UserProfileController extends Controller
             'about' => ['max:255']
         ]);
 
+
+
         auth()->user()->update([
             'username' => $request->get('username'),
             'firstname' => $request->get('firstname'),
@@ -40,7 +42,7 @@ class UserProfileController extends Controller
             'nira_ppni' => $request->get('nira_ppni'),
             'nira_ipdi' => $request->get('nira_ipdi'),
             'pw_ipdi_provinsi' => $request->get('pw_ipdi_provinsi'),
-            'pw_ipdi_kabupaten' => $request->get('pw_ipdi_kabupaten'),
+            'pw_ipdi_kabupaten' => $request->get('pw_ipdi_kabupaten') == 'hidden' ? null : $request->get('pw_ipdi_kabupaten'),
             'nama_perusahaan' => $request->get('nama_perusahaan'),
             'center_dialisis' => $request->get('center_dialisis'),
             'alamat_center_dialisis_perusahaan' => $request->get('alamat_center_dialisis_perusahaan'),

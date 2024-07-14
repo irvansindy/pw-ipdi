@@ -32,6 +32,15 @@ class UserManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
+    public function fetchById(Request $request)
+    {
+        try {
+            $user = User::where('id', $request->id)->first();
+            return FormatResponseJson::success($user,'Data user berhasil diambil');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
     public function delete(Request $request) 
     {
         try {
