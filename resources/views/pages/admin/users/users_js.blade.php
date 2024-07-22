@@ -36,6 +36,21 @@
             e.preventDefault()
             let user_id = $(this).data('user_id')
             $('#form_edit_user_data')[0].reset()
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("delete-user") }}',
+                type: 'POST',
+                data: {
+                    user_id: user_id
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+                    
+                }
+            })
         })
         
         $(document).on('click', '.delete_user', function(e) {

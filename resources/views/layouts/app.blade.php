@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png"> --}}
     {{-- <link rel="icon" type="image/png" href="/img/favicon.png"> --}}
-    <link rel="icon" type="image/png" href="{{ asset("img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png") }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}">
     <title>
         @isset($title)
             {{ $title }}
@@ -23,14 +23,17 @@
     <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="assets/css/argon-dashboard.css" rel="stylesheet" />
-    <!-- data table -->     
+    <!-- data table -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     {{-- select 2 --}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     {{-- summer note --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css" integrity="sha512-ngQ4IGzHQ3s/Hh8kMyG4FC74wzitukRMIcTOoKT3EyzFZCILOPF0twiXOQn75eDINUfKBYmzYn2AA8DkAk8veQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css"
+        integrity="sha512-ngQ4IGzHQ3s/Hh8kMyG4FC74wzitukRMIcTOoKT3EyzFZCILOPF0twiXOQn75eDINUfKBYmzYn2AA8DkAk8veQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     {{-- <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet"> --}}
-    
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
     <style>
         .list-group-item {
             border: 0 !important;
@@ -39,7 +42,6 @@
 </head>
 
 <body class="{{ $class ?? '' }}">
-
     @guest
         @yield('content')
     @endguest
@@ -94,12 +96,38 @@
     <!-- select 2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {{-- moment js --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"
+        integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {{-- summer note --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js" integrity="sha512-6F1RVfnxCprKJmfulcxxym1Dar5FsT/V2jiEUvABiaEiFWoQ8yHvqRM/Slf0qJKiwin6IDQucjXuolCfCKnaJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.js"
+        integrity="sha512-6F1RVfnxCprKJmfulcxxym1Dar5FsT/V2jiEUvABiaEiFWoQ8yHvqRM/Slf0qJKiwin6IDQucjXuolCfCKnaJQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     {{-- <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script> --}}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
+        let scanner = new Instascan.Scanner({
+            video: document.getElementById('preview')
+        });
+        scanner.addListener('scan', function(content) {
+            // Menampilkan SweetAlert ketika QR code di-scan
+            Swal.fire({
+                title: 'QR Code Scanned!',
+                text: content,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        });
+        Instascan.Camera.getCameras().then(function(cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('No cameras found.');
+            }
+        }).catch(function(e) {
+            console.error(e);
+        });
+
         function CreateOrUpdateOrDelete(url, method, data, id_modal) {
             $.ajax({
                 headers: {

@@ -21,3 +21,9 @@ revisi tgl 9 Juli 2024 :
     penambahan flag anggota baru atau lama pada halaman admin bagian user management,
     function export excel data user account (admin site),
     function delete data user account (admin site)
+
+revisi 21 Juli 2024 :
+    Scan QR Code hanya pada halaman transaction event
+    tambah button event arrived
+    cari alternatif qrcode
+    

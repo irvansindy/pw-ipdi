@@ -16,15 +16,15 @@
                     }
                 },
                 {
-                    "data": "number",
+                    "data": "transactions.number",
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
-                    "data": "event.name",
+                    "data": "transactions.event.name",
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
-                    "data": "status",
+                    "data": "transactions.status",
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
@@ -32,17 +32,23 @@
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        if (item.status == 'pending') {
-                            return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-success btn-sm mt-2 upload_transaction" data-bs-toggle="modal" data-bs-target="#uploadTransaction">Upload</button>'
-                        } else if (item.status == 'progress')  {
-                            return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
-                        } else if (item.status == 'success') {
-                            return '<button type="button" data-transaction_id="'+item.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.id+'" data-trans_number="'+item.number+'" data-username="{{ Auth::user()->username }}" class="btn btn-outline-danger btn-sm mt-2 qrcode_transaction" data-bs-toggle="modal" data-bs-target="#QrCodeTransaction">Qr Code</button>'
+                        if (item.transactions.status == 'pending') {
+                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-success btn-sm mt-2 upload_transaction" data-bs-toggle="modal" data-bs-target="#uploadTransaction">Upload</button>'
+                        } else if (item.transactions.status == 'progress')  {
+                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
+                        } else if (item.transactions.status == 'success') {
+                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.transactions.id+'" data-trans_number="'+item.transactions.number+'" data-username="{{ Auth::user()->username }}" class="btn btn-outline-danger btn-sm mt-2 ticket_qrcode" data-bs-toggle="modal" data-bs-target="#">Qr Code</button> <a href="/ticket-qrcode?transnumber=' + item.transactions.number + '">View</a>'
                         }
                     }
                 },
             ]
         })
+
+        // $("#searchInput").change(function(){
+        //     var searchValue = document.getElementById("searchInput").value;
+        //     table.rows(':contains("'+searchValue+'")').select();
+        //     document.getElementById("searchInput").value = "";
+        // });
 
         $(document).on('click', '#refresh_transaction', function(e) {
             e.preventDefault()
@@ -155,41 +161,7 @@
             })
         })
 
-        $(document).on('click', '.qrcode_transaction', function(e) {
-            let transaction_id = $(this).data('transaction_id')
-            let username = $(this).data('username')
-            let trans_number = $(this).data('trans_number')
-            $('#ticket').hide()
-            $('#preview_qrcode').show()
-            $('#download_qrcode').hide()
-            $(".preview_image").empty();
-            $("#ticket_event").empty();
-            $("#ticket_even2").empty();
-            $("#id_name").html(username);
-            $("#id_nira_ipdi").html(trans_number);
-
-            // Generate a new QR code
-            const qr_element = document.getElementById('ticket_event');
-            const qr_element2 = document.getElementById('ticket_event2');
-            // Buat QR code dengan isi yang diinginkan
-            const qrCode = new QRCode(qr_element, {
-                text: trans_number+ ' - '+username, // Isi dari QR code (URL, teks, dll)
-                width: 200, // Lebar QR code (dalam piksel)
-                height: 200, // Tinggi QR code (dalam piksel)
-                colorDark: '#000000', // Warna untuk modul QR code (kotak hitam)
-                colorLight: '#ffffff', // Warna untuk latar belakang QR code (kotak putih)
-                correctLevel: QRCode.CorrectLevel.H // Tingkat koreksi error (L, M, Q, H)
-            });
-            const qrCode2 = new QRCode(qr_element2, {
-                text: trans_number+ ' - '+username, // Isi dari QR code (URL, teks, dll)
-                width: 200, // Lebar QR code (dalam piksel)
-                height: 200, // Tinggi QR code (dalam piksel)
-                colorDark: '#000000', // Warna untuk modul QR code (kotak hitam)
-                colorLight: '#ffffff', // Warna untuk latar belakang QR code (kotak putih)
-                correctLevel: QRCode.CorrectLevel.H // Tingkat koreksi error (L, M, Q, H)
-            });
-            $('#ticket').empty()
-        })
+        
 
         var element = $("#ticket");
 
@@ -209,6 +181,18 @@
             
             // .then(function (canvas) {
             // });
+        });
+
+        $('#myInput').val("").focus();
+        
+        $(document).on('keyup', '#myInput', function(e){
+            if(tex !=="" && e.keyCode===13){
+                $('#myInput').val(tex).focus();
+            }
+        })
+        $('#myInput').keyup(function(e){
+            var tex = $(this).val();
+            e.preventDefault();
         });
     });
 </script>

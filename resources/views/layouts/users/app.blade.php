@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <link rel="apple-touch-icon" sizes="76x76" href="/img/apple-icon.png"> --}}
     {{-- <link rel="icon" type="image/png" href="/img/favicon.png"> --}}
-    <link rel="icon" type="image/png" href="{{ asset("img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png") }}">
+    <link rel="icon" type="image/png" href="{{ asset('img/logos/IPDI/LOGO_PW_IPDI_DKIJ.png') }}">
     <title>
         @isset($title)
             {{ $title }}
@@ -23,9 +23,9 @@
     <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="assets/css/argon-dashboard.css" rel="stylesheet" />
-    <!-- data table -->     
+    <!-- data table -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         /* .carousel-inner {
             height: 0;
@@ -42,12 +42,10 @@
             height: 100%;
             object-fit: fill;
         } */
-        
     </style>
 </head>
 
 <body class="{{ $class ?? '' }}">
-
     @guest
         @yield('content')
     @endguest
@@ -86,17 +84,46 @@
     <!-- select 2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     {{-- moment js --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"
+        integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {{-- font awesome --}}
     <script src="https://example.com/fontawesome/v6.5.1/js/all.js" data-auto-replace-svg="nest"></script>
     {{-- qrcode --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+        integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {{-- html canvas --}}
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js" integrity="sha512-sn/GHTj+FCxK5wam7k9w4gPPm6zss4Zwl/X9wgrvGMFbnedR8lTUSLdsolDRBRzsX6N+YgG6OWyvn9qaFVXH9w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/scannerdetection/1.2.0/jquery.scannerdetection.compatibility.js" integrity="sha512-YQRu5Y2eFL0L4LrZk2rGxCH5nD8G9ppSaQIqg5mmB/SLd8c0qTJ/cEua3ETXzXzWITvt4x1tiTXFC4M5bJBA4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
+        // Skrip untuk memulai pemindai QR code
+        let scanner = new Instascan.Scanner({
+            video: document.getElementById('preview')
+        });
+        scanner.addListener('scan', function(content) {
+            // Menampilkan SweetAlert ketika QR code di-scan
+            Swal.fire({
+                title: 'QR Code Scanned!',
+                text: content,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        });
+        Instascan.Camera.getCameras().then(function(cameras) {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('No cameras found.');
+            }
+        }).catch(function(e) {
+            console.error(e);
+        });
+
         function CreateOrUpdateOrDelete(url, method, data, id_modal) {
             $.ajax({
                 headers: {
@@ -129,6 +156,7 @@
                 }
             })
         }
+        
     </script>
     @stack('js')
 </body>

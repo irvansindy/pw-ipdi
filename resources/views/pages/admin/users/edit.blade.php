@@ -1,12 +1,12 @@
 {{-- modal --}}
 <div class="modal fade" id="form_edit_user" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"  role="dialog" aria-labelledby="form_edit_user_label" aria-hidden="true">
     {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered me-lg-8" role="document"> --}}
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content modal-dialog-scrollable" >
             <form action="" method="" id="form_edit_user_data">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Hapus Data User</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Data User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #172b4d !important;">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -14,40 +14,111 @@
                 <div class="modal-body">
                     <input type="hidden" name="event_id" id="event_id">
                     <input type="hidden" name="category_id" id="category_id">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input data_event_type" type="radio" name="event_type"
-                            id="event_mandiri" value="mandiri">
-                        <label class="form-check-label" for="event_mandiri">Mandiri</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input data_event_type" type="radio" name="event_type"
-                            id="event_kolektif" value="kolektif">
-                        <label class="form-check-label" for="event_kolektif">Batch/Kolektif</label>
-                    </div>
-                    <div class="form-group" id="form_data_peserta">
-                        <label for="list_peserta">Peserta</label>
-                        <select name="list_peserta[]" id="list_peserta" style="width:100%;">
-                            
-                        </select>
-                    </div>
-                    <div class="row data_event">
-                        <div class="col-md-auto">
-                            <p>Nama : <span id="name_event"></span></p>
-                            <p>Judul : <span id="title_event"></span></p>
-                            <p class="price_event">Harga : <span id="price_event" data-price_data=""></span></p>
-                            <div class="list_type_jnns">
-
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">Nama</label>
+                                <input class="form-control" type="text" name="username"
+                                    value="{{ old('username', auth()->user()->username) }}">
                             </div>
-                            <div class="event_hotel">
-
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">Email</label>
+                                <input class="form-control" type="email" name="email"
+                                    value="{{ old('email', auth()->user()->email) }}">
                             </div>
-                            <p>Kuota : <span id="quota_event"></span></p>
-                            <p>Tanggal : <span id="date_event"></span></p>
-                            <p>Terakhir Registrasi : <span id="last_register"></span></p>
-                            {{-- <p>Description : <span id="desc_event"></span></p> --}}
-                            <p>Rekening : <span id="bank_account_number"></span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">NIK</label>
+                                <input class="form-control" type="text" name="nik"
+                                    value="{{ old('nik', auth()->user()->nik) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">NIRA PPNI</label>
+                                <input class="form-control" type="text" name="nira_ppni"
+                                    value="{{ old('nira_ppni', auth()->user()->nira_ppni) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">NIRA IPDI</label>
+                                <input class="form-control" type="text" name="nira_ipdi"
+                                    value="{{ old('nira_ipdi', auth()->user()->nira_ipdi) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">PW IPDI Provinsi</label>
+                                <input type="hidden" name="pw_ipdi_provinsi_current" id="pw_ipdi_provinsi_current" value="{{ auth()->user()->pw_ipdi_provinsi }}">
+                                <select class="form-control" name="pw_ipdi_provinsi" id="pw_ipdi_provinsi">
+                                    {{-- @forelse ($masterProvinsi as $provinsi)
+                                        <option value="{{ $provinsi->id }}" {{ $provinsi->id == auth()->user()->pw_ipdi_provinsi ? 'selected' : '' }}>{{ $provinsi->name }}</option>
+                                    @empty
+                                        <option value="hidden">Select One</option>
+                                    @endforelse --}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">Nama Perusahaan</label>
+                                <input class="form-control" type="text" name="nama_perusahaan"
+                                    value="{{ old('nama_perusahaan', auth()->user()->nama_perusahaan) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="select_kabupaten">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">PW IPDI Kota</label>
+                                <select class="form-control" name="pw_ipdi_kabupaten" id="pw_ipdi_kabupaten">
+                                    {{-- @if (auth()->user()->pw_ipdi_kabupaten == null)
+                                        <option value="hidden">Select One</option>
+                                        
+                                    @endif
+                                    @forelse ($masterKabupaten as $kabupaten)
+                                        <option value="{{ $kabupaten->id }}" {{ $kabupaten->id == auth()->user()->pw_ipdi_kabupaten ? 'selected' : '' }}>{{ $kabupaten->name }}</option>
+                                    @empty
+                                        <option value="hidden">Select One</option>
+                                    @endforelse --}}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">Center Dialisis</label>
+                                <input class="form-control" type="text" name="center_dialisis"
+                                    value="{{ old('center_dialisis', auth()->user()->center_dialisis) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">Alamat Center
+                                    Dialisis/Perusahaan</label>
+                                <input class="form-control" type="text"
+                                    name="alamat_center_dialisis_perusahaan"
+                                    value="{{ old('alamat_center_dialisis_perusahaan', auth()->user()->alamat_center_dialisis_perusahaan) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">No. Hp</label>
+                                <input class="form-control" type="text" name="number_phone"
+                                    value="{{ old('number_phone', auth()->user()->number_phone) }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="example-text-input" class="form-control-label">Pendidikan
+                                    Terakhir</label>
+                                <input class="form-control" type="text" name="last_edication"
+                                    value="{{ old('last_edication', auth()->user()->last_edication) }}">
+                            </div>
                         </div>
                     </div>
+                    
                 </div>
                 <div class="modal-footer" style="display: inherit !important;">
                     <div class="row">

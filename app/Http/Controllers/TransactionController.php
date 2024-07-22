@@ -7,11 +7,19 @@ use App\Models\Transactions;
 use App\Models\Events;
 use App\Models\User;
 use App\Models\Bank;
+use App\Models\Hotel;
+use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\FormatResponseJson;
 use Illuminate\Support\Facades\DB;
-use App\Models\TransactionDetail;
-use App\Models\Hotel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use BaconQrCode\Writer;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use Mpdf\Mpdf;
+use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 class TransactionController extends Controller
 {
     public function checkTransaction(Request $request)
@@ -156,9 +164,10 @@ class TransactionController extends Controller
     public function transactionHistory()
     {
         try {
-            $transactions = Transactions::with('event')
-            ->where('user_id', Auth::user()->id)->get();
-            return FormatResponseJson::success($transactions,'Transaction fetched successfully');
+            $list_transaction = TransactionDetail::with(['transactions.event'])->where('user_id', Auth::user()->id)->get();
+            // dd($list_transaction);
+            // $transactions = Transactions::with('event')->where('user_id', Auth::user()->id)->get();
+            return FormatResponseJson::success($list_transaction,'Transaction fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, 'Gagal melakukan transaksi', 400);
         }
@@ -195,5 +204,53 @@ class TransactionController extends Controller
             return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi', 500);
             // return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
+    }
+    public function ticketQrCode(Request $request)
+    {
+        // dd($request->transnumber);
+        // Membuat QR code dan menyimpan sebagai file gambar
+        $qrcodePath = public_path('qrcode.png');
+        QrCode::format('png')->size(200)->generate($request->transnumber, $qrcodePath);
+        // QrCode::format('png')->size(200)->generate('jamal', $qrcodePath);
+
+        // Load existing PDF
+        $pdfPath = public_path('img/logos/bg/ticket_for_qrcode.pdf');
+        // Buat instance mPDF
+        $mpdf = new Mpdf();
+        $mpdf->AddPage(
+            'L', // L - landscape, P - portrait 
+            '',
+            '',
+            '',
+            '',
+            5, // margin_left
+            45, // margin right
+            25, // margin top
+            20, // margin bottom
+            5, // margin header
+            5
+        );
+        // Set isi PDF
+        $pagecount = $mpdf->SetSourceFile($pdfPath);
+        $tplId = $mpdf->ImportPage($pagecount);
+
+        // Add the existing PDF as a template
+        $mpdf->UseTemplate($tplId, 10, 10, 275);
+
+        // Menambahkan QR code ke PDF di pojok kiri bawah
+        $mpdf->Image($qrcodePath, 50, 95, 55, 55, 'png', '', true, false);
+        // Add text to the PDF at the bottom right corner
+        $text = Auth::user()->username;
+        $number = 'number';
+        $html = "
+        <div style='position: absolute; bottom: 330px; right: 170px; color: white; font-size: 30px;'>
+            $text
+            <br>
+            $request->transnumber
+        </div>";
+        $mpdf->WriteHTML($html);
+        // Simpan PDF ke file atau kirim ke browser
+        // 'I' untuk menampilkan di browser, 'D' untuk mengunduh
+        return $mpdf->Output('Ticket.pdf', 'I'); 
     }
 }
