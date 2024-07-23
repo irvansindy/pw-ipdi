@@ -31,9 +31,7 @@
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        return '<button type="button" data-event_id="' +
-    item.id +
-    '" class="btn btn-outline-info btn-sm mt-2 detail_event_data" data-bs-toggle="modal" data-bs-target="#formUpdateEvent">View</button>'
+                        return '<button type="button" data-event_id="' +item.id +'" class="btn btn-outline-info btn-sm mt-2 detail_event_data" data-bs-toggle="modal" data-bs-target="#formUpdateEvent">View</button> <a href="/ticket-qrcode?transnumber=' + item.id + '" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>'
                     }
                 },
             ]

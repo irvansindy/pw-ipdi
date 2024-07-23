@@ -25,9 +25,14 @@ class TransactionManagementController extends Controller
     public function fetch()
     {
         try {
-            // $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->paginate(100);
             $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->limit(100)->get();
-            return FormatResponseJson::success($transactions, 'Transaction fetched successfully');
+            $role = auth()->user()->roles->pluck('name')[0];
+            
+            $data = [
+                'transactions'=> $transactions,
+                'role'=> $role
+            ];
+            return FormatResponseJson::success($data, 'Transaction fetched successfully');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 400);
         }

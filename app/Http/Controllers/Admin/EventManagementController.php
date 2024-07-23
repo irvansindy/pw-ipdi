@@ -119,7 +119,6 @@ class EventManagementController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 500);
         }
     }
-
     public function detail(Request $request)
     {
         try {
@@ -135,7 +134,6 @@ class EventManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 404);
         }
     }
-
     public function update(Request $request)
     {
         try {
@@ -165,5 +163,8 @@ class EventManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 404);
         }
     }
-
+    public function indexPeserta()
+    {
+        return view('');
+    }
 }

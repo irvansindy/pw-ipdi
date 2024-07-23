@@ -37,7 +37,7 @@
                         } else if (item.transactions.status == 'progress')  {
                             return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
                         } else if (item.transactions.status == 'success') {
-                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.transactions.id+'" data-trans_number="'+item.transactions.number+'" data-username="{{ Auth::user()->username }}" class="btn btn-outline-danger btn-sm mt-2 ticket_qrcode" data-bs-toggle="modal" data-bs-target="#">Qr Code</button> <a href="/ticket-qrcode?transnumber=' + item.transactions.number + '">View</a>'
+                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <a href="/ticket-qrcode?transnumber=' + item.transactions.number + '" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>'
                         }
                     }
                 },

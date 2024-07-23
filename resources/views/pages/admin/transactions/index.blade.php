@@ -9,9 +9,14 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Transaction Management</h6>
-                            <a href="{{ route('transaction-export-excel') }}" class="btn bg-gradient-success ms-auto" id="transaction_export_excel">
-                                <i class="fas fa-file-excel"></i>
-                            </a>
+                            <div class="ms-auto mx-0">
+                                <button type="button" class="btn bg-gradient-danger ms-auto" id="refresh_data">
+                                    <i class="fas fa-sync"></i>
+                                </button>
+                                <a href="{{ route('transaction-export-excel') }}" class="btn bg-gradient-success ms-auto" id="transaction_export_excel">
+                                    <i class="fas fa-file-excel"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">

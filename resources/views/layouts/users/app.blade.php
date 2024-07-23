@@ -98,7 +98,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/scannerdetection/1.2.0/jquery.scannerdetection.compatibility.js" integrity="sha512-YQRu5Y2eFL0L4LrZk2rGxCH5nD8G9ppSaQIqg5mmB/SLd8c0qTJ/cEua3ETXzXzWITvt4x1tiTXFC4M5bJBA4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="{{ mix('js/app.js') }}"></script>
+    
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
         // Skrip untuk memulai pemindai QR code
