@@ -38,9 +38,7 @@
                         `);
                     });
 
-                    $('#transaction_management').DataTable({
-                        paging: false
-                    });
+                    $('#transaction_management').DataTable();
                 },
                 error: function(xhr) {
                     alert('An error occurred: ' + xhr.responseText);
