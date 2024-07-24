@@ -17,7 +17,7 @@
                         let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
                         if (transaction.status == 'pending') {
                         }
-                        if (role === 'superadmin') {
+                        if (role === 'admin') {
                             actions +=
                                 `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
                         }
