@@ -58,6 +58,7 @@
     </div>
     @include('pages.admin.transactions.update')
     @include('pages.admin.transactions.delete')
+    @include('pages.admin.transactions.detail_attendance')
 @endsection
 @push('js')
     @include('pages.admin.transactions.transaction_js')

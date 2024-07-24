@@ -23,7 +23,7 @@
                         }
                         if (transaction.status === 'success') {
                             actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#">check attendance</button>`;
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
                         }
 
                         $('#transaction_management tbody').append(`
@@ -196,6 +196,35 @@
             if(tex !=="" && e.keyCode===13){
                 $('#myInput').val(tex).focus();
             }
+        })
+
+        $(document).on('click', '.check_attendance_transaction', function(e) {
+            e.preventDefault()
+            let transaction_id = $(this).data('transaction_id')
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('list-audience') }}',
+                type: 'get',
+                data: {
+                    transaction_id: transaction_id
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+
+                },
+                error: function(xhr, status, error) {
+                    $('#detailAttendance').modal('toggle');
+                    var errorMessage = JSON.parse(xhr.responseText);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops....",
+                        text: "Data tidak ditemukan!",
+                    })
+                }
+            })
         })
     })
 </script>

@@ -43,7 +43,7 @@ class TransactionManagementController extends Controller
             $transaction = Transactions::with(['transactionDetail.user', 'event.category', 'event.eventDetail', 'event.hotel', 'user'])->findOrFail($request->id);
             return FormatResponseJson::success($transaction, 'Transaction detail fetched successfully');
         } catch (\Throwable $th) {
-            return FormatResponseJson::error(null, $th->getMessage(), 400);
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
     public function approval(Request $request)
@@ -108,5 +108,16 @@ class TransactionManagementController extends Controller
     public function exportExcel()
     {
         return Excel::download(new TransactionExport, 'list_transaksi.xlsx');
+    }
+    public function listAudience(Request $request)
+    {
+        try {
+            $list_audience = TransactionDetail::with(['user', 'transactions'])
+            ->where('transaction_id', $request->transaction_id)
+            ->get();
+            return FormatResponseJson::success($list_audience,'Data berhasil diambil');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
     }
 }
