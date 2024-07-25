@@ -11,7 +11,8 @@ class TransactionDetail extends Model
     protected $table = 'transaction_details';
     protected $fillable = [
         'transaction_id',
-        'user_id'
+        'user_id',
+        'is_admin'
     ];
     public function user()
     {

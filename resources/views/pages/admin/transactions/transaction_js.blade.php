@@ -213,15 +213,67 @@
                 dataType: 'json',
                 async: true,
                 success: function(res) {
-
+                    $('#list_user_attendance').DataTable().clear().destroy();
+                    $('#list_user_attendance tbody').empty();
+                    let button_confirm = ''
+                    res.data.forEach((audience, index) => {
+                        // alert(typeof(audience.is_attendanced))
+                        button_confirm = audience.is_attendanced != 0 ? '' : '<button type="button" data-userid="'+audience.user.id+'" data-transid="'+audience.id+'" class="btn btn-outline-info btn-sm mt-2 confirm_attendance">Confirm</button>'
+                        $('#list_user_attendance tbody').append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${audience.user.username != null ? audience.user.username : 'not set'}</td>
+                                <td>${audience.transactions != null ? audience.transactions.number : 'not set'}</td>
+                                <td>${audience.user.nira_ipdi != null ? audience.user.nira_ipdi : 'not set'}</td>
+                                <td>${audience.is_attendanced != 0 ? 'Hadir' : 'Belum/Tidak Hadir'}</td>
+                                <td>
+                                    ${button_confirm}
+                                </td>
+                            </tr>
+                        `)
+                    })
+                    $('#list_user_attendance').DataTable()
                 },
                 error: function(xhr, status, error) {
-                    $('#detailAttendance').modal('toggle');
+                    $('#detailAttendance').modal('toggle')
                     var errorMessage = JSON.parse(xhr.responseText);
                     Swal.fire({
                         icon: "error",
                         title: "Oops....",
                         text: "Data tidak ditemukan!",
+                    })
+                }
+            })
+        })
+
+        $(document).on('click', '.confirm_attendance', function(e) {
+            e.preventDefault()
+            let transid = $(this).data('transid')
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('update-audience') }}',
+                type: 'POST',
+                data: {
+                    transid: transid
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+                    $('#detailAttendance').modal('hide')
+                    Swal.fire({
+                        icon: "success",
+                        title: 'Success!',
+                        text: res.meta.message,
+                    })
+                },
+                error: function(xhr) {
+                    let response_error = JSON.parse(xhr.responseText)
+                    Swal.fire({
+                        icon: "error",
+                        title: 'Error!',
+                        text: 'gagal konfirmasi kehadiran, silahkan hubungi admin.',
                     })
                 }
             })
