@@ -206,7 +206,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: '{{ route('list-audience') }}',
-                type: 'post',
+                type: 'get',
                 data: {
                     transaction_id: transaction_id
                 },
@@ -254,7 +254,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: '{{ route('update-audience') }}',
-                type: 'POST',
+                type: 'post',
                 data: {
                     transid: transid
                 },
