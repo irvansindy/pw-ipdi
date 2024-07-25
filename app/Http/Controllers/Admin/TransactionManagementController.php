@@ -25,7 +25,7 @@ class TransactionManagementController extends Controller
     public function fetch()
     {
         try {
-            $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->limit(100)->get();
+            $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->get();
             $role = auth()->user()->roles->pluck('name')[0];
             
             $data = [

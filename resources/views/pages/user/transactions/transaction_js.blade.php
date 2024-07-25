@@ -32,12 +32,16 @@
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        if (item.transactions.status == 'pending') {
-                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-success btn-sm mt-2 upload_transaction" data-bs-toggle="modal" data-bs-target="#uploadTransaction">Upload</button>'
-                        } else if (item.transactions.status == 'progress')  {
-                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
-                        } else if (item.transactions.status == 'success') {
-                            return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <a href="/ticket-qrcode?transnumber=' + item.transactions.number + '" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>'
+                        if (item.transactions != null) {
+                            if (item.transactions.status == 'pending') {
+                                return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-success btn-sm mt-2 upload_transaction" data-bs-toggle="modal" data-bs-target="#uploadTransaction">Upload</button>'
+                            } else if (item.transactions.status == 'progress')  {
+                                return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
+                            } else if (item.transactions.status == 'success') {
+                                return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <a href="/ticket-qrcode?transnumber=' + item.transactions.number + '" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>'
+                            }
+                        } else {
+                            return ''
                         }
                     }
                 },

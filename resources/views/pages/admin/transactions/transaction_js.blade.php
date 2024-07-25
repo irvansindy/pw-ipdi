@@ -29,10 +29,10 @@
                         $('#transaction_management tbody').append(`
                             <tr>
                                 <td>${index + 1}</td>
-                                <td>${transaction.number}</td>
-                                <td>${transaction.event.name}</td>
-                                <td>${transaction.user.username}</td>
-                                <td>${transaction.status}</td>
+                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
+                                <td>${transaction.event.name != null ? transaction.name : 'not set'}</td>
+                                <td>${transaction.user.username != null ? transaction.user.username : 'not set'}</td>
+                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
                                 <td>${actions}</td>
                             </tr>
                         `);
