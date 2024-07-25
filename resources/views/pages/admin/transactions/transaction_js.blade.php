@@ -225,7 +225,7 @@
                                 <td>${audience.user.username != null ? audience.user.username : 'not set'}</td>
                                 <td>${audience.transactions != null ? audience.transactions.number : 'not set'}</td>
                                 <td>${audience.user.nira_ipdi != null ? audience.user.nira_ipdi : 'not set'}</td>
-                                <td>${audience.is_attendanced != 0 || != null ? 'Hadir' : 'Belum/Tidak Hadir'}</td>
+                                <td>${audience.is_attendanced != 0 ? 'Hadir' : 'Belum/Tidak Hadir'}</td>
                                 <td>
                                     ${button_confirm}
                                 </td>
