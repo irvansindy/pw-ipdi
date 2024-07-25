@@ -12,7 +12,7 @@ class TransactionDetail extends Model
     protected $fillable = [
         'transaction_id',
         'user_id',
-        'is_admin'
+        'is_attendanced'
     ];
     public function user()
     {
