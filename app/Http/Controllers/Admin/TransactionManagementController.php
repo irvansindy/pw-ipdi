@@ -124,8 +124,8 @@ class TransactionManagementController extends Controller
     {
         // dd($request->transid);
         try {
-            $transaction = TransactionDetail::where('id',$request->transid)->first();
-            $transaction->update([
+            $transaction = TransactionDetail::where('id',$request->transid)->get();
+            $transaction->each->update([
                 'is_attendanced' => 1
             ]);
             // dd($transaction);
