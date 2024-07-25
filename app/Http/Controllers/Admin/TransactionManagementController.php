@@ -122,13 +122,12 @@ class TransactionManagementController extends Controller
     }
     public function updateAudience(Request $request)
     {
-        // dd($request->transid);
         try {
-            $transaction = TransactionDetail::where('id',$request->transid)->get();
-            $transaction->each->update([
+            $transaction = TransactionDetail::where('id', $request->transid)->first();
+            $transaction->update([
                 'is_attendanced' => 1
             ]);
-            // dd($transaction);
+            dd($transaction);
             return FormatResponseJson::success($transaction,'Peserta sudah hadir');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 500);

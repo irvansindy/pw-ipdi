@@ -246,8 +246,7 @@
             })
         })
 
-        $(document).on('click', '.confirm_attendance', function(e) {
-            e.preventDefault()
+        $(document).on('click', '.confirm_attendance', function() {
             let transid = $(this).data('transid')
             $.ajax({
                 headers: {
