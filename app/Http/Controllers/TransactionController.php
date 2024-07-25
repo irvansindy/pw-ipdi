@@ -127,6 +127,7 @@ class TransactionController extends Controller
                 $data_user = [
                     'transaction_id' => $create_transaction->id,
                     'user_id' => Auth::user()->id,
+                    'is_attendanced' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 TransactionDetail::create($data_user);
