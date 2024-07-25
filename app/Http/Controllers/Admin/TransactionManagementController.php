@@ -127,7 +127,7 @@ class TransactionManagementController extends Controller
             $transaction->update([
                 'is_attendanced' => 1
             ]);
-            dd($transaction);
+            // dd($transaction);
             return FormatResponseJson::success($transaction,'Peserta sudah hadir');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 500);
