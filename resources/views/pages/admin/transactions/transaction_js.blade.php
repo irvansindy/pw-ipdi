@@ -30,7 +30,7 @@
                             <tr>
                                 <td>${index + 1}</td>
                                 <td>${transaction.number != null ? transaction.number : 'not set'}</td>
-                                <td>${transaction.event.name != null ? transaction.event.name : 'not set'}</td>
+                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
                                 <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
                                 <td>${transaction.status != null ? transaction.status : 'not set'}</td>
                                 <td>${actions}</td>
