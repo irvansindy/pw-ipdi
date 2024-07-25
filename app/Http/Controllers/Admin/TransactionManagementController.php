@@ -123,7 +123,7 @@ class TransactionManagementController extends Controller
     public function updateAudience(Request $request)
     {
         try {
-            $transaction = TransactionDetail::where('id', $request->transid)->first();
+            $transaction = TransactionDetail::find($request->transid);
             $transaction->update([
                 'is_attendanced' => 1
             ]);
