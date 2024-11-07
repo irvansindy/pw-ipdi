@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth', 'role:user']], function() {
 	Route::get('/fetch-transaksi-iuran', [userIuran::class,'fetchTransaksiIuran'])->name('fetch-transaksi-iuran');
 	Route::get('/detail-transaksi-iuran', [userIuran::class,'detailTransaksiIuran'])->name('detail-transaksi-iuran');
 	Route::get('/fetch-peserta', [userIuran::class,'peserta'])->name('fetch-peserta');
+	Route::post('/generate-payment-iuran', [userIuran::class,'generatePaymentIuran'])->name('generate-payment-iuran');
 	Route::post('/store-iuran-peserta', [userIuran::class,'storeIuran'])->name('store-iuran-peserta');
 	Route::post('/upload-iuran-peserta', [userIuran::class,'uploadIuran'])->name('upload-iuran-peserta');
 });

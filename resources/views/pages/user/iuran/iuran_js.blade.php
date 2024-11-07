@@ -1,54 +1,54 @@
 <script>
     $(document).ready(function() {
-        fetchIuran()
-        function fetchIuran() {
-            $('#list_fetch_data').empty()
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route("fetch-iuran-anggota") }}',
-                type: 'GET',
-                dataType: 'json',
-                async: true,
-                success: function(res) {
-                    $.each(res.data, function(i, iuran) {
-                        $('#list_fetch_data').append(`
-                        <div class="col-md-3">
-                            <div class="card mx-2 list_data_iuran" data-bs-toggle="modal" data-bs-target="#form_create_iuran" data-id="${iuran.id}" style="cursor:pointer !important;">
-                                <div class="card-body p-3">
-                                    <div class="row">
-                                        <div class="col-8">
-                                            <div class="numbers">
-                                                <p class="text-sm mb-0 text-uppercase font-weight-bold">
-                                                    ${iuran.name}
-                                                </p>
-                                                <h5 class="font-weight-bolder">
-                                                    Rp.${iuran.price}
-                                                </h5>
-                                                <p class="mb-0">
-                                                    <span class="text-success text-sm font-weight-bolder">
-                                                        ${iuran.description}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-4 text-end">
-                                            <div
-                                                class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-                                                <i class="ni ni-money-coins text-lg opacity-10"
-                                                    aria-hidden="true"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        `)
-                    })
-                }
-            })
-        }
+        // fetchIuran()
+        // function fetchIuran() {
+        //     $('#list_fetch_data').empty()
+        //     $.ajax({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         url: '{{ route("fetch-iuran-anggota") }}',
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         async: true,
+        //         success: function(res) {
+        //             $.each(res.data, function(i, iuran) {
+        //                 $('#list_fetch_data').append(`
+        //                 <div class="col-md-3">
+        //                     <div class="card mx-2 list_data_iuran" data-bs-toggle="modal" data-bs-target="#form_create_iuran" data-id="${iuran.id}" style="cursor:pointer !important;">
+        //                         <div class="card-body p-3">
+        //                             <div class="row">
+        //                                 <div class="col-8">
+        //                                     <div class="numbers">
+        //                                         <p class="text-sm mb-0 text-uppercase font-weight-bold">
+        //                                             ${iuran.name}
+        //                                         </p>
+        //                                         <h5 class="font-weight-bolder">
+        //                                             Rp.${iuran.price}
+        //                                         </h5>
+        //                                         <p class="mb-0">
+        //                                             <span class="text-success text-sm font-weight-bolder">
+        //                                                 ${iuran.description}
+        //                                             </span>
+        //                                         </p>
+        //                                     </div>
+        //                                 </div>
+        //                                 <div class="col-4 text-end">
+        //                                     <div
+        //                                         class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+        //                                         <i class="ni ni-money-coins text-lg opacity-10"
+        //                                             aria-hidden="true"></i>
+        //                                     </div>
+        //                                 </div>
+        //                             </div>
+        //                         </div>
+        //                     </div>
+        //                 </div>
+        //                 `)
+        //             })
+        //         }
+        //     })
+        // }
 
         // transactions
         $('#table_list_iuran').DataTable({
@@ -65,11 +65,11 @@
                     }
                 },
                 {
-                    "data": "transactions.iuran_number",
+                    "data": "iuran.iuran_number",
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
-                    "data": "transactions.date",
+                    "data": "iuran.date",
                     "defaultContent": "<i>Not set</i>",
                     render: DataTable.render.datetime('YYYY')
                 },
@@ -78,7 +78,11 @@
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        return '<button type="button" data-iuran_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
+                        if (item.iuran.status == 'pending') {
+                            return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-success btn-sm mt-2 upload_iuran_transaction" data-bs-toggle="modal" data-bs-target="#uploadIuranTransaction">Upload</button> <button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
+                        } else {
+                                return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
+                        }
                     }
                 },
             ]
@@ -87,13 +91,39 @@
         $(document).on('click', '.list_data_iuran', function(e) {
             e.preventDefault()
             let id = $(this).data('id')
+            alert(id)
             $('#form_data_peserta').hide()
             $('#form_create_data_iuran')[0].reset()
             $('#create_iuran_id').val(id)
-            // $('#create_transaction_iuran').removeAttr('data-iuran_id')
-            // $('#create_transaction_iuran').attr('data-iuran_id', id)
-            $('#create_transaction_iuran').data('iuran_id', id);
+            $('#create_transaction_iuran').attr('data-iuran_id', id);
         })
+
+        $(document).on('click', '#create_iuran', function() {
+            $('#form_create_data_iuran')[0].reset()
+            $('#form_data_peserta').hide()
+            $('#grand_total_payment_iuran').empty()
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("fetch-peserta") }}',
+                type: 'GET',
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+                    $('#grand_total_payment_iuran').empty()
+                    $('#button_action_payment_iuran').empty()
+                    $('#button_action_payment_iuran').append(`
+                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn bg-gradient-primary" id="generate_payment_iuran" data-iuran_id="">Payment</button>
+                    `)
+                }
+            })
+        })
+
+        $("#tahun_iuran").keypress(function (e) {
+            if (String.fromCharCode(e.keyCode).match(/[^0-9]/g)) return false;
+        });
 
         $(document).on('change', '.data_iuran_type', function() {
             let data = $('input[name=iuran_type]:checked').val()
@@ -120,6 +150,41 @@
                 $('#form_data_peserta').hide()
                 $('#list_peserta').empty()
             }
+        })
+
+        $(document).on('click', '#generate_payment_iuran', function(e) {
+            e.preventDefault()
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                type: 'POST',
+                url: '{{ route("generate-payment-iuran") }}',
+                data: new FormData($('#form_create_data_iuran')[0]),
+                processData: false,   // Prevent jQuery from processing the data
+                contentType: false,   // Prevent jQuery from setting content type
+                cache: false,
+                success: function(res) {
+                    // $('#form_create_event').modal('hide')
+                    $('#grand_total_payment_iuran').empty()
+                    let grand_total = res.data != null ? res.data : 0
+                    $('#grand_total_payment_iuran').append(
+                        `<p>Total: Rp.${grand_total}</p>`
+                    )
+                    $('#val_grand_total_payment_iuran').val(grand_total)
+                    $('#button_action_payment_iuran').empty()
+                    $('#button_action_payment_iuran').append(`
+                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn bg-gradient-primary" id="create_transaction_iuran" data-iuran_id="">Submit</button>
+                    `)
+                    // Swal.fire({
+                    //     icon: "success",
+                    //     title: 'Success!',
+                    //     text: res.meta.message,
+                    //     footer: '<a href="{{ route('histori-transaksi') }}" class="text-primary">Riwayat Transaksi</a>'
+                    // })
+                },
+            })
         })
 
         $(document).on('click', '#create_transaction_iuran', function(e) {
@@ -154,6 +219,31 @@
                 error: function(xhr) {
                     console.log(xhr.responseText);
                 }
+            })
+        })
+
+        $(document).on('click', '.upload_iuran_transaction', function(e) {
+            e.preventDefault()
+            let iuran_id = $(this).data('iuran_id')
+            $('#form_upload_bukti_iuran')[0].reset()
+            $('#master_iuran_id').val(iuran_id)
+            $('#upload_file_bukti_iuran').attr('data-iuran_id',iuran_id)
+        })
+
+        $(document).on('click', '#upload_file_bukti_iuran', function(e) {
+            e.preventDefault()
+            let data_upload = new FormData($('#form_upload_bukti_iuran')[0])
+            $.ajax({
+                url: '{{ route("upload-iuran-peserta") }}',
+                type: 'POST',
+                data: data_upload,
+                processData: false,   // Prevent jQuery from processing the data
+                contentType: false,   // Prevent jQuery from setting content type
+                cache: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                enctype: 'multipart/form-data',
             })
         })
 

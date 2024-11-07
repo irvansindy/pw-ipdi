@@ -18,7 +18,7 @@ class IuranTransactionDetail extends Model
         return $this->belongsTo(User::class, "user_id", "id");
         // return $this->hasMany(User::class, "id", "user_id");
     }
-    public function transactions()
+    public function iuran()
     {
         return $this->hasOne(IuranTransaction::class, "id","tr_iuran_id");
     }

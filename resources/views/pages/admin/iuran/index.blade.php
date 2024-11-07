@@ -9,7 +9,7 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Iuran Management</h6>
-                            <button type="button" class="btn bg-gradient-primary ms-auto" id="for_create_iuran_data" data-bs-toggle="modal" data-bs-target="#formCreateIuran">+ Iuran</button>
+                            {{-- <button type="button" class="btn bg-gradient-primary ms-auto" id="for_create_iuran_data" data-bs-toggle="modal" data-bs-target="#formCreateIuran">+ Iuran</button> --}}
 
                         </div>
                     </div>
@@ -48,5 +48,4 @@
 @endsection
 @push('js')
     @include('pages.admin.iuran.iuran_js')
-    @include('pages.admin.events.event_js')
 @endpush

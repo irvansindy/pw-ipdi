@@ -59,9 +59,9 @@
                             <li>
                                 <a class="dropdown-item" href="{{ route('profile') }}">Profil Diri</a>
                             </li>
-                            {{-- <li>
+                            <li>
                                 <a class="dropdown-item" href="{{ route('iuran-anggota') }}">Iuran</a>
-                            </li> --}}
+                            </li>
                             <li>
                                 <a class="dropdown-item" href="{{ route('list-transaksi') }}">Riwayat Transaksi</a>
                             </li>

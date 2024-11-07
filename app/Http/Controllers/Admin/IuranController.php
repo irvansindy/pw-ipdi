@@ -5,19 +5,20 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\FormatResponseJson;
-use App\Models\Iuran;
+use App\Models\IuranTransaction;
+use App\Models\IuranTransactionDetail;
 class IuranController extends Controller
 {
     public function index()
     {
+        // dd(IuranTransactionDetail::all());
         return view('pages.admin.iuran.index');
     }
-
     public function fetchIuran()
     {
         try {
             // $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->limit(100)->get();
-            $iuran = Iuran::orderBy("id","desc")->get();
+            $iuran = IuranTransaction::orderBy("id","desc")->get();
             return FormatResponseJson::success($iuran, 'iuran fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, $e->getMessage(), 400);

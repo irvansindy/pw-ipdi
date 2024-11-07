@@ -24,10 +24,13 @@
                                             No
                                         
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Name 
+                                            Nama
                                         </th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Email
+                                        </th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Status Anggota
                                         </th>
                                         <th class="text-secondary opacity-7"></th>
                                     </tr>

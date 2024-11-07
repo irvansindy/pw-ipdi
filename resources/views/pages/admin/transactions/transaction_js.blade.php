@@ -114,10 +114,6 @@
                 },
                 url: '{{ route('transaction-approval') }}',
                 type: 'POST',
-                // method: 'POST',
-                // processData: false,
-                // contentType: false,
-                // cache: false,
                 data: {
                     update_transaction_id: update_transaction_id
                 },

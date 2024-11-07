@@ -9,13 +9,14 @@ class IuranTransaction extends Model
 {
     use HasFactory;
     protected $table = 'iuran_transactions';
-    protected $fillable = [
-        "iuran_number",
-        "iuran_id",
-        "user_id",
-        "iuran_image_transfer",
-        "date"
-    ];
+    // protected $fillable = [
+    //     "iuran_number",
+    //     "iuran_id",
+    //     "user_id",
+    //     "iuran_image_transfer",
+    //     "date"
+    // ];
+    protected $guarded = [];
     public function user()
     {
         return $this->hasOne(User::class, 'id', 'user_id');

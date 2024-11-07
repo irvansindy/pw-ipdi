@@ -1,5 +1,6 @@
 <script>
     $(document).ready(function() {
+        // alert('hahahahah')
         $('#event_management').DataTable({
             processing: true,
             // serverside: false,

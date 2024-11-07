@@ -211,8 +211,8 @@ class TransactionController extends Controller
         // dd($request->transnumber);
         // Membuat QR code dan menyimpan sebagai file gambar
         $qrcodePath = public_path('qrcode.png');
-        QrCode::format('png')->size(200)->generate($request->transnumber, $qrcodePath);
-        // QrCode::format('png')->size(200)->generate('jamal', $qrcodePath);
+        // QrCode::format('png')->size(200)->generate($request->transnumber, $qrcodePath);
+        QrCode::size(300)->generate($request->transnumber, $qrcodePath);
 
         // Load existing PDF
         $pdfPath = public_path('img/logos/bg/ticket_for_qrcode.pdf');
@@ -252,6 +252,6 @@ class TransactionController extends Controller
         $mpdf->WriteHTML($html);
         // Simpan PDF ke file atau kirim ke browser
         // 'I' untuk menampilkan di browser, 'D' untuk mengunduh
-        return $mpdf->Output('Ticket.pdf', 'I'); 
+        return $mpdf->Output('Ticket.pdf', 'I');
     }
 }

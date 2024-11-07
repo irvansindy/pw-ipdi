@@ -24,16 +24,25 @@
                             id="iuran_kolektif" value="kolektif">
                         <label class="form-check-label" for="iuran_kolektif">Batch/Kolektif</label>
                     </div>
+                    <div class="form-group" id="">
+                        <label for="tahun_iuran">Tahun Iuran</label>
+                        <input type="text" class="form-control" name="tahun_iuran" id="tahun_iuran" placeholder="" value="">
+                    </div>
                     <div class="form-group" id="form_data_peserta">
                         <label for="list_peserta">Peserta</label>
                         <select name="list_peserta[]" id="list_peserta" style="width:100%;">
                             
                         </select>
+                        <input type="hidden" name="val_grand_total_payment_iuran" id="val_grand_total_payment_iuran">
+                    </div>
+                    <div class="input-group" id="grand_total_payment_iuran">
+                        <p></p>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn bg-gradient-primary" id="create_transaction_iuran" data-iuran_id="">Submit</button>
+                <div class="modal-footer" id="button_action_payment_iuran">
+                    {{-- <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn bg-gradient-primary" id="generate_payment_iuran" data-iuran_id="">Payment</button>
+                    <button type="button" class="btn bg-gradient-primary" id="create_transaction_iuran" data-iuran_id="">Submit</button> --}}
                 </div>
             </form>
         </div>

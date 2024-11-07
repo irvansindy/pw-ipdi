@@ -22,6 +22,10 @@
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
+                    "data": "email",
+                    "defaultContent": "<i>Not set</i>"
+                },
+                {
                     'data': null,
                     title: 'Action',
                     wrap: true,

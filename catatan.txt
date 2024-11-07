@@ -12,18 +12,30 @@ hasil diskusi 30 maret 2024 :
     penambahan fitur batch transaksi iuran dan event,
 
 revisi tgl 9 Juli 2024 :
-    function method delete user,
-    function method delete transaction event,
+    progress :
     function view bukti pembayaran di riwayat transaksi user,
-    export excel data transaksi event,
     penambahan data pada list user kolektif event,
     revisi iuran, ada metode untuk pengecekan anggota lama dan baru,
-    penambahan flag anggota baru atau lama pada halaman admin bagian user management,
-    function export excel data user account (admin site),
-    function delete data user account (admin site)
+    penambahan flag anggota baru atau lama pada halaman admin bagian user management (100),
+
+    done :
+    function method delete data user account (admin site) (100)
+    function method delete transaction event, (150)
+    export excel data transaksi event, (350)
+    function export excel data user account (admin site), (200)
+    function method button event arrived (100)
 
 revisi 21 Juli 2024 :
     Scan QR Code hanya pada halaman transaction event
-    tambah button event arrived
     cari alternatif qrcode
     
+Note tambahan field column table 18 september 2024:
+1. table iuran_transactions : 
+    name column : status
+    - status : done
+    name column : grand_total
+    - status : done
+
+2. table users :
+    name column : status
+    - status : done
