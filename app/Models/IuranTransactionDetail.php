@@ -12,6 +12,9 @@ class IuranTransactionDetail extends Model
     protected $fillable = [
         "tr_iuran_id",
         "user_id",
+        "tahun_iuran",
+        "biaya_regis_anggota_baru",
+        "biaya_iuran_tahunan",
     ];
     public function user()
     {

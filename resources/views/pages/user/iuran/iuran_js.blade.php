@@ -99,26 +99,27 @@
         })
 
         $(document).on('click', '#create_iuran', function() {
-            $('#form_create_data_iuran')[0].reset()
-            $('#form_data_peserta').hide()
-            $('#grand_total_payment_iuran').empty()
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route("fetch-peserta") }}',
-                type: 'GET',
-                dataType: 'json',
-                async: true,
-                success: function(res) {
-                    $('#grand_total_payment_iuran').empty()
-                    $('#button_action_payment_iuran').empty()
-                    $('#button_action_payment_iuran').append(`
-                        <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="button" class="btn bg-gradient-primary" id="generate_payment_iuran" data-iuran_id="">Payment</button>
-                    `)
-                }
-            })
+            window.location.href = "{{ route('create-iuran-anggota') }}";
+            // $('#form_create_data_iuran')[0].reset()
+            // $('#form_data_peserta').hide()
+            // $('#grand_total_payment_iuran').empty()
+            // $.ajax({
+            //     headers: {
+            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //     },
+            //     url: '{{ route("fetch-peserta") }}',
+            //     type: 'GET',
+            //     dataType: 'json',
+            //     async: true,
+            //     success: function(res) {
+            //         $('#grand_total_payment_iuran').empty()
+            //         $('#button_action_payment_iuran').empty()
+            //         $('#button_action_payment_iuran').append(`
+            //             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
+            //             <button type="button" class="btn bg-gradient-primary" id="generate_payment_iuran" data-iuran_id="">Payment</button>
+            //         `)
+            //     }
+            // })
         })
 
         $("#tahun_iuran").keypress(function (e) {
@@ -335,5 +336,59 @@
             dropdownParent: $('#form_create_iuran'),
             multiple: true,
         });
+
+        $(document).on('click', '#button_append_iuran', function() {
+            alert('button_append_iuran')
+            $('.array-list-peserta-iuran').append(`
+                <div class="row cls_data_array_iuran">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Nama</label>
+                            <input class="form-control" type="text" name="nama_peserta_iuran[]" placeholder="Nama">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Central Dialisis</label>
+                            <select class="form-control central_dialisis_iuran" name="central_dialisis_iuran" id="" placeholder="Central Dialisis"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-auto">
+                        <div class="form-group">
+                            <label for="">Uang Iuran 20K</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value=""
+                                    id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Uang Iuran 20K
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-auto">
+                        <div class="form-group">
+                            <label for="">Uang Iuran 50K</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value=""
+                                    id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">
+                                    Uang Iuran 50K
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-auto">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-danger mt-4 button_pop_iuran" name="button_pop_iuran"
+                                id=""><i class="fa-solid fa-minus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `)
+        })
+
+        $(document).on('click', '.button_pop_iuran', function() {
+            $(this).closest('.cls_data_array_iuran').remove()
+        })
     })
 </script>

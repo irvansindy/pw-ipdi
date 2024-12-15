@@ -19,7 +19,9 @@
     <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Font Awesome Icons -->
-    <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    {{-- <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script> --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <link href="assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="assets/css/argon-dashboard.css" rel="stylesheet" />
@@ -88,7 +90,7 @@
         integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {{-- font awesome --}}
-    <script src="https://example.com/fontawesome/v6.5.1/js/all.js" data-auto-replace-svg="nest"></script>
+    {{-- <script src="https://example.com/fontawesome/v6.5.1/js/all.js" data-auto-replace-svg="nest"></script> --}}
     {{-- qrcode --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
         integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
@@ -102,27 +104,27 @@
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
         // Skrip untuk memulai pemindai QR code
-        let scanner = new Instascan.Scanner({
-            video: document.getElementById('preview')
-        });
-        scanner.addListener('scan', function(content) {
-            // Menampilkan SweetAlert ketika QR code di-scan
-            Swal.fire({
-                title: 'QR Code Scanned!',
-                text: content,
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        });
-        Instascan.Camera.getCameras().then(function(cameras) {
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]);
-            } else {
-                console.error('No cameras found.');
-            }
-        }).catch(function(e) {
-            console.error(e);
-        });
+        // let scanner = new Instascan.Scanner({
+        //     video: document.getElementById('preview')
+        // });
+        // scanner.addListener('scan', function(content) {
+        //     // Menampilkan SweetAlert ketika QR code di-scan
+        //     Swal.fire({
+        //         title: 'QR Code Scanned!',
+        //         text: content,
+        //         icon: 'success',
+        //         confirmButtonText: 'OK'
+        //     });
+        // });
+        // Instascan.Camera.getCameras().then(function(cameras) {
+        //     if (cameras.length > 0) {
+        //         scanner.start(cameras[0]);
+        //     } else {
+        //         console.error('No cameras found.');
+        //     }
+        // }).catch(function(e) {
+        //     console.error(e);
+        // });
 
         function CreateOrUpdateOrDelete(url, method, data, id_modal) {
             $.ajax({

@@ -41,7 +41,11 @@ class User extends Authenticatable
         'city',
         'country',
         'postal',
-        'about'
+        'about',
+        'status',
+        'sertifikat_file',
+        'sertifikat_start_date',
+        'sertifikat_end_date',
     ];
 
     /**

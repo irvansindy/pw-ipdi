@@ -15,21 +15,25 @@
                     }
                 },
                 {
-                    "data": "name",
+                    "data": "user.username",
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
-                    "data": "price",
+                    "data": "grand_total",
                     // "render": function(data, item) {
                     //     return 'Rp.' + item.id
                     // },
                     render: function (data, type, row) {
-                        return 'Rp.'+row.price;
+                        return 'Rp.'+row.grand_total;
                     },
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
-                    "data": "year",
+                    "data": "for_date",
+                    "defaultContent": "<i>Not set</i>"
+                },
+                {
+                    "data": "status",
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
@@ -39,7 +43,7 @@
                     "render": function(item) {
                         return '<button type="button" data-iuran_id="' +
     item.id +
-    '" class="btn btn-outline-info btn-sm mt-2 detail_iuran_data" data-bs-toggle="modal" data-bs-target="#formDetailIuran">View</button>'
+    '" class="btn btn-outline-info btn-sm mt-2 detail_iuran_data" data-bs-toggle="modal" data-bs-target="#approval_iuran">View</button>'
                     }
                 },
             ]
@@ -91,7 +95,8 @@
             e.preventDefault()
             let iuran_id = $(this).data('iuran_id')
             // alert(iuran_id)
-            $('#form_detail_iuran')[0].reset()
+            $('#form_approval_iuran')[0].reset()
+            $('#button_approval_iuran').empty()
             $.ajax({
                 url: '{{ route("detail-iuran") }}',
                 type: 'GET',
@@ -101,11 +106,22 @@
                 dataType: 'json',
                 async: true,
                 success: function(res) {
-                    $('#detail_iuran_name').val(res.data.name)
-                    $('#detail_iuran_desc').val(res.data.description)
-                    $('#detail_iuran_price').val(res.data.price)
-                    $('#detail_iuran_year').val(res.data.year)
-                    $('#update_data_iuran').attr('data-id', res.data.id)
+                    $('#master_iuran_id').val(res.data.id)
+                    $('#data_list_user_iuran').empty()
+                    let data_list_user_iuran = res.data.transaction_detail
+                    $.each(data_list_user_iuran, (i, user) => {
+                        $('#data_list_user_iuran').append(`
+                            <tr>
+                                <td>${i+1}</td>
+                                <td>${user.user.username}</td>
+                            </tr>
+                        `)
+                        
+                    })
+                    $('#button_approval_iuran').append(`<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>`)
+                    if (res.data.status == 'progress') {
+                        $('#button_approval_iuran').append(`<button type="button" class="btn bg-gradient-primary" id="approve_data_iuran">Approved</button>`)
+                    }
                 },
                 error: function(xhr, status, error) {
                     $('#formDetailIuran').modal('toggle');

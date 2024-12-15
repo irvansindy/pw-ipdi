@@ -1,152 +1,7 @@
 {{-- @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100']) --}}
-@extends('layouts.users.app', ['title'=>'Profile'])
+@extends('layouts.users.app', ['title' => 'Profile'])
 
 @section('content')
-    <style>
-        .h1 {
-            text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .profile-pic-wrapper {
-            /* height: 100vh; */
-            width: 100%;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .pic-holder {
-            text-align: center;
-            position: relative;
-            border-radius: 50%;
-            width: 150px;
-            height: 150px;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .pic-holder .pic {
-            height: 100%;
-            width: 100%;
-            -o-object-fit: cover;
-            object-fit: cover;
-            -o-object-position: center;
-            object-position: center;
-        }
-
-        .pic-holder .upload-file-block,
-        .pic-holder .upload-loader {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            background-color: rgba(90, 92, 105, 0.7);
-            color: #f8f9fc;
-            font-size: 12px;
-            font-weight: 600;
-            opacity: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .pic-holder .upload-file-block {
-            cursor: pointer;
-        }
-
-        .pic-holder:hover .upload-file-block,
-        .uploadProfileInput:focus~.upload-file-block {
-            opacity: 1;
-        }
-
-        .pic-holder.uploadInProgress .upload-file-block {
-            display: none;
-        }
-
-        .pic-holder.uploadInProgress .upload-loader {
-            opacity: 1;
-        }
-
-        /* Snackbar css */
-        .snackbar {
-            visibility: hidden;
-            min-width: 250px;
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            border-radius: 2px;
-            padding: 16px;
-            position: fixed;
-            z-index: 1;
-            left: 50%;
-            bottom: 30px;
-            font-size: 14px;
-            transform: translateX(-50%);
-        }
-
-        .snackbar.show {
-            visibility: visible;
-            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
-
-        @-webkit-keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadein {
-            from {
-                bottom: 0;
-                opacity: 0;
-            }
-
-            to {
-                bottom: 30px;
-                opacity: 1;
-            }
-        }
-
-        @-webkit-keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeout {
-            from {
-                bottom: 30px;
-                opacity: 1;
-            }
-
-            to {
-                bottom: 0;
-                opacity: 0;
-            }
-        }
-    </style>
     @include('layouts.users.navbar')
     <div id="alert">
         @include('components.alert')
@@ -164,13 +19,58 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <p class="text-uppercase text-sm">Data Peserta</p>
+                            {{-- <p class="text-uppercase text-sm">Data Peserta</p> --}}
                             <div class="col-auto">
-                                {{-- <div class="avatar avatar-xxl position-relative">
-                                    <img src="/img/team-1.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="avatar avatar-xxl position-relative">
+                                            {{-- <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" alt="profile_image" class="w-100 profile_image border-radius-lg shadow-sm"> --}}
+                                            <img src="{{ auth()->user()->profile != null ? asset('storage/' . auth()->user()->profile) : 'http://ssl.gstatic.com/accounts/ui/avatar_2x.png' }}"
+                                                alt="profile_image" class="w-100 profile_image border-radius-lg shadow-sm">
+                                        </div>
+                                        <p class="text-danger" style="font-size: 12px">file harus berjenis: jpeg/jpg/png,
+                                            max size: 128kb</p>
+                                        <h6>Upload a different photo...</h6>
+                                        <input type="file" class="text-center center-block file-upload"
+                                            name="photo_profile">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label for="sertifikat_start_date"
+                                                        class="form-control-label">Tanggal Dikeluarkan</label>
+                                                    <input class="form-control" type="date"
+                                                        name="sertifikat_start_date" id="sertifikat_start_date"
+                                                        value="{{ old('sertifikat_start_date', auth()->user()->sertifikat_start_date) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label for="sertifikat_end_date" class="form-control-label">Tanggal
+                                                        Kadaluarsa</label>
+                                                    <input class="form-control" type="date"
+                                                        name="sertifikat_end_date" id="sertifikat_end_date"
+                                                        value="{{ old('sertifikat_end_date', auth()->user()->sertifikat_end_date) }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-auto">
+                                                <div class="form-group">
+                                                    <label for="sertifikat_file"
+                                                        class="form-control-label">Sertifikat</label>
+                                                    <input class="form-control" type="file" name="sertifikat_file"
+                                                        id="sertifikat_file"
+                                                        value="{{ old('sertifikat_file', auth()->user()->sertifikat_file) }}">
+                                                        <a href="{{ asset(auth()->user()->sertifikat_file == null ? '#' : auth()->user()->sertifikat_file) }}">
+                                                            <span class="text-info" style="font-size: 12px; cursor:pointer;">Link untuk melihat sertifikat</span>
+                                                        </a>
+                                                </div>
+                                            </div>
+                                            <p id="countdown-display"></p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="text-danger" style="font-size: 12px">file harus berjenis: jpeg/jpg/png, max size: 128kb</p> --}}
-                                <div class="profile-pic-wrapper">
+                                {{-- <div class="profile-pic-wrapper">
                                     <h1 class="h5">Photo Profile</h1>
                                     <div class="pic-holder">
                                         <!-- uploaded pic shown here -->
@@ -194,7 +94,7 @@
                                     </hr>
                                     <p class="text-danger text-center small">file photo harus berjenis: jpeg/jpg/png, max
                                         size: 1024kb</p>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -235,10 +135,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">PW IPDI Provinsi</label>
-                                        <input type="hidden" name="pw_ipdi_provinsi_current" id="pw_ipdi_provinsi_current" value="{{ auth()->user()->pw_ipdi_provinsi }}">
+                                        <input type="hidden" name="pw_ipdi_provinsi_current"
+                                            id="pw_ipdi_provinsi_current" value="{{ auth()->user()->pw_ipdi_provinsi }}">
                                         <select class="form-control" name="pw_ipdi_provinsi" id="pw_ipdi_provinsi">
                                             @forelse ($masterProvinsi as $provinsi)
-                                                <option value="{{ $provinsi->id }}" {{ $provinsi->id == auth()->user()->pw_ipdi_provinsi ? 'selected' : '' }}>{{ $provinsi->name }}</option>
+                                                <option value="{{ $provinsi->id }}"
+                                                    {{ $provinsi->id == auth()->user()->pw_ipdi_provinsi ? 'selected' : '' }}>
+                                                    {{ $provinsi->name }}</option>
                                             @empty
                                                 <option value="hidden">Select One</option>
                                             @endforelse
@@ -258,10 +161,11 @@
                                         <select class="form-control" name="pw_ipdi_kabupaten" id="pw_ipdi_kabupaten">
                                             @if (auth()->user()->pw_ipdi_kabupaten == null)
                                                 <option value="hidden">Select One</option>
-                                                
                                             @endif
                                             @forelse ($masterKabupaten as $kabupaten)
-                                                <option value="{{ $kabupaten->id }}" {{ $kabupaten->id == auth()->user()->pw_ipdi_kabupaten ? 'selected' : '' }}>{{ $kabupaten->name }}</option>
+                                                <option value="{{ $kabupaten->id }}"
+                                                    {{ $kabupaten->id == auth()->user()->pw_ipdi_kabupaten ? 'selected' : '' }}>
+                                                    {{ $kabupaten->name }}</option>
                                             @empty
                                                 <option value="hidden">Select One</option>
                                             @endforelse
@@ -271,8 +175,22 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="example-text-input" class="form-control-label">Center Dialisis</label>
-                                        <input class="form-control" type="text" name="center_dialisis"
-                                            value="{{ old('center_dialisis', auth()->user()->center_dialisis) }}">
+                                        <select class="form-control" name="center_dialisis" id="center_dialisis">
+                                            @if (auth()->user()->center_dialisis == null)
+                                                <option value="hidden">Select One</option>
+                                            @endif
+                                            @forelse ($masterDialisis as $dialisis)
+                                                <option value="{{ $dialisis->id }}"
+                                                    {{ $dialisis->id == auth()->user()->center_dialisis ? 'selected' : '' }}>
+                                                    {{ $dialisis->name }}</option>
+                                            @empty
+                                                <option value="hidden">Select One</option>
+                                            @endforelse
+                                        </select>
+                                        {{-- <input class="form-control" type="text" name="center_dialisis" value="{{ old('center_dialisis', auth()->user()->center_dialisis) }}"> --}}
+                                            {{-- @php
+                                                dd($masterDialisis);
+                                            @endphp --}}
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -344,6 +262,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="d-flex align-items-center mt-4">
                                 <button type="submit" class="btn btn-primary btn-sm ms-auto">Save</button>
                             </div>
@@ -357,85 +276,18 @@
 @endsection
 @push('js')
     <script>
-        document.addEventListener("change", function(event) {
-            if (event.target.classList.contains("uploadProfileInput")) {
-                var triggerInput = event.target;
-                var currentImg = triggerInput.closest(".pic-holder").querySelector(".pic")
-                    .src;
-                var holder = triggerInput.closest(".pic-holder");
-                var wrapper = triggerInput.closest(".profile-pic-wrapper");
-
-                var alerts = wrapper.querySelectorAll('[role="alert"]');
-                alerts.forEach(function(alert) {
-                    alert.remove();
-                });
-
-                triggerInput.blur();
-                var files = triggerInput.files || [];
-                if (!files.length || !window.FileReader) {
-                    return;
-                }
-
-                if (/^image/.test(files[0].type)) {
-                    var reader = new FileReader();
-                    reader.readAsDataURL(files[0]);
-
-                    reader.onloadend = function() {
-                        holder.classList.add("uploadInProgress");
-                        holder.querySelector(".pic").src = this.result;
-
-                        var loader = document.createElement("div");
-                        loader.classList.add("upload-loader");
-                        loader.innerHTML =
-                            '<div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div>';
-                        holder.appendChild(loader);
-
-                        setTimeout(function() {
-                            holder.classList.remove("uploadInProgress");
-                            loader.remove();
-
-                            var random = Math.random();
-                            if (random < 0.9) {
-                                wrapper.innerHTML +=
-                                    '<div class="snackbar show" role="alert"><i class="fa fa-check-circle text-success"></i> Profile image updated successfully</div>';
-                                triggerInput.value = "";
-                                setTimeout(function() {
-                                    wrapper.querySelector('[role="alert"]').remove();
-                                }, 3000);
-                            } else {
-                                holder.querySelector(".pic").src = currentImg;
-                                wrapper.innerHTML +=
-                                    '<div class="snackbar show" role="alert"><i class="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
-                                triggerInput.value = "";
-                                setTimeout(function() {
-                                    wrapper.querySelector('[role="alert"]').remove();
-                                }, 3000);
-                            }
-                        }, 1500);
-                    };
-                } else {
-                    wrapper.innerHTML +=
-                        '<div class="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>';
-                    setTimeout(function() {
-                        var invalidAlert = wrapper.querySelector('[role="alert"]');
-                        if (invalidAlert) {
-                            invalidAlert.remove();
-                        }
-                    }, 3000);
-                }
-            }
-        });
-
         $('#pw_ipdi_provinsi').select2()
         $('#pw_ipdi_kabupaten').select2()
+        $('#center_dialisis').select2()
+        
         $(document).ready(function() {
+
             if ($('#pw_ipdi_provinsi_current').val() == 17) {
                 $('#select_kabupaten').show()
             } else {
                 $('#select_kabupaten').hide()
             }
-
-            $(document).on('change','#pw_ipdi_provinsi', function() {
+            $(document).on('change', '#pw_ipdi_provinsi', function() {
                 if ($(this).val() == 17) {
                     $('#select_kabupaten').show()
                 } else {
@@ -443,6 +295,58 @@
                     $('#pw_ipdi_kabupaten').val('')
                 }
             })
+            var readURL = function(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        $('.profile_image').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            $(".file-upload").on('change', function() {
+                readURL(this);
+            });
+
+            function calculateCountdown(startDate, endDate) {
+            // Pastikan tanggal ada
+            if (!startDate || !endDate) return;
+
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const now = new Date();
+
+            // Hitung selisih hari
+            const timeDiff = end - now;
+            if (timeDiff <= 0) {
+                $("#countdown-display").text("Tanggal kadaluarsa telah lewat.");
+                return;
+            }
+
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            $("#countdown-display").text(`Countdown: ${days} hari, ${hours} jam, ${minutes} menit, ${seconds} detik.`);
+        }
+
+        // Update countdown setiap detik
+        setInterval(function () {
+            const startDate = $("#sertifikat_start_date").val();
+            const endDate = $("#sertifikat_end_date").val();
+            calculateCountdown(startDate, endDate);
+        }, 1000);
+
+        // Trigger manual ketika ada perubahan tanggal
+        $("#sertifikat_start_date, #sertifikat_end_date").on("change", function () {
+            const startDate = $("#sertifikat_start_date").val();
+            const endDate = $("#sertifikat_end_date").val();
+            calculateCountdown(startDate, endDate);
+        });
         })
     </script>
 @endpush

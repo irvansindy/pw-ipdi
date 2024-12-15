@@ -17,8 +17,8 @@ class IuranController extends Controller
     public function fetchIuran()
     {
         try {
-            // $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->limit(100)->get();
-            $iuran = IuranTransaction::orderBy("id","desc")->get();
+            $iuran = IuranTransaction::with(['user'])->orderBy("id","desc")->limit(100)->get();
+            // $iuran = IuranTransaction::orderBy("id","desc")->get();
             return FormatResponseJson::success($iuran, 'iuran fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, $e->getMessage(), 400);
@@ -28,7 +28,7 @@ class IuranController extends Controller
     public function storeIuran(Request $request)
     {
         try {
-            $iuran = Iuran::create($request->all());
+            $iuran = IuranTransaction::create($request->all());
             return FormatResponseJson::success($iuran,'iuran created successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, $e->getMessage(), 500);
@@ -38,7 +38,8 @@ class IuranController extends Controller
     public function detailIuran(Request $request)
     {
         try {
-            $iuran = Iuran::findOrFail($request->id);
+            $iuran = IuranTransaction::with(['transactionDetail.user', 'user'])
+            ->where('id',$request->id)->first();
             return FormatResponseJson::success($iuran, 'iuran fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, $e->getMessage(), 404);
@@ -48,7 +49,7 @@ class IuranController extends Controller
     public function updateIuran(Request $request)
     {
         try {
-            $iuran = Iuran::findOrFail($request->id);
+            $iuran = IuranTransaction::findOrFail($request->id);
             $iuran->update($request->all());
             return FormatResponseJson::success($iuran,'iuran updated successfully');
         } catch (\Exception $e) {

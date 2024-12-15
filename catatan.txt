@@ -39,3 +39,22 @@ Note tambahan field column table 18 september 2024:
 2. table users :
     name column : status
     - status : done
+
+Meeting PW-IPDI 20 November 2024 (revisi)
+1. Profile upload (prioritas 2) : done
+2. QR CODE JNNS
+3. Profile upload sertifikat (prioritas 3) : progress
+4. Iuran (prioritas 1) : done
+5. Center Dialisis berbentuk dropdown (prioritas 4) 
+
+30 November 2024
+halaman iuran : 
+- untuk create data iuran tidak usah menggunakan data modal, tapi buka halaman baru. untuk field form :
+    Nama, Center Dialisis, Uang Pangkal, Biaya Iuran, File Upload, Tanggal Transfer. untuk admin iuran anggota baru sebesar 50K + 20k, iuran tetap untuk tahun setelahnya 50k.
+- file upload untuk bukti transaction harus berbarengan diuploadnya
+- untuk event dibuat admin cms untuk mengatur tiap data event baru
+- untuk user regis event, akan dibuatkan halaman baru untuk regis, tidak usah memakai data modal.
+- penambahan sub menu pada master menu home (Event yang sudah berlangsung, Berita terbaru)
+- dashboard
+- halaman detail untuk event yang sudah berlangsung dan berita
+- count down untuk alert sertifikat profile

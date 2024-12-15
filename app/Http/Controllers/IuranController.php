@@ -9,11 +9,16 @@ use App\Models\Iuran;
 use App\Models\User;
 use App\Models\IuranTransaction;
 use App\Models\IuranTransactionDetail;
+use Illuminate\Support\Str;
 class IuranController extends Controller
 {
     public function index()
     {
         return view('pages.user.iuran.index');
+    }
+    public function viewCreateIuran()
+    {
+        return view('pages.user.iuran.create_iuran_anggota');
     }
     public function fetchIuran()
     {
@@ -41,25 +46,9 @@ class IuranController extends Controller
     public function generatePaymentIuran(Request $request)
     {
         try {
-            $data_user = $request->iuran_type == 'mandiri' ? $data_user = [\Auth::user()->id] : $request->list_peserta;
-            // dd($data_user);
-            if ($request->iuran_type == 'kolektif') {
-                if ($request->list_peserta == null) {
-                    return FormatResponseJson::error(null, 'Peserta tidak boleh kosong', 402);
-                }
-            }
-            $existing_user = User::whereIn('id', $data_user)->get([
-                'id',
-                'username',
-                'email',
-                'status',
-            ]);
-            // dd(count($existing_user));
-            $total_payment = [];
-            for ($i = 0; $i < count($existing_user); $i++) {
-                $current_payment = $existing_user[$i]->status == 1 ? 50000 : 75000;
-                $total_payment[$i] = $current_payment;
-            }
+            $total_iuran_20k = collect($request->iuran_20k)->sum();
+            $total_iuran_50k = collect($request->iuran_50k)->sum();
+            $total_payment = $total_iuran_20k + $total_iuran_50k;
             $grand_total = collect($total_payment)->sum();
             return FormatResponseJson::success($grand_total, 'generate user payment iuran successfully');
         } catch (\Exception $e) {
@@ -79,41 +68,49 @@ class IuranController extends Controller
             $request->validate([
                 'iuran_type' => 'required'
             ]);
+            
+            $total_iuran_20k = collect($request->iuran_20k)->sum();
+            $total_iuran_50k = collect($request->iuran_50k)->sum();
+            $grand_total = $total_iuran_20k + $total_iuran_50k;
+
+            $file_iuran_file_upload = $request->file('iuran_file_upload');
+            $slug_name = Str::slug($file_iuran_file_upload->getClientOriginalName().' iuran', '-');
+            $file_iuran_file_upload_name = $slug_name.'.'.$file_iuran_file_upload->getClientOriginalExtension();
+            // dd($file_iuran_file_upload->getClientOriginalName());
 
             // create master iuran transaction
             $master_iuran = IuranTransaction::create([
                 'iuran_number' => $result_number,
                 'iuran_id' => $iuran_type,
                 'user_id' => \Auth::user()->id,
-                'grand_total' => $request->val_grand_total_payment_iuran,
+                'grand_total' => $grand_total,
+                'iuran_image_transfer' => 'storage/iuran/'.$file_iuran_file_upload_name,
                 'date' => date('Y-m-d H:i:s'),
+                'for_date' => $request->tahun_iuran,
             ]);
-            
-            if($iuran_type == 0 && $request->list_peserta == null) {
-                $list_peserta = [
-                    'tr_iuran_id' => $master_iuran->id,
-                    'user_id' => \Auth::user()->id,
-                    'created_at' => date('Y-m-d H:i:s'),
-                ];
-                IuranTransactionDetail::insert($list_peserta);
-            } else if($iuran_type == 1 && $request->list_peserta != null) {
-                if (count($request->list_peserta) > 0) {
+
+            if ($master_iuran) {
+                $file_iuran_file_upload->move(public_path('storage/iuran/'), $file_iuran_file_upload_name);
+            }
+
+            if (count($request->peserta) > 0) {
+                # code...
+                for ($i=0; $i < count($request->peserta); $i++) { 
                     $data_peserta = [];
                     $list_peserta = [];
-                    for ($i=0; $i < count($request->list_peserta); $i++) { 
-                        $list_peserta = [
-                            'tr_iuran_id' => $master_iuran->id,
-                            'user_id' => $request->list_peserta[$i],
-                            'created_at' => date('Y-m-d H:i:s'),
-                        ];
-    
-                        array_push($data_peserta, $list_peserta);
-                    }
-                    // dd($data_peserta);
+                    $list_peserta = [
+                        'tr_iuran_id' => $master_iuran->id,
+                        'user_id' => $request->peserta[$i],
+                        'tahun_iuran' => $request->tahun_pembayaran_iuran[$i],
+                        'biaya_regis_anggota_baru' => $request->iuran_20k[$i],
+                        'biaya_iuran_tahunan' => $request->iuran_50k[$i],
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ];
+                    array_push($data_peserta, $list_peserta);
                     $create_peserta = IuranTransactionDetail::insert($data_peserta);
-                } else {
-                    return FormatResponseJson::error(null, 'Silahkan isi data form yang masih kosong',400);
                 }
+            } else {
+                return FormatResponseJson::error(null, 'Silahkan isi data form yang masih kosong',400);
             }
 
             return FormatResponseJson::success($master_iuran, 'iuran created successfully');

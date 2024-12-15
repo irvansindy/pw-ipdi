@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth', 'role:user']], function() {
 	Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
 
 	Route::get('/iuran-anggota', [userIuran::class,'index'])->name('iuran-anggota');
+	Route::get('/create-iuran-anggota', [userIuran::class,'viewCreateIuran'])->name('create-iuran-anggota');
 	Route::get('/fetch-iuran-anggota', [userIuran::class,'fetchIuran'])->name('fetch-iuran-anggota');
 	Route::get('/fetch-transaksi-iuran', [userIuran::class,'fetchTransaksiIuran'])->name('fetch-transaksi-iuran');
 	Route::get('/detail-transaksi-iuran', [userIuran::class,'detailTransaksiIuran'])->name('detail-transaksi-iuran');
@@ -90,7 +91,7 @@ Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('
 Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/ticket-qrcode', [TransactionController::class,'ticketQrCode'])->name('ticket-qrcode')->middleware('auth');
 
-Route::group(['middleware' => ['auth', 'role:admin']], function() {
+Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 	Route::get('/users', [UserManagementController::class, 'index'])->name('users');
 	Route::get('/fetch-users', [UserManagementController::class, 'fetch'])->name('fetch-users');
@@ -150,6 +151,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');
 	Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
 	Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+	Route::post('/update-photo-profile', [UserProfileController::class, 'updatePhotoProfile'])->name('update-photo-profile');
 	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static');
 	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static'); 
