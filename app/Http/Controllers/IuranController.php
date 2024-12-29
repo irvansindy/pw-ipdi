@@ -33,10 +33,11 @@ class IuranController extends Controller
     {
         try {
             // $peserta = User::with('roles')->whereHas('roles', function ($query) {
-            $peserta = User::whereHas('roles', function ($query) {
+            $peserta = User::with(['roles', 'dialisis'])
+            ->whereHas('roles', function ($query) {
                 $query->where('name', 'user');
             })
-            ->get(['id', 'username']);
+            ->get();
             
             return FormatResponseJson::success($peserta, 'user fetched successfully');
         } catch (\Exception $e) {

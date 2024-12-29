@@ -77,4 +77,7 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($value);
     }
+    public function dialisis() {
+        return $this->hasOne(MasterDialisis::class, 'id', 'center_dialisis');
+    }
 }
