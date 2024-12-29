@@ -100,26 +100,6 @@
 
         $(document).on('click', '#create_iuran', function() {
             window.location.href = "{{ route('create-iuran-anggota') }}";
-            // $('#form_create_data_iuran')[0].reset()
-            // $('#form_data_peserta').hide()
-            // $('#grand_total_payment_iuran').empty()
-            // $.ajax({
-            //     headers: {
-            //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //     },
-            //     url: '{{ route("fetch-peserta") }}',
-            //     type: 'GET',
-            //     dataType: 'json',
-            //     async: true,
-            //     success: function(res) {
-            //         $('#grand_total_payment_iuran').empty()
-            //         $('#button_action_payment_iuran').empty()
-            //         $('#button_action_payment_iuran').append(`
-            //             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
-            //             <button type="button" class="btn bg-gradient-primary" id="generate_payment_iuran" data-iuran_id="">Payment</button>
-            //         `)
-            //     }
-            // })
         })
 
         $("#tahun_iuran").keypress(function (e) {
