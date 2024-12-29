@@ -147,7 +147,7 @@
                         $('.nama_peserta_iuran_central_dialisis').empty()
                         $('.nama_peserta_iuran_central_dialisis').append(`<option value="">Pilih Anggota</option>`)
                         $.each(peserta_iuran, (i, peserta) => {
-                            $('.nama_peserta_iuran_central_dialisis').append(`<option value="${peserta.id}">${peserta.username}</option>`)
+                            $('.nama_peserta_iuran_central_dialisis').append(`<option value="${peserta.id}">${peserta.username + ' - ' +peserta.dialisis.name}</option>`)
                         })
                     }
                 })
