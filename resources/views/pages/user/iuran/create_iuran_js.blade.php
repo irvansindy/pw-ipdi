@@ -288,6 +288,7 @@
                         text: res.meta.message,
                         footer: '<a href="{{ route('histori-transaksi') }}" class="text-primary">Riwayat Transaksi</a>'
                     })
+                    window.location.href = "{{ route('iuran-anggota') }}";
                 },
                 error: function(xhr) {
                     console.log(xhr.responseText);
