@@ -1,7 +1,7 @@
 {{-- modal --}}
 <div class="modal fade" id="form_detail_iuran" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     role="dialog" aria-labelledby="form_detail_iuran_label" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered" role="document">
         <div class="modal-content">
             <form action="" method="POST" id="form_update_data_iuran">
                 @csrf
@@ -15,11 +15,15 @@
                 <div class="modal-body">
                     <p id="nomor_iuran"></p>
                     <p id="tahun_iuran"></p>
+                    <a href="" class="mb-2" id="source_attchment_iuran" target="_blank">Link Attachment</a>
                     <table class="table table-hover table-bordered" style="width: 100% !important">
                         <thead>
                             <tr>
                                 <th>No</th>
                                 <th>Peserta</th>
+                                <th>Registrasi Anggota Baru</th>
+                                <th>Iuran Anggota</th>
+                                <th>Tahun</th>
                             </tr>
                         </thead>
                         <tbody id="list_detail_iuran_peserta">

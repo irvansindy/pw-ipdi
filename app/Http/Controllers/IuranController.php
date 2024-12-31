@@ -87,7 +87,8 @@ class IuranController extends Controller
                 'grand_total' => $grand_total,
                 'iuran_image_transfer' => 'storage/iuran/'.$file_iuran_file_upload_name,
                 'date' => date('Y-m-d H:i:s'),
-                'for_date' => $request->tahun_iuran,
+                'for_date' => date('Y'),
+                'status' => 'progress'
             ]);
 
             if ($master_iuran) {

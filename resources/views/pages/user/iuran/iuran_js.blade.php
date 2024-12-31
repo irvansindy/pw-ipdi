@@ -77,12 +77,12 @@
                     'data': null,
                     title: 'Action',
                     wrap: true,
+                    // if (item.iuran.status == 'pending') {
+                    //     return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-success btn-sm mt-2 upload_iuran_transaction" data-bs-toggle="modal" data-bs-target="#uploadIuranTransaction">Upload</button> <button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
+                    // } else {
+                    // }
                     "render": function(item) {
-                        if (item.iuran.status == 'pending') {
-                            return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-success btn-sm mt-2 upload_iuran_transaction" data-bs-toggle="modal" data-bs-target="#uploadIuranTransaction">Upload</button> <button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
-                        } else {
-                                return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
-                        }
+                        return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
                     }
                 },
             ]
@@ -228,9 +228,10 @@
             })
         })
 
-        $(document).on('click', '.detail_transaction', function(e) {
+        $(document).on('click', '.detail_iuran_transaction', function(e) {
             e.preventDefault()
             let iuran_id = $(this).data('iuran_id')
+            // alert(iuran_id)
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -244,17 +245,23 @@
                 async: true,
                 success: function(res) {
                     $('#list_detail_iuran_peserta').empty()
+                    // $('#source_attchment_iuran').empty()
+                    $('#source_attchment_iuran').prop('href', res.data[0].iuran_image_transfer)
+                    
                     $('#nomor_iuran').html(res.data[0].iuran_number)
                     $('#tahun_iuran').html(res.data[0].date)
                     $('#upload_file_iuran').attr('data-iuran_id',res.data[0].id)
                     
                     let no_detail = 1;
-                    console.log(res.data[0].transaction_detail);
+                    // console.log(res.data[0].transaction_detail);
                     $.each(res.data[0].transaction_detail, function(i, data) {
                         $('#list_detail_iuran_peserta').append(`
                         <tr>
                             <td>${no_detail++}</td>
                             <td>${data.user.username}</td>
+                            <td>Rp.${data.biaya_regis_anggota_baru}</td>
+                            <td>Rp.${data.biaya_iuran_tahunan}</td>
+                            <td>Rp.${data.tahun_iuran}</td>
                         </tr>
                         `)
                     })
