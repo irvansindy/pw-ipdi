@@ -76,6 +76,7 @@ class UserProfileController extends Controller
             'username' => $request->get('username'),
             'firstname' => $request->get('firstname'),
             'lastname' => $request->get('lastname'),
+            'jenis_kelamin' => $request->get('jenis_kelamin'),
             'email' => $request->get('email'),
             'number_phone' => $request->get('number_phone'),
             'last_edication' => $request->get('last_edication'),

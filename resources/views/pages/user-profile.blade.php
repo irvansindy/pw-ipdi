@@ -62,11 +62,11 @@
                                                         id="sertifikat_file"
                                                         value="{{ old('sertifikat_file', auth()->user()->sertifikat_file) }}">
                                                         <a href="{{ asset(auth()->user()->sertifikat_file == null ? '#' : auth()->user()->sertifikat_file) }}">
-                                                            <span class="text-info" style="font-size: 12px; cursor:pointer;">Link untuk melihat sertifikat</span>
+                                                            <span class="text-info" style="font-size: 14px; cursor:pointer;">Link untuk melihat sertifikat</span>
                                                         </a>
                                                 </div>
                                             </div>
-                                            <p id="countdown-display"></p>
+                                            <p class="text-info" style="font-size: 18px !important;" id="countdown-display"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -113,8 +113,20 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">NIK</label>
-                                        <input class="form-control" type="text" name="nik"
+                                        <label for="jenis_kelamin" class="form-control-label">Jenis Kelamin</label>
+                                        <select class="form-control" name="jenis_kelamin" id="jenis_kelamin">
+                                            <option value="">Pilih Salah Satu</option>
+                                            <option value="L" {{ auth()->user()->jenis_kelamin == 'L' ? 'selected' : '' }}>
+                                                Laki-laki</option>
+                                            <option value="P" {{ auth()->user()->jenis_kelamin == 'P' ? 'selected' : '' }}>
+                                                Perempuan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="nik" class="form-control-label">NIK</label>
+                                        <input class="form-control" type="text" name="nik" id="nik"
                                             value="{{ old('nik', auth()->user()->nik) }}">
                                     </div>
                                 </div>
@@ -331,7 +343,7 @@
             const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
 
-            $("#countdown-display").text(`Countdown: ${days} hari, ${hours} jam, ${minutes} menit, ${seconds} detik.`);
+            $("#countdown-display").text(`Masa Berlaku Sertifikat: ${days} hari, ${hours} jam, ${minutes} menit, ${seconds} detik.`);
         }
 
         // Update countdown setiap detik

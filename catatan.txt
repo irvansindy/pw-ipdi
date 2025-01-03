@@ -43,9 +43,9 @@ Note tambahan field column table 18 september 2024:
 Meeting PW-IPDI 20 November 2024 (revisi)
 1. Profile upload (prioritas 2) : done
 2. QR CODE JNNS
-3. Profile upload sertifikat (prioritas 3) : progress
+3. Profile upload sertifikat (prioritas 3) : done
 4. Iuran (prioritas 1) : done
-5. Center Dialisis berbentuk dropdown (prioritas 4) 
+5. Center Dialisis berbentuk dropdown (prioritas 4) done
 
 30 November 2024
 halaman iuran : 
