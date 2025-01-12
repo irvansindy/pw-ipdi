@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/detail-iuran', [IuranController::class,'detailIuran'])->name('detail-iuran');
 	Route::post('/store-iuran', [IuranController::class,'storeIuran'])->name('store-iuran');
 	Route::post('/update-iuran', [IuranController::class,'updateIuran'])->name('update-iuran');
+	Route::post('/approve-iuran', [IuranController::class,'approveIuran'])->name('approve-iuran');
 	
 	Route::get('/transaction', [TransactionManagementController::class,'index'])->name('transaction');
 	Route::get('/transaction-fetch', [TransactionManagementController::class,'fetch'])->name('transaction-fetch');

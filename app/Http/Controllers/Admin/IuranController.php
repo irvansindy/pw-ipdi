@@ -38,7 +38,7 @@ class IuranController extends Controller
     public function detailIuran(Request $request)
     {
         try {
-            $iuran = IuranTransaction::with(['transactionDetail.user', 'user'])
+            $iuran = IuranTransaction::with(['transactionDetail.user.dialisis'])
             ->where('id',$request->id)->first();
             return FormatResponseJson::success($iuran, 'iuran fetched successfully');
         } catch (\Exception $e) {
@@ -52,6 +52,19 @@ class IuranController extends Controller
             $iuran = IuranTransaction::findOrFail($request->id);
             $iuran->update($request->all());
             return FormatResponseJson::success($iuran,'iuran updated successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 404);
+        }
+    }
+    public function approveIuran(Request $request)
+    {
+        try {
+            // dd($request->all());
+            $iuran = IuranTransaction::findOrFail($request->master_iuran_id);
+            $iuran->update([
+                'status' => 'success'
+            ]);
+            return FormatResponseJson::success($iuran,'Aprrove iuran successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, $e->getMessage(), 404);
         }

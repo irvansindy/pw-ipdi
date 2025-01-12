@@ -2,7 +2,7 @@
 <div class="modal fade" id="approval_iuran" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     role="dialog" aria-labelledby="approval_iuranLabel" aria-hidden="true">
     {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered me-lg-8" role="document"> --}}
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <form action="" method="POST" id="form_approval_iuran">
                 @csrf
@@ -22,7 +22,16 @@
                                         No
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Nama
+                                        NAMA
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        NIRA IPDI
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        CENTER DIALISIS
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        TAHUN
                                     </th>
                                     <th class="text-secondary opacity-7"></th>
                                 </tr>

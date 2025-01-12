@@ -105,6 +105,17 @@
             </div>
         </div>
         <div class="row mt-4">
+            <div class="col-lg-12 mb-lg-0 mb-4">
+                <div class="card mb-3">
+                    <div class="card-body p-3">
+                        <div class="chart" style="width: 50%; margin: auto;">
+                            <canvas id="pie-chart" class="chart-canvas" height="300px"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
             <div class="col-lg-7 mb-lg-0 mb-4">
                 <div class="card z-index-2 h-100">
                     <div class="card-header pb-0 pt-3 bg-transparent">
@@ -125,7 +136,8 @@
                 <div class="card card-carousel overflow-hidden h-100 p-0">
                     <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
                         <div class="carousel-inner border-radius-lg h-100">
-                            <div class="carousel-item h-100 active" style="background-image: url('./img/carousel-1.jpg');
+                            <div class="carousel-item h-100 active"
+                                style="background-image: url('./img/carousel-1.jpg');
             background-size: cover;">
                                 <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
@@ -135,7 +147,8 @@
                                     <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
                                 </div>
                             </div>
-                            <div class="carousel-item h-100" style="background-image: url('./img/carousel-2.jpg');
+                            <div class="carousel-item h-100"
+                                style="background-image: url('./img/carousel-2.jpg');
             background-size: cover;">
                                 <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
@@ -146,7 +159,8 @@
                                         ability to learn.</p>
                                 </div>
                             </div>
-                            <div class="carousel-item h-100" style="background-image: url('./img/carousel-3.jpg');
+                            <div class="carousel-item h-100"
+                                style="background-image: url('./img/carousel-3.jpg');
             background-size: cover;">
                                 <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
@@ -396,6 +410,44 @@
 
 @push('js')
     <script src="./assets/js/plugins/chartjs.min.js"></script>
+    <script>
+        // Data dummy untuk pie chart
+        const dataDummy = {
+            labels: ['Protein', 'Karbohidrat', 'Lemak', 'Serat', 'Vitamin'],
+            datasets: [{
+                data: [40, 30, 15, 10, 5], // Persentase setiap komponen
+                backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0', '#9966ff'],
+                borderColor: ['#ffffff'],
+                borderWidth: 1
+            }]
+        };
+
+        $(document).ready(function () {
+            const ctx = $('#pie-chart');
+            new Chart(ctx, {
+                type: 'pie',
+                data: dataDummy,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    const label = dataDummy.labels[tooltipItem.dataIndex];
+                                    const value = dataDummy.datasets[0].data[tooltipItem.dataIndex];
+                                    return `${label}: ${value}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
     <script>
         var ctx1 = document.getElementById("chart-line").getContext("2d");
 

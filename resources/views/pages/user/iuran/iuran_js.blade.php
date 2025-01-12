@@ -74,6 +74,10 @@
                     render: DataTable.render.datetime('YYYY')
                 },
                 {
+                    "data": "iuran.status",
+                    "defaultContent": "<i>Not set</i>"
+                },
+                {
                     'data': null,
                     title: 'Action',
                     wrap: true,

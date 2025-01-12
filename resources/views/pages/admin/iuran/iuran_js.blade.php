@@ -114,6 +114,9 @@
                             <tr>
                                 <td>${i+1}</td>
                                 <td>${user.user.username}</td>
+                                <td>${user.user.nira_ipdi != null ? user.user.nira_ipdi : 'Kosong'}</td>
+                                <td>${user.user.dialisis.name != null ? user.user.dialisis.name : 'Kosong'}</td>
+                                <td>${user.tahun_iuran}</td>
                             </tr>
                         `)
                         
@@ -165,6 +168,42 @@
                         title: res.meta.message,
                     });
                     $('#formDetailIuran').modal('toggle');
+                    $('.data_tables').DataTable().ajax.reload();
+                },
+                error: function(xhr, status, error) {
+                    var errorMessage = JSON.parse(xhr.responseText);
+                    Swal.fire({
+                        icon: "error",
+                        title: errorMessage.meta.message,
+                        text: errorMessage.data.message,
+                        // text: "User role cannot empty"
+                    })
+                }
+            })
+        })
+
+        $(document).on('click', '#approve_data_iuran', function(e) {
+            e.preventDefault()
+            let master_iuran_id = $('#master_iuran_id').val()
+            alert(master_iuran_id)
+            let data = {
+                'master_iuran_id': master_iuran_id
+            }
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("approve-iuran") }}',
+                type: 'post',
+                data: data,
+                dataType: 'json',
+                success: function(res) {
+                    Swal.fire({
+                        icon: "success",
+                        title: res.meta.message,
+                    });
+                    $('#approval_iuran').modal('toggle');
                     $('.data_tables').DataTable().ajax.reload();
                 },
                 error: function(xhr, status, error) {

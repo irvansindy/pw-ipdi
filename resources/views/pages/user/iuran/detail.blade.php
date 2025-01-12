@@ -30,14 +30,14 @@
                             
                         </tbody>
                     </table>
-                    <div class="form-group">
+                    {{-- <div class="form-group">
                         <input class="form-control" type="file" name="upload_iuran" id="upload_iuran">
                         <p class="text-danger" style="font-size: 12px">file harus berjenis: jpeg/jpg/png, max size: 128kb</p>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn bg-gradient-primary" id="upload_file_iuran" data-iuran_id="">Update</button>
+                    <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+                    {{-- <button type="button" class="btn bg-gradient-primary" id="upload_file_iuran" data-iuran_id="">Update</button> --}}
                 </div>
             </form>
         </div>

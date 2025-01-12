@@ -21,6 +21,7 @@
                                     <th>No</th>
                                     <th>Nomor Iuran</th>
                                     <th>Tahun</th>
+                                    <th>Status</th>
                                     <th>#</th>
                                 </tr>
                             </thead>
