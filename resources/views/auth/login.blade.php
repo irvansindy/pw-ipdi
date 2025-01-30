@@ -56,18 +56,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+                        <div class="col-auto me-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
                             <h4 class="mt-2 text-black font-weight-bolder position-relative">Selamat Datang</h4>
                             <p class="text-black position-relative">
                                 Di Website <br> Pengurus Wilayah Ikatan Perawat Dialisis Indonesia Prov.DKI Jakarta
                             </p>
-                            
-                            <div class="position-relative h-100 m-3 px-7 mb-5 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="margin-left:130px !important;
-                            background-image: url('{{ asset("img/logos/IPDI/logo_login.png") }}'); background-size: cover; width: 350px;
-                            height: 300px;">
-                            </div>
+
+                            {{-- <div class="position-relative h-100 m-3 px-7 mb-5 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="margin-left:130px !important; background-image: url('{{ asset("img/logos/IPDI/logo_login.png") }}'); background-size: cover; width: 350px; height: 300px;"></div> --}}
+                            <div class="responsive-image-container"></div>
                             <p class="text-black position-relative">
-                                Jl. Abdul Rahman Saleh Raya No.24, RT.10/RW.5, Senen, Kec. Senen, <br> Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta 10410
+                                Jl. Abdul Rahman Saleh Raya No.24, RT.10/RW.5, Senen, Kec. Senen, <br> Kota Jakarta Pusat,
+                                Daerah Khusus Ibukota Jakarta 10410
                             </p>
                         </div>
                     </div>
@@ -76,3 +75,44 @@
         </section>
     </main>
 @endsection
+@push('css')
+    <style>
+        .responsive-image-container {
+            margin-left: auto;
+            margin-right: auto;
+            background-image: url('{{ asset('img/logos/IPDI/logo_login.png') }}');
+            background-size: cover;
+            /* Menjaga gambar memenuhi elemen */
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100%;
+            /* Lebar mengikuti ukuran parent */
+            max-width: 400px;
+            /* Batas maksimum */
+            height: 0;
+            padding-top: 85%;
+            /* Rasio tinggi terhadap lebar (7:6) */
+            border-radius: 12px;
+            /* Membuat sudut elemen melengkung */
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .responsive-image-container {
+                max-width: 300px;
+                /* Lebih kecil untuk layar medium */
+                padding-top: 90%;
+                /* Rasio tetap */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .responsive-image-container {
+                max-width: 250px;
+                /* Lebih kecil untuk layar kecil */
+                padding-top: 100%;
+                /* Rasio tetap */
+            }
+        }
+    </style>
+@endpush

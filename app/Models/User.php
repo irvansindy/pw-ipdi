@@ -81,4 +81,7 @@ class User extends Authenticatable
     public function dialisis() {
         return $this->hasOne(MasterDialisis::class, 'id', 'center_dialisis');
     }
+    public function iuranForDashboard(){
+        return $this->hasOne(IuranTransactionDetail::class, 'user_id', 'id');
+    }
 }

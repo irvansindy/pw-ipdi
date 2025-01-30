@@ -88,11 +88,14 @@ Route::get('/reset-password', [ResetPassword::class, 'show'])->middleware('guest
 Route::post('/reset-password', [ResetPassword::class, 'send'])->middleware('guest')->name('reset.perform');
 Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
-Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
+// Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/ticket-qrcode', [TransactionController::class,'ticketQrCode'])->name('ticket-qrcode')->middleware('auth');
 
 Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+	Route::get('fetch-member-for-dashboard', [HomeController::class,'fetchMember'])->name('fetch-member-for-dashboard');
+	Route::get('iuran-for-dashboard', [HomeController::class,'paymentIuran'])->name('iuran-for-dashboard');
+	Route::get('jnns-for-dashboard', [HomeController::class,'userJnns'])->name('jnns-for-dashboard');
 	Route::get('/users', [UserManagementController::class, 'index'])->name('users');
 	Route::get('/fetch-users', [UserManagementController::class, 'fetch'])->name('fetch-users');
 	Route::get('/users-export-excel', [UserManagementController::class, 'exportExcel'])->name('users-export-excel');

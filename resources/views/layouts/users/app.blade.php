@@ -45,6 +45,7 @@
             object-fit: fill;
         } */
     </style>
+    @stack('css')
 </head>
 
 <body class="{{ $class ?? '' }}">

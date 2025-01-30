@@ -39,6 +39,7 @@
             border: 0 !important;
         }
     </style>
+    @stack('css')
 </head>
 
 <body class="{{ $class ?? '' }}">
