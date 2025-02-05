@@ -135,6 +135,8 @@ class HomeController extends Controller
                 'jnns' => [
                     $jnns_participants_present,
                     $jnns_participants_not_attend,
+                    // 100,
+                    // 20
                 ],
                 'year'=> $request->input('yearFilterJnns'),
             ];

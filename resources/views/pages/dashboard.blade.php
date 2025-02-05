@@ -29,7 +29,7 @@
                                     <option value="2022">2022</option>
                                     <option value="2023">2023</option>
                                     <option value="2024">2024</option>
-                                    <option value="2025">2025</option>
+                                    <option value="2025" selected>2025</option>
                                 </select>
                             </div>
                         </div>
@@ -55,7 +55,7 @@
                                     <option value="2022">2022</option>
                                     <option value="2023">2023</option>
                                     <option value="2024">2024</option>
-                                    <option value="2025">2025</option>
+                                    <option value="2025" selected>2025</option>
                                 </select>
                             </div>
                         </div>
@@ -208,10 +208,12 @@
                 const chartJnns = $('#jnns-chart');
 
                 // Hapus chart lama jika ada
-                if (chart_for_jnns) chart_for_jnns.destroy();
-
+                if (chart_for_jnns) {
+                    chart_for_jnns.destroy();
+                }
+                
                 // Buat chart_for_jnns baru
-                chart_for_jnns = new Chart(chartIuran, {
+                chart_for_jnns = new Chart(chartJnns, {
                     type: 'doughnut',
                     data: {
                         labels: labels,
@@ -250,8 +252,13 @@
                     data: { year: year },
                     dataType: 'json',
                     success: function (response) {
+                        let data = response.data;
+                        // Jika data kosong (0,0), tampilkan chart dengan label tetap
+                        if (data.jnns[0] == 0 && data.jnns[1] == 0) {
+                            data = [1, 1]; // Tambahkan nilai dummy kecil agar chart tetap muncul
+                        }
                         createChartJnns(response.data.labels, response.data.jnns);
-                        $('#yearFilter').val(response.data.year); // Set dropdown ke tahun yang sesuai
+                        $('#yearFilterJnns').val(response.data.year); // Set dropdown ke tahun yang sesuai
                     },
                     error: function () {
                         alert('Gagal mengambil data dari API');
@@ -263,7 +270,7 @@
             // const currentYear = new Date().getFullYear();
 
             // Ambil data awal untuk tahun sekarang
-            fetchDataIuran(currentYear);
+            fetchDataJnns(currentYear);
 
             // Event listener untuk filter tahun
             $('#yearFilterJnns').change(function () {
