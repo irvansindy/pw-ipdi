@@ -54,7 +54,7 @@
                                         
                                     </div>
                                     
-                                    <div class="card-footer" style="display: ${card.category_event_id != 1 ? 'none' : ''}">
+                                    <div class="card-footer">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
@@ -63,9 +63,9 @@
                                                     <small>${moment(card.date_end).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
+                                            <a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
                                                 Register
-                                            </button> 
+                                            </a> 
                                         </div>
                                     </div>
 
@@ -118,7 +118,7 @@
                                         
                                     </div>
 
-                                    <div class="card-footer" style="display: ${card.category_event_id != 1 ? 'none' : ''}">
+                                    <div class="card-footer">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
@@ -127,9 +127,9 @@
                                                     <small>${moment(card.date_end).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
-                                            <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
+                                            <a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
                                                 Register
-                                            </button> 
+                                            </a> 
                                         </div>
                                     </div>
 
@@ -144,147 +144,121 @@
             })
         })
 
-        // <div class="card-footer">
-        //     <div class="author d-flex justify-content-between">
-        //         <div class="name ps-1">
-        //             <span>Tanggal acara</span>
-        //             <div class="stats">
-        //                 <small>${moment(card.date).format('DD-MM-YYYY h:mm:ss')} WIB</small>
-        //             </div>
-        //         </div>
-        //         <button class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}"data-category_event_id="${card.category_event_id}">
-        //             Register
-        //         </button> 
-        //     </div>
-        // </div>
-
-        $(document).on('click', '.event-register', function(e) {
-            e.preventDefault()
-            let event_id = $(this).data('event_id')
-            let category_id = $(this).data('category_event_id')
-            $('#form_data_peserta').hide()
-            $('#form_create_data_event')[0].reset()
-            // alert(category_id)
-            $.ajax({
-                url: '{{ route('check-transaction') }}',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    event_id: event_id,
-                    category_id:category_id
-                },
-                dataType: 'json',
-                async: true,
-                success: function(res) {
-                    // validation for check kelengkapan data user
-                    // if (res.data[2].address == null || res.data[2].city == null || res.data[2].country == null || res.data[2].postal == null) {
-                    //     Swal.fire({
-                    //         icon: "warning",
-                    //         title: 'Alert!',
-                    //         text: 'Silahkan lengkapi biodata terlebih dahulu!.',
-                    //         showCancelButton: false,
-                    //         showConfirmButton: false,
-                    //         footer: '<a href="{{ route('profile') }}" class="text-primary">Klik link di bawah ini</a>'
-                    //     })
-                    // } else {
-                    // }
-                    var Rupiah = Intl.NumberFormat('en-ID', {
-                        style: 'currency',
-                        currency: 'idr',
-                        maximumSignificantDigits: 3,
-                    });
-                    $('.list_type_jnns').empty()
-                    $('.event_hotel').empty()
-                    harga_event = res.data[1].price
-                    if (category_id == 1) {
-                        $('#price_event').hide()
-                        $('.price_event').hide()
-                        $('.list_type_jnns').empty()
+        // $(document).on('click', '.event-register', function(e) {
+        //     e.preventDefault()
+        //     let event_id = $(this).data('event_id')
+        //     let category_id = $(this).data('category_event_id')
+        //     $('#form_data_peserta').hide()
+        //     $('#form_create_data_event')[0].reset()
+        //     // alert(category_id)
+        //     $.ajax({
+        //         url: '{{ route('check-transaction') }}',
+        //         type: 'POST',
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         data: {
+        //             event_id: event_id,
+        //             category_id:category_id
+        //         },
+        //         dataType: 'json',
+        //         async: true,
+        //         success: function(res) {
+        //             var Rupiah = Intl.NumberFormat('en-ID', {
+        //                 style: 'currency',
+        //                 currency: 'idr',
+        //                 maximumSignificantDigits: 3,
+        //             });
+        //             $('.list_type_jnns').empty()
+        //             $('.event_hotel').empty()
+        //             harga_event = res.data[1].price
+        //             if (category_id == 1) {
+        //                 $('#price_event').hide()
+        //                 $('.price_event').hide()
+        //                 $('.list_type_jnns').empty()
                         
 
-                        if (res.data[1].event_detail.length != 0) {
-                            $('.list_type_jnns').append(`<p>Pilihan :</p>`)
-                            $.each(res.data[1].event_detail, function(i, detail) {
-                                $('.list_type_jnns').append(`
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input data_jnns_type" type="radio" name="jnns_type"
-                                        id="jnns_${detail.name}" value="${detail.id}" data-harga="${detail.price}">
-                                    <label class="form-check-label" for="jnns_${detail.name}">${detail.name+' - '+Rupiah.format(detail.price)}</label>
-                                </div>
-                                `)
-                            })
-                        }
-                    } else {
-                        $('#price_event').show()
-                        $('.price_event').show()
-                    }
-                    $('.data_event').hide()
-                    if (res.data[0] == null) {
-                        $('#form_create_event').modal('show')
-                        $('#event_id').val(res.data[1].id)
-                        $('#category_id').val(res.data[1].category_event_id)
-                        $('#name_event').html(res.data[1].name)
-                        $('#title_event').html(res.data[1].title)
+        //                 if (res.data[1].event_detail.length != 0) {
+        //                     $('.list_type_jnns').append(`<p>Pilihan :</p>`)
+        //                     $.each(res.data[1].event_detail, function(i, detail) {
+        //                         $('.list_type_jnns').append(`
+        //                         <div class="form-check form-check-inline">
+        //                             <input class="form-check-input data_jnns_type" type="radio" name="jnns_type"
+        //                                 id="jnns_${detail.name}" value="${detail.id}" data-harga="${detail.price}">
+        //                             <label class="form-check-label" for="jnns_${detail.name}">${detail.name+' - '+Rupiah.format(detail.price)}</label>
+        //                         </div>
+        //                         `)
+        //                     })
+        //                 }
+        //             } else {
+        //                 $('#price_event').show()
+        //                 $('.price_event').show()
+        //             }
+        //             $('.data_event').hide()
+        //             if (res.data[0] == null) {
+        //                 $('#form_create_event').modal('show')
+        //                 $('#event_id').val(res.data[1].id)
+        //                 $('#category_id').val(res.data[1].category_event_id)
+        //                 $('#name_event').html(res.data[1].name)
+        //                 $('#title_event').html(res.data[1].title)
 
-                        let price_event = res.data[1].price.replace(/(\d)(?=(\d{3})+\b)/g,
-                            '$1.');
-                        $('#price_event').html(Rupiah.format(res.data[1].price))
-                        $('#price_event').attr('data-price_data', Rupiah.format(res.data[1].price))
+        //                 let price_event = res.data[1].price.replace(/(\d)(?=(\d{3})+\b)/g,
+        //                     '$1.');
+        //                 $('#price_event').html(Rupiah.format(res.data[1].price))
+        //                 $('#price_event').attr('data-price_data', Rupiah.format(res.data[1].price))
 
-                        $('#quota_event').html(res.data[1].quota + ' Audien/Peserta')
-                        if (res.data[1].hotel != null) {
-                            $('.event_hotel').empty()
-                            $('.event_hotel').append(`
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="${res.data[1].hotel.id}" data-hotel_name="${res.data[1].hotel.name}" data-price="${res.data[1].hotel.price}" name="check_event_hotel" id="check_event_hotel">
-                                <label class="form-check-label" for="check_event_hotel">
-                                    Hotel
-                                </label>
-                            </div>
-                            <div id="total_room_hotel"></div>
-                            `)
-                        }
-                        // $('#desc_event').html(res.data[1].description)
-                        let date_event = moment(res.data[1].date).format('D-MM-YYYY')+' sampai '+ moment(res.data[1].date_end).format('D-MM-YYYY')
-                        $('#date_event').html(date_event)
-                        let last_register = moment(res.data[1].last_register).format('D-MM-YYYY')
-                        $('#last_register').html(last_register)
-                        $('#create_transaction_event').data('event_id', res.data[1].id);
-                        $('#create_transaction_event').data('event_harga', res.data[1]
-                            .price);
-                        let bank_data = res.data[3][0].name + '(' + res.data[3][0]
-                            .account_number + ')' + ' a/n ' + res.data[3][0].account_name
-                        $('#bank_account_number').html(bank_data)
-                    } else {
-                        Swal.fire({
-                            icon: "warning",
-                            title: 'Alert!',
-                            text: 'Kamu sudah terdaftar sebagai peserta!.',
-                        })
-                    }
-                },
-                error: function(xhr) {
-                    let response_error = JSON.parse(xhr.responseText)
-                    // alert(response_error.message)
-                    if (response_error.message == 'Unauthenticated.') {
-                        Swal.fire({
-                            icon: "warning",
-                            title: 'Alert!',
-                            text: 'Silahkan login dahulu.',
-                        })
-                    } else {
-                        Swal.fire({
-                            icon: "warning",
-                            title: 'Alert!',
-                            text: response_error.meta.message,
-                        })
+        //                 $('#quota_event').html(res.data[1].quota + ' Audien/Peserta')
+        //                 if (res.data[1].hotel != null) {
+        //                     $('.event_hotel').empty()
+        //                     $('.event_hotel').append(`
+        //                     <div class="form-check">
+        //                         <input class="form-check-input" type="checkbox" value="${res.data[1].hotel.id}" data-hotel_name="${res.data[1].hotel.name}" data-price="${res.data[1].hotel.price}" name="check_event_hotel" id="check_event_hotel">
+        //                         <label class="form-check-label" for="check_event_hotel">
+        //                             Hotel
+        //                         </label>
+        //                     </div>
+        //                     <div id="total_room_hotel"></div>
+        //                     `)
+        //                 }
+        //                 // $('#desc_event').html(res.data[1].description)
+        //                 let date_event = moment(res.data[1].date).format('D-MM-YYYY')+' sampai '+ moment(res.data[1].date_end).format('D-MM-YYYY')
+        //                 $('#date_event').html(date_event)
+        //                 let last_register = moment(res.data[1].last_register).format('D-MM-YYYY')
+        //                 $('#last_register').html(last_register)
+        //                 $('#create_transaction_event').data('event_id', res.data[1].id);
+        //                 $('#create_transaction_event').data('event_harga', res.data[1]
+        //                     .price);
+        //                 let bank_data = res.data[3][0].name + '(' + res.data[3][0]
+        //                     .account_number + ')' + ' a/n ' + res.data[3][0].account_name
+        //                 $('#bank_account_number').html(bank_data)
+        //             } else {
+        //                 Swal.fire({
+        //                     icon: "warning",
+        //                     title: 'Alert!',
+        //                     text: 'Kamu sudah terdaftar sebagai peserta!.',
+        //                 })
+        //             }
+        //         },
+        //         error: function(xhr) {
+        //             let response_error = JSON.parse(xhr.responseText)
+        //             // alert(response_error.message)
+        //             if (response_error.message == 'Unauthenticated.') {
+        //                 Swal.fire({
+        //                     icon: "warning",
+        //                     title: 'Alert!',
+        //                     text: 'Silahkan login dahulu.',
+        //                 })
+        //             } else {
+        //                 Swal.fire({
+        //                     icon: "warning",
+        //                     title: 'Alert!',
+        //                     text: response_error.meta.message,
+        //                 })
 
-                    }
-                }
-            })
-        })
+        //             }
+        //         }
+        //     })
+        // })
 
         $(document).on('change', '.data_event_type', function() {
             $('.data_event').show()

@@ -79,9 +79,6 @@
                             <p align="justify">
                                 Jakarta Nephrology Nursing Symposium (JNNS) XVI 02 – 03 September 2023 merupakan Program PITWIL IPDI DKI Jakarta setiap Tahunnnya, dalam rangka update Ilmu dan Tekhnologi di bidang Dialisis guna meningkatkan Pelayanan Dialisis yang Profesional.
                             </p>
-                            {{-- <a href="javascript:;" class="text-info icon-move-right">Read More
-                                <i class="fas fa-arrow-right text-sm" aria-hidden="true"></i>
-                            </a> --}}
                         </div>
                     </div>
 
@@ -98,19 +95,6 @@
                                 <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/5.png') }}" style="height: 10% !important;" loading="lazy">
                             </div>
                         </a>
-                        
-                        {{-- <a href="javascript:;">
-                            <div class="card card-background move-on-hover mb-4">
-                                <div class="full-background"
-                                    style="background-image: url('{{ asset('img/carousel/5.png') }}')">
-                                </div>
-                                <div class="card-body pt-6">
-                                    <h4 class="text-white">JNNS XVI</h4>
-                                    <p>Website visitors today demand a frictionless user expericence — especially when using
-                                        search. Because of the hight standards.</p>
-                                </div>
-                            </div>
-                        </a> --}}
                     </div>
                 </div>
             </div>

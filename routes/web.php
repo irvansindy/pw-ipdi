@@ -68,7 +68,7 @@ Route::group(['middleware' => ['auth', 'role:user']], function() {
 	Route::get('/histori-transaksi', [TransactionController::class,'transactionHistory'])->name('histori-transaksi');
 	Route::get('/detail-transaksi', [TransactionController::class,'detailTransaction'])->name('detail-transaksi');
 	Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
-
+	Route::get('detail-event/{id}/{name}', [UserContentController::class, 'detailEvents'])->name('detail-event');
 	Route::get('/iuran-anggota', [userIuran::class,'index'])->name('iuran-anggota');
 	Route::get('/create-iuran-anggota', [userIuran::class,'viewCreateIuran'])->name('create-iuran-anggota');
 	Route::get('/fetch-iuran-anggota', [userIuran::class,'fetchIuran'])->name('fetch-iuran-anggota');
@@ -161,4 +161,5 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static'); 
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
+	Route::get('fetch-member-for-dashboard', [HomeController::class,'fetchMember'])->name('fetch-member-for-dashboard');
 });

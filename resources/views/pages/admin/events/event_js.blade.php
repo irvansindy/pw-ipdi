@@ -122,44 +122,6 @@
                     </div>
                 </div>
                 `)
-                // $('#select_event_hotel').append(`
-                //     <div class="form-group">
-                //         <label for="create_event_hotel">Hotel</label>
-                //         <select class="form-control" name="create_event_hotel" id="create_event_hotel" style="
-                //             display: block !important;
-                //             width: 100% !important;
-                //             padding: 0.5rem 0.75rem !important;
-                //             font-size: 0.875rem !important;
-                //             font-weight: 400 !important;
-                //             line-height: 1.4rem !important;
-                //             color: #495057 !important;
-                //             background-color: #fff !important;
-                //             background-clip: padding-box !important;
-                //             border: 1px solid #d2d6da !important;
-                //             appearance: none !important;
-                //             border-radius: 0.5rem !important;
-                //             transition: box-shadow 0.15s ease, border-color 0.15s ease !important;">
-                            
-                //         </select>
-                //     </div>
-                // `)
-                // $.ajax({
-                //     url: '{{ route("event-hotel") }}',
-                //     type: 'GET',
-                //     dataType: 'json',
-                //     success: function(res) {
-                //         // $('#select_event_hotel').empty()
-                //         $('#create_event_hotel').empty()
-                //         $('#create_event_hotel').append('<option value="">Pilih Satu</option>')
-                //         $.each(res.data, function (i, data) {
-                //             $('#create_event_hotel').append('<option value="'+ data.id + '">'+ data.name +' - Rp.' +data.price_per_night  + '</option>')
-                //         })
-                //         $('#create_event_hotel').select2({
-                //             dropParent: '#formCreateEvent',
-                //             width: '100%'
-                //         })
-                //     }
-                // })
             } else {
                 $('#select_event_hotel').empty()
             }
@@ -227,8 +189,6 @@
                 form_data.append('detail_event_price[]', value_detail_price[i]);
             }
 
-            // form_data.append('detail_event_name[]', value_detail_name);
-            // form_data.append('detail_event_price[]', value_detail_price);
             form_data.append('image', $('input[name="create_event_image"]')[0].files[0]);
             $.ajax({
                 headers: {
@@ -286,13 +246,32 @@
                     $.each(res.data[1], function(i, data) {
                         $('#update_event_category').append('<option value="' + data.id + '">' + data.name + '</option>')
                     })
-                    alert(moment(res.data[0].last_register).format('D/MM/YYYY'))
                     $('#update_event_price').val(res.data[0].price)
+                    if(res.data[0].hotel != null) {
+                        $('#update_check_event_hotel').prop('checked', true) 
+                        $('#update_select_event_hotel').empty()
+                        $('#update_select_event_hotel').append(`
+                        <div class="row g-2 align-items-center form-group">
+                            <div class="col-md-6">
+                                <label for="update_event_hotel">Nama Hotel</label>
+                                <input type="text" name="update_event_hotel" id="update_event_hotel" class="form-control" value="${res.data[0].hotel.name}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="update_event_harga_hotel">Harga Hotel</label>
+                                <input type="text" name="update_event_harga_hotel" id="update_event_harga_hotel" class="form-control" value="${res.data[0].hotel.price}">
+                            </div>
+                        </div>
+                        `);
+                    } else {
+                        $('#update_select_event_hotel').empty()
+                        $('#update_check_event_hotel').prop('checked', false)
+                    }
+                    
                     $('#update_event_description').val(res.data[0].description)
                     $('#update_event_quota').val(res.data[0].quota)
                     $('#update_event_date').val(res.data[0].date)
-                    // $('#update_event_date_last_register').val(res.data[0].last_register)
-                    $('#update_event_date_last_register').val(moment(res.data[0].last_register).format('D/M/YYYY'))
+                    $('#update_event_date_last_register').val(res.data[0].last_register)
+                    // $('#update_event_date_last_register').val(moment(res.data[0].last_register).format('D/M/YYYY'))
                 },
                 error: function(xhr, status, error) {
                     $('#formUpdateEvent').modal('toggle');
@@ -317,6 +296,7 @@
             let update_event_description = $('#update_event_description').val()
             let update_event_quota = $('#update_event_quota').val()
             let update_event_date = $('#update_event_date').val()
+            let update_event_date_last_register = $('#update_event_date_last_register').val()
 
             if (update_event_name == '') {
                 Swal.fire({
@@ -360,6 +340,12 @@
                     title: 'Oops...',
                     text: 'Date event tidak boleh kosong',
                 })
+            } else if (update_event_date_last_register == '') {
+                Swal.fire({
+                    icon: "error",
+                    title: 'Oops...',
+                    text: 'Date Last Register event tidak boleh kosong',
+                })
             }
 
             let data = {
@@ -371,6 +357,7 @@
                 'description': update_event_description,
                 'quota': update_event_quota,
                 'date': update_event_date,
+                'date_end': update_event_date_last_register,
             }
 
             $.ajax({
@@ -402,8 +389,6 @@
             })
         })
     })
-</script>
-<script>
     $(function() {
         $(".price").keyup(function(e) {
             $(this).val(format($(this).val()));

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transactions;
 use App\Models\Events;
+use App\Models\EventHotel;
+use App\Models\EventDetail;
 use App\Models\User;
 use App\Models\Bank;
 use App\Models\Hotel;
@@ -58,101 +60,113 @@ class TransactionController extends Controller
     public function createTransaction(Request $request)
     {
         try {
+            // dd($request->price);
             DB::beginTransaction();
-            // $id  = $request->input('id');
-            $id  = $request->event_id;
-            $category_id = $request->category_id;
-            $event_type = $request->event_type;
-            $list_peserta = $request->list_peserta;
-            // dd($list_peserta);
 
-            $list_peserta != null ? $total_peserta = count($list_peserta) : $total_peserta = 0;
-            $with_hotel = $request->with_hotel;
-            $jnns_type = $request->jnns_type;
-            $harga_hotel = $request->harga_hotel;
-            $total_kamar_hotel = $request->total_kamar_hotel == 'undifined' || NULL  ? $request->total_kamar_hotel : NULL;
-            $total_permalam = $request->total_permalam == 'undifined' || NULL ? $request->total_permalam : NULL;
-            $total_harga_hotel = $request->total_harga_hotel == 'undifined' || NULL ? $request->total_harga_hotel : NULL;
-            $event_harga = intval($request->event_harga);
-            // dd($event_harga);
-            $total_peserta <= 0 ? $total_harga_event = $event_harga : $total_harga_event = $event_harga * $total_peserta;
+            $event_id = $request->id;
+            $event_price = $request->price;
+            $user_id = $request->user_id;
+            $detail_event_id = $request->detail_event;
+            // dd($detail_event_id);
+            $event_hotel_id = $request->event_hotel;
+            $is_hotel_checked = $request->is_hotel_checked;
+            $total_room_hotel = $request->total_room_hotel;
+            $total_room_night = $request->total_room_night;
             
-            if ($with_hotel == 0) {
-                $grand_total_harga = $total_harga_event;
-            } else if ($with_hotel == 1) {
-                $grand_total_harga = $total_harga_event + $total_harga_hotel;
+            $existing_event = Events::with(['category'])
+            ->where('id', $event_id)->first();
+            $existing_event_detail = null;
+            $existing_hotel = null;
+            if ($detail_event_id) {
+                $existing_event_detail = EventDetail::where('id', intval($detail_event_id))->first();
+                // dd($existing_event_detail);
             }
+            $final_event_price = $existing_event_detail != null ? intval($existing_event_detail->price) : intval($event_price);
+            $check_hotel = intval($is_hotel_checked);
+            if ($check_hotel == 1) {
+                $existing_hotel = EventHotel::where('id', $event_hotel_id)->first();
+            }
+            // dd($existing_hotel->price);
+            $final_hotel_price = $existing_hotel != null ? intval($existing_hotel->price) : 0;
+            $grand_total_hotel = $final_hotel_price * $total_room_hotel * $total_room_night;
+            // dd($final_hotel_price);
+            $check_total_current_transaction = Transactions::where('event_id', $event_id)->count();
+            $check_quota_event = $existing_event->quota;
             
-            $check_total_current_transaction = Transactions::where('event_id', $id)->count();
-            $check_quota_event = Events::where('id', $id)->get();
-            
-            if ($check_total_current_transaction < $check_quota_event[0]->quota) {
-                // generate transaction number
-                $code_trans = '';
-                if ($category_id == 1) {
-                    if ($jnns_type == 4) {
-                        $code_trans = 'JNNS-SYMP';
-                    } else if ($jnns_type == 5) {
-                        $code_trans = 'JNNS-WS';
-                    } else if ($jnns_type == 6) {
-                        $code_trans = 'JNNS-PKT';
-                    }
-                } else if ($category_id == 2) {
-                    $code_trans = 'SMNR';
-                } else if ($category_id == 3) {
-                    $code_trans = 'RSTF';
-                } else if ($category_id == 4) {
-                    $code_trans = 'WKD';
-                } else if ($category_id == 5) {
-                    $code_trans = 'KOWIL';
+            $code_trans = '';
+            if ($check_total_current_transaction < $check_quota_event) {
+                switch ($existing_event->category->name) {
+                    case 'JNNS':
+                        if ($existing_event_detail->name == 'Simposium') {
+                            $code_trans = 'JNNS-SYMP';
+                        } else if ($existing_event_detail->name == 'Workshop') {
+                            $code_trans = 'JNNS-WS';
+                        } else if ($existing_event_detail->name == 'Paket') {
+                            $code_trans = 'JNNS-PKT';
+                        }
+                        break;
+                    case 'Seminar':
+                        $code_trans = 'SMNR';
+                        break;
+                    case 'Resertifikasi':
+                        $code_trans = 'RSTF';
+                        break;
+                    case 'WKD':
+                        $code_trans = 'WKD';
+                        break;
+                    case 'Kongres Wilayah':
+                        $code_trans = 'KOWIL';
+                        break;
+                    
+                    default:
+                    $code_trans = '';
+                        break;
                 }
 
                 $date_trans = now()->format('y/m/d');
                 $numbering = $check_total_current_transaction + 1;
                 $result_number = $code_trans.'-'.$date_trans.'/'.$numbering;
+                $grand_total_amount = $final_event_price + $grand_total_hotel;
+                
+                // dd([
+                //     'harga event' => $final_event_price,
+                //     'harga hotel' => $final_hotel_price,
+                //     'grand total hotel' => $grand_total_hotel,
+                //     'existing_event' => $existing_event->category->name,
+                //     'current transaction' => $check_total_current_transaction,
+                //     'qouta' => $check_quota_event,
+                //     'code trans' => $result_number,
+                //     'grand total' => $grand_total_amount
+                // ]);
 
                 $create_transaction = Transactions::create([
                     'number' => $result_number,
-                    'user_id' => Auth::user()->id,
-                    'event_id' => $id,
+                    'user_id' => $user_id,
+                    'event_id' => $event_id,
                     'date' => now()->format('Y-m-d H:i:s'),
                     'status' => 'pending',
-                    'price' => $grand_total_harga,
-                    'with_hotel' => $with_hotel,
-                    'harga_hotel' => $harga_hotel,
-                    'total_room' => $total_kamar_hotel,
-                    'total_night' => $total_permalam,
+                    'price' => $grand_total_amount,
+                    'with_hotel' => $is_hotel_checked,
+                    'harga_hotel' => $grand_total_hotel,
+                    'total_room' => $total_room_hotel,
+                    'total_night' => $total_room_night,
                     'proof_of_payment' => null
                 ]);
                 $data_user = [
                     'transaction_id' => $create_transaction->id,
-                    'user_id' => Auth::user()->id,
+                    'user_id' => $user_id,
                     'is_attendanced' => 0,
                     'created_at' => date('Y-m-d H:i:s'),
                 ];
                 TransactionDetail::create($data_user);
-                // dd(is_countable($list_peserta), count($list_peserta));
-                if ($list_peserta != null) {
-                    $data_peserta = [];
-                    $each_peserta = [];
-                    for ($i=0; $i < count($list_peserta); $i++) { 
-                        $each_peserta = [
-                            'transaction_id' => $create_transaction->id,
-                            'user_id' => $request->list_peserta[$i],
-                            'created_at' => date('Y-m-d H:i:s'),
-                        ];
-                        array_push($data_peserta, $each_peserta);
-                    }
-                    TransactionDetail::insert($data_peserta);
-
-                    // dd($trans_detail);
-                }                
+                
                 DB::commit();
                 return FormatResponseJson::success($create_transaction, 'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.');
             } else {
                 DB::rollBack();
                 return FormatResponseJson::error(null, 'Gagal melakukan transaksi', 400);
             }
+
         } catch (\Exception $e) {
             DB::rollBack();
             return FormatResponseJson::error(null, $e->getMessage(), 500);

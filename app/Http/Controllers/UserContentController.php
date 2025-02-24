@@ -8,7 +8,7 @@ use App\Models\Events;
 use App\Models\CategoriesEvent;
 use App\Models\Vision;
 use App\Models\Mision;
-
+use App\Models\Bank;
 class UserContentController extends Controller
 {
     // public $search;
@@ -75,6 +75,15 @@ class UserContentController extends Controller
     public function viewEvents()
     {
         return view('pages.user.event.events');
+    }
+    public function detailEvents($id, $name){
+        $existing_event = Events::with(['eventDetail', 'hotel'])
+        ->where('id', $id)
+        ->where('name','like','%'.$name.'%')
+        ->first();
+        // dd($existing_event);
+        $fetch_bank = Bank::first();
+        return view('pages.user.event.detail_event', ['event' => $existing_event, 'bank' => $fetch_bank]);
     }
     public function fetchCategoriesEvent()
     {

@@ -20,6 +20,7 @@ class EventManagementController extends Controller
     public function index()
     {
         return view("pages.admin.events.index");
+        // return view("pages.admin.events.dummy");
     }
     public function fetch()
     {
@@ -123,7 +124,7 @@ class EventManagementController extends Controller
     {
         try {
             $event_id = $request->id;
-            $event = Events::with('category')->findOrFail($event_id);
+            $event = Events::with(['category', 'hotel'])->findOrFail($event_id);
             $categories = CategoriesEvent::all();
             $data = [
                 $event,
@@ -138,7 +139,7 @@ class EventManagementController extends Controller
     {
         try {
             $current_event = Events::find($request->id);
-
+            dd($request->all());
             $this->validate($request, [
                 "name"=> "required|string",
                 "title"=> "required|string",
@@ -146,7 +147,8 @@ class EventManagementController extends Controller
                 "price"=> "required|string",
                 "description"=> "required|string",
                 "quota"=> "required|integer",
-                "date"=> "required|string"
+                "date"=> "required|string",
+                "date_end"=> "required|string",
             ]);
 
             $current_event->update([
@@ -156,7 +158,8 @@ class EventManagementController extends Controller
                 "price"=> $request->price,
                 "description"=> $request->description,
                 "quota"=> $request->quota,
-                "date"=> $request->date
+                "date"=> $request->date,
+                "date_end"=> $request->date_end
             ]);
             return FormatResponseJson::success($current_event,'Event updated successfully');
         } catch (\Throwable $th) {

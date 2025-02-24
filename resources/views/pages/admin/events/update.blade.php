@@ -45,6 +45,17 @@
                             <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
                         </div>
                         <div class="form-group">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" name="update_check_event_hotel" id="update_check_event_hotel">
+                                <label class="form-check-label" for="update_check_event_hotel">
+                                    Hotel
+                                </label>
+                            </div>
+                        </div>
+                        <div id="update_select_event_hotel">
+                            
+                        </div>
+                        <div class="form-group">
                             <label for="update_event_description">Description</label>
                             <textarea class="form-control" name="update_event_description" id="update_event_description" rows="3" value=""></textarea>
                         </div>
