@@ -81,10 +81,6 @@
                     'data': null,
                     title: 'Action',
                     wrap: true,
-                    // if (item.iuran.status == 'pending') {
-                    //     return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-success btn-sm mt-2 upload_iuran_transaction" data-bs-toggle="modal" data-bs-target="#uploadIuranTransaction">Upload</button> <button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
-                    // } else {
-                    // }
                     "render": function(item) {
                         return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
                     }
@@ -265,7 +261,7 @@
                             <td>${data.user.username}</td>
                             <td>Rp.${data.biaya_regis_anggota_baru}</td>
                             <td>Rp.${data.biaya_iuran_tahunan}</td>
-                            <td>Rp.${data.tahun_iuran}</td>
+                            <td>${data.tahun_iuran}</td>
                         </tr>
                         `)
                     })

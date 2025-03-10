@@ -114,7 +114,7 @@
                         $('.is_payment').append(`<div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Link bukti pembayaran</span>
                             <br/>
-                            <a href="${link_proof_of_payment}" style="font-size: 12px;">klik disini</a>
+                            <a href="${link_proof_of_payment}" target="_blank" style="font-size: 12px;">klik disini</a>
                         </div>`)
                     }
                     let numbering_user = 1
