@@ -93,20 +93,29 @@
                     if (res.data.with_hotel == true) {
                         $('.is_with_hotel').empty()
                         $('.is_with_hotel').append(`
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Harga Hotel</span>
                             <p id="">${res.data.harga_hotel}</p>
                         </div>
                         
                         `)
                         $('.is_with_hotel').append(`
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Jumlah Kamar Hotel</span>
                             <p id="">${res.data.total_room + ` Room`}</p>
                         </div>
                         `)
                     } else {
                         $('.is_with_hotel').empty()
+                    }
+                    $('.is_payment').empty()
+                    if (res.data.proof_of_payment != null) {
+                        let link_proof_of_payment = '/uploads/bukti_transaksi/' + res.data.proof_of_payment
+                        $('.is_payment').append(`<div class="col-sm-6 col-sm-6 col-6">
+                            <span style="font-weight: 700 !important;">Link bukti pembayaran</span>
+                            <br/>
+                            <a href="${link_proof_of_payment}" style="font-size: 12px;">klik disini</a>
+                        </div>`)
                     }
                     let numbering_user = 1
                     $('#list_data_pererta').empty()

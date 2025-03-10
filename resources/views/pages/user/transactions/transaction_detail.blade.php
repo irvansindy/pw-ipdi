@@ -16,32 +16,33 @@
                         <input type="hidden" name="detail_transaction_id" id="detail_transaction_id">
                     </div>
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Nomor Transaksi</span>
                             <p id="detail_id"></p>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Pendaftar</span>
                             <p id="detail_username"></p>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Event</span>
                             <p id="detail_event"></p>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Tanggal Acara</span>
                             <p id="detail_date"></p>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Status</span>
                             <p id="detail_status"></p>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Total Harga</span>
                             <p id="detail_price"></p>
                         </div>
+                        <div class="is_with_hotel"></div>
+                        <div class="is_payment"></div>
                     </div>
-                    <div class="is_with_hotel"></div>
                     <div class="table">
                         <table class="table table-striped">
                             <thead>
