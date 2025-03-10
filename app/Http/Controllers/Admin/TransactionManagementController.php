@@ -19,16 +19,50 @@ class TransactionManagementController extends Controller
 {
     public function index()
     {
-        // phpinfo();
         return view("pages.admin.transactions.index");
     }
     public function fetch()
     {
         try {
+            $transaction_jnns = Transactions::with(['event', 'user'])
+            ->whereHas('event.category', function ($query) {
+                $query->where('name', 'jnns');
+            })
+            ->orderBy("id","desc")->get();
+            
+            $transaction_resertifikasi = Transactions::with(['event', 'user'])
+            ->whereHas('event.category', function ($query) {
+                $query->where('name', 'resertifikasi');
+            })
+            ->orderBy("id","desc")->get();
+
+            $transaction_seminar = Transactions::with(['event', 'user'])
+            ->whereHas('event.category', function ($query) {
+                $query->where('name', 'Seminar');
+            })
+            ->orderBy("id","desc")->get();
+            
+            $transaction_wkd = Transactions::with(['event', 'user'])
+            ->whereHas('event.category', function ($query) {
+                $query->where('name', 'wkd');
+            })
+            ->orderBy("id","desc")->get();
+            
+            $transaction_kongres_wilayah = Transactions::with(['event', 'user'])
+            ->whereHas('event.category', function ($query) {
+                $query->where('name', 'Kongres Wilayah');
+            })
+            ->orderBy("id","desc")->get();
+            
             $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->get();
             $role = auth()->user()->roles->pluck('name')[0];
             
             $data = [
+                'jnns' => $transaction_jnns,
+                'resertifikasi'=> $transaction_resertifikasi,
+                'seminar'=> $transaction_seminar,
+                'wkd'=> $transaction_wkd,
+                'kongres_wilayah'=> $transaction_kongres_wilayah,
                 'transactions'=> $transactions,
                 'role'=> $role
             ];

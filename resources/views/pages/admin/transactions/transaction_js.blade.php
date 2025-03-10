@@ -8,13 +8,30 @@
                 method: 'GET',
                 success: function(response) {
                     role = response.data.role;
-                    const transactions = response.data.transactions;
-                    $('#transaction_management').DataTable().clear().destroy();
-                    $('#transaction_management tbody').empty();
+                    const transaction_jnns = response.data.jnns;
+                    const transaction_resertifikasi = response.data.resertifikasi;
+                    const transaction_seminar = response.data.seminar;
+                    const transaction_wkd = response.data.wkd;
+                    const transaction_kongres_wilayah = response.data.kongres_wilayah;
 
-                    transactions.forEach((transaction, index) => {
+                    $('#transaction_jnns_management').DataTable().clear().destroy();
+                    $('#transaction_jnns_management tbody').empty();
+                    
+                    $('#transaction_resertifikasi_management').DataTable().clear().destroy();
+                    $('#transaction_resertifikasi_management tbody').empty();
+                    
+                    $('#transaction_seminar_management').DataTable().clear().destroy();
+                    $('#transaction_seminar_management tbody').empty();
+                    
+                    $('#transaction_wkd_management').DataTable().clear().destroy();
+                    $('#transaction_wkd_management tbody').empty();
+                    
+                    $('#transaction_kongres_wilayah_management').DataTable().clear().destroy();
+                    $('#transaction_kongres_wilayah_management tbody').empty();
+
+                    transaction_jnns.forEach((transaction, index) => {
                         
-                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
+                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
                         if (transaction.status == 'pending') {
                         }
                         if (role === 'admin') {
@@ -26,7 +43,7 @@
                                 `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
                         }
 
-                        $('#transaction_management tbody').append(`
+                        $('#transaction_jnns_management tbody').append(`
                             <tr>
                                 <td>${index + 1}</td>
                                 <td>${transaction.number != null ? transaction.number : 'not set'}</td>
@@ -38,7 +55,120 @@
                         `);
                     });
 
-                    $('#transaction_management').DataTable();
+                    $('#transaction_jnns_management').DataTable();
+                    
+                    transaction_resertifikasi.forEach((transaction, index) => {
+                        
+                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
+                        if (transaction.status == 'pending') {
+                        }
+                        if (role === 'admin') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
+                        }
+                        if (transaction.status === 'success') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
+                        }
+
+                        $('#transaction_resertifikasi_management tbody').append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
+                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
+                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
+                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
+                                <td>${actions}</td>
+                            </tr>
+                        `);
+                    });
+
+                    $('#transaction_resertifikasi_management').DataTable();
+
+                    transaction_seminar.forEach((transaction, index) => {
+                        
+                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
+                        if (transaction.status == 'pending') {
+                        }
+                        if (role === 'admin') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
+                        }
+                        if (transaction.status === 'success') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
+                        }
+
+                        $('#transaction_seminar_management tbody').append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
+                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
+                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
+                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
+                                <td>${actions}</td>
+                            </tr>
+                        `);
+                    });
+
+                    $('#transaction_seminar_management').DataTable();
+
+                    transaction_wkd.forEach((transaction, index) => {
+                        
+                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
+                        if (transaction.status == 'pending') {
+                        }
+                        if (role === 'admin') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
+                        }
+                        if (transaction.status === 'success') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
+                        }
+
+                        $('#transaction_wkd_management tbody').append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
+                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
+                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
+                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
+                                <td>${actions}</td>
+                            </tr>
+                        `);
+                    });
+
+                    $('#transaction_wkd_management').DataTable();
+
+                    transaction_kongres_wilayah.forEach((transaction, index) => {
+                        
+                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
+                        if (transaction.status == 'pending') {
+                        }
+                        if (role === 'admin') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
+                        }
+                        if (transaction.status === 'success') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
+                        }
+
+                        $('#transaction_kongres_wilayah_management tbody').append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
+                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
+                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
+                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
+                                <td>${actions}</td>
+                            </tr>
+                        `);
+                    });
+
+                    $('#transaction_kongres_wilayah_management').DataTable();
+
                 },
                 error: function(xhr) {
                     alert('An error occurred: ' + xhr.responseText);
