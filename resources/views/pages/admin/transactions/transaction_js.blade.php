@@ -78,11 +78,6 @@
             // Panggil fetch pertama kali dengan tahun sekarang
             fetchTransactions(tableId, currentYear);
 
-            // Event listener untuk filter tahun pada tabel masing-masing
-            // $yearFilter.change(function() {
-            //     let selectedYear = $(this).val();
-            //     fetchTransactions(tableId, selectedYear);
-            // });
             $(document).on("change", ".year-filter", function () {
                 let selectedYear = $(this).val();
                 fetchTransactions(tableId, selectedYear);
@@ -333,7 +328,5 @@
             })
         })
     })
-    // $('.form-select, .year-filter').removeClass('w-auto')
-    // $('.form-select, .year-filter').addClass('w-10')
     $('.form-select, .year-filter').select2()
 </script>

@@ -33,17 +33,17 @@
                         <div class="tab-content mt-3" id="myTabContent">
                             @foreach(['jnns', 'resertifikasi', 'seminar', 'wkd', 'kongres_wilayah'] as $tab)
                             <div class="tab-pane fade p-0 px-md-2 px-sm-2 @if($loop->first) show active @endif" id="{{ $tab }}" role="tabpanel">
-                                <div class="d-flex justify-content-end align-items-center gap-2 mb-3 px-3 flex-wrap">
+                                <div class="d-flex justify-content-end align-items-center gap-2 mb-3 px-2 flex-wrap">
                                     <select class="form-select year-filter w-auto" id="year_filter_{{ $tab }}">
                                         @for($year = now()->year; $year >= now()->year - 10; $year--)
                                             <option value="{{ $year }}">{{ $year }}</option>
                                         @endfor
                                     </select>
-                                    <button type="button" class="btn bg-gradient-danger mt-3 mt-sm-3 mt-md-3 refresh-data" data-table="{{ $tab }}">
-                                        <i class="fas fa-sync"></i> Refresh
+                                    <button type="button" class="btn bg-gradient-danger mt-3 mt-sm-3 mt-md-3 refresh-data" data-bs-toggle="tooltip" title="Refresh Table" data-table="{{ $tab }}">
+                                        <i class="fas fa-sync"></i>
                                     </button>
-                                    <button type="button" class="btn bg-gradient-success mt-sm-3 mt-md-3 export-excel" data-table="{{ $tab }}">
-                                        <i class="fas fa-file-excel"></i> Export Excel
+                                    <button type="button" class="btn bg-gradient-success mt-sm-3 mt-md-3 export-excel" data-bs-toggle="tooltip" title="Refresh to Excel" data-table="{{ $tab }}">
+                                        <i class="fas fa-file-excel"></i>
                                     </button>
                                 </div>
                                 <div class="table-responsive p-0 px-md-2 px-sm-2">
@@ -75,18 +75,11 @@
     @include('pages.admin.transactions.detail_attendance')
 @endsection
 @push('css')
-    {{-- <style>
-        @media (max-width: 768px) {
-            .d-flex.align-items-center.gap-2 {
-                flex-wrap: wrap;
-            }
-
-            .year-filter {
-                width: 100%;
-            }
+    <style>
+        .form-select, .year-filter {
+            width: 100px !important;
         }
-
-    </style> --}}
+    </style>
 @endpush
 @push('js')
     @include('pages.admin.transactions.transaction_js')
