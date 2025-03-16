@@ -1,174 +1,50 @@
 <script>
     $(document).ready(function() {
         var role;
+        let currentYear = new Date().getFullYear(); // Tahun saat ini
 
-        function fetchTransactions() {
+        // Fungsi untuk mengambil transaksi berdasarkan ID tabel dan tahun
+        function fetchTransactions(tableId, year) {
             $.ajax({
                 url: '{{ route('transaction-fetch') }}',
                 method: 'GET',
+                data: {
+                    year: year
+                }, // Kirim parameter tahun ke API
                 success: function(response) {
-                    role = response.data.role;
-                    const transaction_jnns = response.data.jnns;
-                    const transaction_resertifikasi = response.data.resertifikasi;
-                    const transaction_seminar = response.data.seminar;
-                    const transaction_wkd = response.data.wkd;
-                    const transaction_kongres_wilayah = response.data.kongres_wilayah;
+                    let transactions = response.data[tableId]; // Ambil data transaksi sesuai tabel
+                    let role = response.data.role;
 
-                    $('#transaction_jnns_management').DataTable().clear().destroy();
-                    $('#transaction_jnns_management tbody').empty();
-                    
-                    $('#transaction_resertifikasi_management').DataTable().clear().destroy();
-                    $('#transaction_resertifikasi_management tbody').empty();
-                    
-                    $('#transaction_seminar_management').DataTable().clear().destroy();
-                    $('#transaction_seminar_management tbody').empty();
-                    
-                    $('#transaction_wkd_management').DataTable().clear().destroy();
-                    $('#transaction_wkd_management tbody').empty();
-                    
-                    $('#transaction_kongres_wilayah_management').DataTable().clear().destroy();
-                    $('#transaction_kongres_wilayah_management tbody').empty();
+                    let $table = $('#' + tableId);
+                    $table.DataTable().clear().destroy();
+                    $table.find('tbody').empty();
 
-                    transaction_jnns.forEach((transaction, index) => {
-                        
-                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
-                        if (transaction.status == 'pending') {
-                        }
+                    transactions.forEach((transaction, index) => {
+                        let actions =
+                            `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`;
+
                         if (role === 'admin') {
                             actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
                         }
                         if (transaction.status === 'success') {
                             actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">Check Attendance</button>`;
                         }
 
-                        $('#transaction_jnns_management tbody').append(`
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
-                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
-                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
-                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
-                                <td>${actions}</td>
-                            </tr>
-                        `);
+                        $table.find('tbody').append(`
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${transaction.number ?? 'not set'}</td>
+                            <td>${transaction.event?.name ?? 'not set'}</td>
+                            <td>${transaction.user?.username ?? 'not set'}</td>
+                            <td>${transaction.status ?? 'not set'}</td>
+                            <td>${actions}</td>
+                        </tr>
+                    `);
                     });
 
-                    $('#transaction_jnns_management').DataTable();
-                    
-                    transaction_resertifikasi.forEach((transaction, index) => {
-                        
-                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
-                        if (transaction.status == 'pending') {
-                        }
-                        if (role === 'admin') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
-                        }
-                        if (transaction.status === 'success') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
-                        }
-
-                        $('#transaction_resertifikasi_management tbody').append(`
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
-                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
-                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
-                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
-                                <td>${actions}</td>
-                            </tr>
-                        `);
-                    });
-
-                    $('#transaction_resertifikasi_management').DataTable();
-
-                    transaction_seminar.forEach((transaction, index) => {
-                        
-                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
-                        if (transaction.status == 'pending') {
-                        }
-                        if (role === 'admin') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
-                        }
-                        if (transaction.status === 'success') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
-                        }
-
-                        $('#transaction_seminar_management tbody').append(`
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
-                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
-                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
-                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
-                                <td>${actions}</td>
-                            </tr>
-                        `);
-                    });
-
-                    $('#transaction_seminar_management').DataTable();
-
-                    transaction_wkd.forEach((transaction, index) => {
-                        
-                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
-                        if (transaction.status == 'pending') {
-                        }
-                        if (role === 'admin') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
-                        }
-                        if (transaction.status === 'success') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
-                        }
-
-                        $('#transaction_wkd_management tbody').append(`
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
-                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
-                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
-                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
-                                <td>${actions}</td>
-                            </tr>
-                        `);
-                    });
-
-                    $('#transaction_wkd_management').DataTable();
-
-                    transaction_kongres_wilayah.forEach((transaction, index) => {
-                        
-                        let actions = `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm mt-2 mx-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`
-                        if (transaction.status == 'pending') {
-                        }
-                        if (role === 'admin') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
-                        }
-                        if (transaction.status === 'success') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm mt-2 mx-2 check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">check attendance</button>`;
-                        }
-
-                        $('#transaction_kongres_wilayah_management tbody').append(`
-                            <tr>
-                                <td>${index + 1}</td>
-                                <td>${transaction.number != null ? transaction.number : 'not set'}</td>
-                                <td>${transaction.event != null ? transaction.event.name : 'not set'}</td>
-                                <td>${transaction.user != null ? transaction.user.username : 'not set'}</td>
-                                <td>${transaction.status != null ? transaction.status : 'not set'}</td>
-                                <td>${actions}</td>
-                            </tr>
-                        `);
-                    });
-
-                    $('#transaction_kongres_wilayah_management').DataTable();
-
+                    $table.DataTable();
                 },
                 error: function(xhr) {
                     alert('An error occurred: ' + xhr.responseText);
@@ -176,11 +52,53 @@
             });
         }
 
-        // $('#transaction_management').DataTable();
-        fetchTransactions();
+        // Daftar ID tabel
+        let tableIds = [
+            'transaction_jnns_management',
+            'transaction_resertifikasi_management',
+            'transaction_seminar_management',
+            'transaction_wkd_management',
+            'transaction_kongres_wilayah_management'
+        ];
 
-        $('#refresh_data').on('click', function() {
-            fetchTransactions();
+        // Tambahkan dropdown filter tahun di setiap tabel dan ambil data awal
+        tableIds.forEach(tableId => {
+            let tabName = tableId.replace('transaction_', '').replace('_management', '');
+            let $filterContainer = $('#' + tabName + '_management_filter_container'); 
+            let $yearFilter = $('<select class="form-select year-filter w-40" id="'+tableId+'_year_filter"></select>');
+
+            for (let year = currentYear; year >= currentYear - 10; year--) {
+                $yearFilter.append(`<option value="${year}">${year}</option>`);
+            }
+
+            $filterContainer.append($yearFilter);
+
+            // Panggil fetch pertama kali dengan tahun sekarang
+            fetchTransactions(tableId, currentYear);
+
+            // Event listener untuk filter tahun pada tabel masing-masing
+            $yearFilter.change(function() {
+                let selectedYear = $(this).val();
+                fetchTransactions(tableId, selectedYear);
+            });
+        });
+
+        // Event listener untuk tombol Refresh
+        $('.refresh-data').click(function () {
+            let tabName = $(this).data('table');
+            let selectedYear = $('#transaction_' + tabName + '_management_year_filter').val();
+            fetchTransactions('transaction_' + tabName + '_management', selectedYear);
+        });
+
+        // Event listener untuk tombol Export Excel
+        $('.export-excel').click(function (e) {
+            e.preventDefault();
+            let tabName = $(this).data('table');
+            let selectedYear = $('#transaction_' + tabName + '_management_year_filter').val();
+
+            // Redirect ke route export dengan parameter tahun dan tab aktif
+            let exportUrl = "{{ route('transaction-export-excel') }}?year=" + selectedYear + "&category=" + tabName;
+            window.location.href = exportUrl;
         });
 
         $(document).on('click', '.detail_transaction', function(e) {
@@ -318,8 +236,8 @@
             })
         })
 
-        $(document).on('keyup', '#myInput', function(e){
-            if(tex !=="" && e.keyCode===13){
+        $(document).on('keyup', '#myInput', function(e) {
+            if (tex !== "" && e.keyCode === 13) {
                 $('#myInput').val(tex).focus();
             }
         })
@@ -344,7 +262,10 @@
                     let button_confirm = ''
                     res.data.forEach((audience, index) => {
                         // alert(typeof(audience.is_attendanced))
-                        button_confirm = audience.is_attendanced != 0 ? '' : '<button type="button" data-userid="'+audience.user.id+'" data-transid="'+audience.id+'" class="btn btn-outline-info btn-sm mt-2 confirm_attendance">Confirm</button>'
+                        button_confirm = audience.is_attendanced != 0 ? '' :
+                            '<button type="button" data-userid="' + audience.user
+                            .id + '" data-transid="' + audience.id +
+                            '" class="btn btn-outline-info btn-sm mt-2 confirm_attendance">Confirm</button>'
                         $('#list_user_attendance tbody').append(`
                             <tr>
                                 <td>${index + 1}</td>
@@ -404,4 +325,7 @@
             })
         })
     })
+    $('.form-select, .year-filter').removeClass('w-auto')
+        $('.form-select, .year-filter').addClass('w-10')
+        $('.form-select, .year-filter').select2()
 </script>

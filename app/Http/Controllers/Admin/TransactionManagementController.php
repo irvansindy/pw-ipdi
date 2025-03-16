@@ -21,52 +21,39 @@ class TransactionManagementController extends Controller
     {
         return view("pages.admin.transactions.index");
     }
-    public function fetch()
+    public function fetch(Request $request)
     {
         try {
-            $transaction_jnns = Transactions::with(['event', 'user'])
-            ->whereHas('event.category', function ($query) {
-                $query->where('name', 'jnns');
-            })
-            ->orderBy("id","desc")->get();
-            
-            $transaction_resertifikasi = Transactions::with(['event', 'user'])
-            ->whereHas('event.category', function ($query) {
-                $query->where('name', 'resertifikasi');
-            })
-            ->orderBy("id","desc")->get();
+            $year = $request->get('year', date('Y'));
 
-            $transaction_seminar = Transactions::with(['event', 'user'])
-            ->whereHas('event.category', function ($query) {
-                $query->where('name', 'Seminar');
-            })
-            ->orderBy("id","desc")->get();
-            
-            $transaction_wkd = Transactions::with(['event', 'user'])
-            ->whereHas('event.category', function ($query) {
-                $query->where('name', 'wkd');
-            })
-            ->orderBy("id","desc")->get();
-            
-            $transaction_kongres_wilayah = Transactions::with(['event', 'user'])
-            ->whereHas('event.category', function ($query) {
-                $query->where('name', 'Kongres Wilayah');
-            })
-            ->orderBy("id","desc")->get();
-            
-            $transactions = Transactions::with(['event', 'user'])->orderBy("id","desc")->get();
-            $role = auth()->user()->roles->pluck('name')[0];
-            
-            $data = [
-                'jnns' => $transaction_jnns,
-                'resertifikasi'=> $transaction_resertifikasi,
-                'seminar'=> $transaction_seminar,
-                'wkd'=> $transaction_wkd,
-                'kongres_wilayah'=> $transaction_kongres_wilayah,
-                'transactions'=> $transactions,
-                'role'=> $role
+            $transactions = [
+                'transaction_jnns_management' => Transactions::with(['event', 'user'])
+                    ->whereYear('created_at', $year)
+                    ->whereHas('event.category', fn($q) => $q->where('name', 'jnns'))
+                    ->orderBy("id", "desc")->get(),
+
+                'transaction_resertifikasi_management' => Transactions::with(['event', 'user'])
+                    ->whereYear('created_at', $year)
+                    ->whereHas('event.category', fn($q) => $q->where('name', 'resertifikasi'))
+                    ->orderBy("id", "desc")->get(),
+
+                'transaction_seminar_management' => Transactions::with(['event', 'user'])
+                    ->whereYear('created_at', $year)
+                    ->whereHas('event.category', fn($q) => $q->where('name', 'Seminar'))
+                    ->orderBy("id", "desc")->get(),
+
+                'transaction_wkd_management' => Transactions::with(['event', 'user'])
+                    ->whereYear('created_at', $year)
+                    ->whereHas('event.category', fn($q) => $q->where('name', 'wkd'))
+                    ->orderBy("id", "desc")->get(),
+
+                'transaction_kongres_wilayah_management' => Transactions::with(['event', 'user'])
+                    ->whereYear('created_at', $year)
+                    ->whereHas('event.category', fn($q) => $q->where('name', 'Kongres Wilayah'))
+                    ->orderBy("id", "desc")->get(),
             ];
-            return FormatResponseJson::success($data, 'Transaction fetched successfully');
+
+            return FormatResponseJson::success(['role' => auth()->user()->roles->pluck('name')[0]] + $transactions, 'Transaction fetched successfully');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 400);
         }
@@ -139,9 +126,16 @@ class TransactionManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
-    public function exportExcel()
+    // public function exportExcel()
+    // {
+    //     return Excel::download(new TransactionExport, 'list_transaksi.xlsx');
+    // }
+    public function exportExcel(Request $request)
     {
-        return Excel::download(new TransactionExport, 'list_transaksi.xlsx');
+        $category = $request->input('category'); // Ambil kategori dari request
+        $year = $request->input('year'); // Ambil tahun dari request
+
+        return Excel::download(new TransactionExport($category, $year), "list_transaksi_{$category}_{$year}.xlsx");
     }
     public function listAudience(Request $request)
     {

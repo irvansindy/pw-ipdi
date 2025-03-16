@@ -9,17 +9,9 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Transaction Management</h6>
-                            <div class="ms-auto mx-0">
-                                <button type="button" class="btn bg-gradient-danger ms-auto" id="refresh_data">
-                                    <i class="fas fa-sync"></i>
-                                </button>
-                                <a href="{{ route('transaction-export-excel') }}" class="btn bg-gradient-success ms-auto"
-                                    id="transaction_export_excel">
-                                    <i class="fas fa-file-excel"></i>
-                                </a>
-                            </div>
                         </div>
                     </div>
+                    
                     <div class="card-body px-0 pt-0 pb-2">
                         <ul class="nav nav-tabs px-md-2 px-sm-2" id="myTab" role="tablist">
                             <li class="nav-item" role="presentation">
@@ -39,173 +31,40 @@
                             </li>
                         </ul>
                         <div class="tab-content mt-3" id="myTabContent">
-                            <div class="tab-pane fade p-0 px-md-2 px-sm-2 show active" id="jnns" role="tabpanel">
+                            @foreach(['jnns', 'resertifikasi', 'seminar', 'wkd', 'kongres_wilayah'] as $tab)
+                            <div class="tab-pane fade p-0 px-md-2 px-sm-2 @if($loop->first) show active @endif" id="{{ $tab }}" role="tabpanel">
+                                <div class="d-flex justify-content-end align-items-center gap-2 mb-3 px-3 flex-wrap">
+                                    <select class="form-select year-filter w-auto" id="year_filter_{{ $tab }}">
+                                        @for($year = now()->year; $year >= now()->year - 10; $year--)
+                                            <option value="{{ $year }}">{{ $year }}</option>
+                                        @endfor
+                                    </select>
+                                    <button type="button" class="btn bg-gradient-danger mt-3 mt-sm-3 mt-md-3 refresh-data" data-table="{{ $tab }}">
+                                        <i class="fas fa-sync"></i> Refresh
+                                    </button>
+                                    <button type="button" class="btn bg-gradient-success mt-sm-3 mt-md-3 export-excel" data-table="{{ $tab }}">
+                                        <i class="fas fa-file-excel"></i> Export Excel
+                                    </button>
+                                </div>
                                 <div class="table-responsive p-0 px-md-2 px-sm-2">
-                                    <table class="table align-items-center mb-0 data_tables" id="transaction_jnns_management" width="100%">
+                                    <table class="table align-items-center mb-0 data_tables" id="transaction_{{ $tab }}_management" width="100%">
                                         <thead>
                                             <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    No
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Transaction Number
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Event
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    User
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Status
-                                                </th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Transaction Number</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Event</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">User</th>
+                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                                 <th class="text-secondary opacity-7"></th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-        
-                                        </tbody>
+                                        <tbody></tbody>
                                     </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade p-0 px-md-2 px-sm-2" id="resertifikasi" role="tabpanel">
-                                <div class="table-responsive p-0 px-md-2 px-sm-2">
-                                    <table class="table align-items-center mb-0 data_tables" id="transaction_resertifikasi_management" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    No
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Transaction Number
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Event
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    User
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Status
-                                                </th>
-                                                <th class="text-secondary opacity-7"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-        
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade p-0 px-md-2 px-sm-2" id="seminar" role="tabpanel">
-                                <div class="table-responsive p-0 px-md-2 px-sm-2">
-                                    <table class="table align-items-center mb-0 data_tables" id="transaction_seminar_management" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    No
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Transaction Number
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Event
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    User
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Status
-                                                </th>
-                                                <th class="text-secondary opacity-7"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-        
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            
-                            <div class="tab-pane fade p-0 px-md-2 px-sm-2" id="wkd" role="tabpanel">
-                                <div class="table-responsive p-0 px-md-2 px-sm-2">
-                                    <table class="table align-items-center mb-0 data_tables" id="transaction_wkd_management" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    No
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Transaction Number
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Event
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    User
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Status
-                                                </th>
-                                                <th class="text-secondary opacity-7"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-        
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade p-0 px-md-2 px-sm-2" id="kongres_wilayah" role="tabpanel">
-                                <div class="table-responsive p-0 px-md-2 px-sm-2">
-                                    <table class="table align-items-center mb-0 data_tables" id="transaction_kongres_wilayah_management" width="100%">
-                                        <thead>
-                                            <tr>
-                                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                                    No
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Transaction Number
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Event
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    User
-                                                </th>
-                                                <th
-                                                    class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                                    Status
-                                                </th>
-                                                <th class="text-secondary opacity-7"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-        
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
+                        
                     </div>
                 </div>
             </div>
@@ -215,6 +74,20 @@
     @include('pages.admin.transactions.delete')
     @include('pages.admin.transactions.detail_attendance')
 @endsection
+@push('css')
+    <style>
+        @media (max-width: 768px) {
+            .d-flex.align-items-center.gap-2 {
+                flex-wrap: wrap;
+            }
+
+            .year-filter {
+                width: 100%;
+            }
+        }
+
+    </style>
+@endpush
 @push('js')
     @include('pages.admin.transactions.transaction_js')
 @endpush
