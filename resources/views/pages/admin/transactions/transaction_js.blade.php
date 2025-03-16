@@ -14,7 +14,9 @@
                 success: function(response) {
                     let transactions = response.data[tableId]; // Ambil data transaksi sesuai tabel
                     let role = response.data.role;
-
+                    
+                    console.log(transactions);
+                    
                     let $table = $('#' + tableId);
                     $table.DataTable().clear().destroy();
                     $table.find('tbody').empty();
@@ -65,7 +67,7 @@
         tableIds.forEach(tableId => {
             let tabName = tableId.replace('transaction_', '').replace('_management', '');
             let $filterContainer = $('#' + tabName + '_management_filter_container'); 
-            let $yearFilter = $('<select class="form-select year-filter w-40" id="'+tableId+'_year_filter"></select>');
+            let $yearFilter = $('<select class="form-select year-filter" id="'+tableId+'_year_filter" style="width: 100%"></select>');
 
             for (let year = currentYear; year >= currentYear - 10; year--) {
                 $yearFilter.append(`<option value="${year}">${year}</option>`);
@@ -77,10 +79,16 @@
             fetchTransactions(tableId, currentYear);
 
             // Event listener untuk filter tahun pada tabel masing-masing
-            $yearFilter.change(function() {
+            // $yearFilter.change(function() {
+            //     let selectedYear = $(this).val();
+            //     fetchTransactions(tableId, selectedYear);
+            // });
+            $(document).on("change", ".year-filter", function () {
                 let selectedYear = $(this).val();
                 fetchTransactions(tableId, selectedYear);
             });
+
+
         });
 
         // Event listener untuk tombol Refresh
@@ -325,7 +333,7 @@
             })
         })
     })
-    $('.form-select, .year-filter').removeClass('w-auto')
-        $('.form-select, .year-filter').addClass('w-10')
-        $('.form-select, .year-filter').select2()
+    // $('.form-select, .year-filter').removeClass('w-auto')
+    // $('.form-select, .year-filter').addClass('w-10')
+    $('.form-select, .year-filter').select2()
 </script>

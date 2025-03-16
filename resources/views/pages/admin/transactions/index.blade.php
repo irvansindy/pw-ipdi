@@ -75,7 +75,7 @@
     @include('pages.admin.transactions.detail_attendance')
 @endsection
 @push('css')
-    <style>
+    {{-- <style>
         @media (max-width: 768px) {
             .d-flex.align-items-center.gap-2 {
                 flex-wrap: wrap;
@@ -86,7 +86,7 @@
             }
         }
 
-    </style>
+    </style> --}}
 @endpush
 @push('js')
     @include('pages.admin.transactions.transaction_js')
