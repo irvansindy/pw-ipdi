@@ -13,21 +13,6 @@ class ExportUser implements FromCollection,WithHeadings
     */
     public function collection()
     {
-        // 'username',
-        // 'email',
-        // 'nik',
-        // 'nira_ppni',
-        // 'nira_ipdi',
-        // 'nama_perusahaan',
-        // 'center_dialisis',
-        // 'alamat_center_dialisis_perusahaan',
-        // 'number_phone',
-        // 'last_edication',
-        // 'address',
-        // 'city',
-        // 'Provinsi',
-        // 'country',
-        // 'postal'
         $list_users = DB::select(
             'SELECT a.username, a.email, a.nik, a.nira_ppni, a.nira_ipdi, a.nama_perusahaan, a.center_dialisis, a.alamat_center_dialisis_perusahaan, a.number_phone, a.last_edication, a.address, a.city, b.name, a.country, a.postal
             FROM users a LEFT JOIN master_provinsi b ON a.pw_ipdi_provinsi = b.id

@@ -50,11 +50,11 @@ Meeting PW-IPDI 20 November 2024 (revisi)
 30 November 2024
 halaman iuran : 
 - untuk create data iuran tidak usah menggunakan data modal, tapi buka halaman baru. untuk field form :
-    Nama, Center Dialisis, Uang Pangkal, Biaya Iuran, File Upload, Tanggal Transfer. untuk admin iuran anggota baru sebesar 50K + 20k, iuran tetap untuk tahun setelahnya 50k.
-- file upload untuk bukti transaction harus berbarengan diuploadnya
-- untuk event dibuat admin cms untuk mengatur tiap data event baru
-- untuk user regis event, akan dibuatkan halaman baru untuk regis, tidak usah memakai data modal.
+    Nama, Center Dialisis, Uang Pangkal, Biaya Iuran, File Upload, Tanggal Transfer. untuk admin iuran anggota baru sebesar 50K + 20k, iuran tetap untuk tahun setelahnya 50k. : done
+- file upload untuk bukti transaction harus berbarengan diuploadnya (done)
+- untuk event dibuat admin cms untuk mengatur tiap data event baru (done)
+- untuk user regis event, akan dibuatkan halaman baru untuk regis, tidak usah memakai data modal. (done)
 - penambahan sub menu pada master menu home (Event yang sudah berlangsung, Berita terbaru)
-- dashboard
+- dashboard (done)
 - halaman detail untuk event yang sudah berlangsung dan berita
-- count down untuk alert sertifikat profile
+- count down untuk alert sertifikat profile (done)

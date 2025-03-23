@@ -15,6 +15,7 @@
                         <div class="form-group">
                             <label for="update_event_name">Name</label>
                             <input type="hidden" class="form-control" name="update_event_id" id="update_event_id" placeholder="" value="">
+                            {{-- <input type="text" class="form-control" name="update_event_id" id="update_event_is_active" placeholder="" value=""> --}}
                             <input type="text" class="form-control" name="update_event_name" id="update_event_name" placeholder="Event Name" value="">
                         </div>
                         <div class="form-group">
@@ -74,6 +75,12 @@
                         <div class="form-group">
                             <label for="update_event_image" class="form-control-label">Image</label>
                             <input class="form-control" type="file" name="update_event_image" id="update_event_image" value="">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="update_event_is_active">
+                                <label class="form-check-label" for="update_event_is_active" id="update_event_label"></label>
+                            </div>
                         </div>
                     </div>
                 </div>

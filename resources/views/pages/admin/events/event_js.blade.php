@@ -237,8 +237,21 @@
                     $('#form_update_event')[0].reset()
                     // alert(res.data.name)
                     $('#update_event_id').val(res.data[0].id)
+                    $('#update_event_is_active').val(res.data[0].is_active)
+
+                    let is_active = res.data[0].is_active
+                    const checkbox = document.getElementById("update_event_is_active");
+                    const label = document.getElementById("update_event_label");
+                    checkbox.checked = is_active === 1;
+                    label.textContent = is_active === 1 ? "Active" : "Non-Active";
+
+                    checkbox.addEventListener("change", function () {
+                        label.textContent = this.checked ? "Active" : "Non-Active";
+                    });
+
                     $('#update_event_name').val(res.data[0].name)
                     $('#update_event_title').val(res.data[0].title)
+                    
 
                     $('#update_event_category_value').val(res.data[0].category.id)
                     $('#update_event_category').empty()
@@ -271,7 +284,6 @@
                     $('#update_event_quota').val(res.data[0].quota)
                     $('#update_event_date').val(res.data[0].date)
                     $('#update_event_date_last_register').val(res.data[0].last_register)
-                    // $('#update_event_date_last_register').val(moment(res.data[0].last_register).format('D/M/YYYY'))
                 },
                 error: function(xhr, status, error) {
                     $('#formUpdateEvent').modal('toggle');
@@ -297,6 +309,7 @@
             let update_event_quota = $('#update_event_quota').val()
             let update_event_date = $('#update_event_date').val()
             let update_event_date_last_register = $('#update_event_date_last_register').val()
+            let update_is_active = $('#update_event_is_active').checked ? 1 : 0
 
             if (update_event_name == '') {
                 Swal.fire({
@@ -358,6 +371,7 @@
                 'quota': update_event_quota,
                 'date': update_event_date,
                 'date_end': update_event_date_last_register,
+                'is_active': update_is_active
             }
 
             $.ajax({

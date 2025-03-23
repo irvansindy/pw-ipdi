@@ -20,7 +20,6 @@ class EventManagementController extends Controller
     public function index()
     {
         return view("pages.admin.events.index");
-        // return view("pages.admin.events.dummy");
     }
     public function fetch()
     {
@@ -53,8 +52,8 @@ class EventManagementController extends Controller
     public function store(Request $request)
     {
         try {
+            // dd($request->price);
             DB::beginTransaction();
-            // dd([$request->hotel, $request->harga_hotel]);
             $validator = Validator::make($request->all(), [
                 "name"=> "required|string",
                 "title"=> "required|string",
@@ -76,7 +75,7 @@ class EventManagementController extends Controller
                 "name"=> $request->name,
                 "title"=> $request->title,
                 "category_event_id"=> $request->category,
-                "price"=> $request->price,
+                "price"=> $request->price == 'undefined' ? 0 : $request->price,
                 "last_register"=> $date,
                 "description"=> $request->description,
                 "quota"=> $request->quota,
@@ -139,7 +138,7 @@ class EventManagementController extends Controller
     {
         try {
             $current_event = Events::find($request->id);
-            dd($request->all());
+            // dd($request->all());
             $this->validate($request, [
                 "name"=> "required|string",
                 "title"=> "required|string",
@@ -159,7 +158,8 @@ class EventManagementController extends Controller
                 "description"=> $request->description,
                 "quota"=> $request->quota,
                 "date"=> $request->date,
-                "date_end"=> $request->date_end
+                "date_end"=> $request->date_end,
+                "is_active" => $request->is_active,
             ]);
             return FormatResponseJson::success($current_event,'Event updated successfully');
         } catch (\Throwable $th) {
