@@ -31,8 +31,18 @@
                 async: true,
                 success: function(res) {
                     $('#list_events').empty()
+                    if (res.data.length == 0) {
+                        $('#list_events').append(`
+                            <div class="col-md-12 my-2">
+                                <div class="card shadow">
+                                    <div class="card-body pt-2">
+                                        <p class="card-title h5 d-block text-darker text-center">Belum ada event yang diselenggarakan tahun ini</p>
+                                    </div>`
+                        )
+                    }
                     $.each(res.data, function(i, card) {
                         var button_regis = '';
+
                         if (card.is_active === 1) {
                             var button_regis = '<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>'
                         } else {
@@ -99,7 +109,22 @@
                 async: true,
                 success: function(res) {
                     $('#list_events').empty()
+                    if (res.data.length == 0) {
+                        $('#list_events').append(`
+                            <div class="col-md-12 my-2">
+                                <div class="card shadow">
+                                    <div class="card-body pt-2">
+                                        <p class="card-title h5 d-block text-darker text-center">Belum ada event yang diselenggarakan tahun ini</p>
+                                    </div>`
+                        )
+                    }
                     $.each(res.data, function(i, card) {
+                        var button_regis = '';
+                        if (card.is_active === 1) {
+                            var button_regis = '<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>'
+                        } else {
+                            var button_regis = ''
+                        }
                         $('#list_events').append(`
                             <div class="col-md-4 my-2">
                                 <div class="card shadow">
@@ -131,9 +156,7 @@
                                                     <small>${moment(card.date_end).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
-                                            <a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">
-                                                Register
-                                            </a> 
+                                            ${button_regis}
                                         </div>
                                     </div>
 

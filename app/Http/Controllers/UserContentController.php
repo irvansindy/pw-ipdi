@@ -94,7 +94,7 @@ class UserContentController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-    public function fetchAllEvent(Request $request)
+    public function fetchAllEventOld(Request $request)
     {
         try {
             $search = $request->input('search');
@@ -137,6 +137,52 @@ class UserContentController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
+    public function fetchAllEvent(Request $request)
+{
+    try {
+        $search = $request->input('search');
+        $filter = $request->input('filter');
+
+        $events_query = Events::with(['category', 'EventDetail', 'hotel'])
+            ->where('events.date', 'like', '2025%');
+        if ($search != null && $filter != null) {
+            $events_query->whereHas('category', function($q) use ($filter) {
+                $q->where('name', '=', $filter);
+            })
+            ->where(function($query) use ($search) {
+                $query->where('name', 'like', '%'.$search.'%')
+                    ->orWhere('title', 'like', '%'.$search.'%')
+                    ->orWhere('price', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%')
+                    ->orWhere('quota', 'like', '%'.$search.'%');
+            });
+        } else {
+            if ($search != null) {
+                $events_query->where(function($query) use ($search) {
+                    $query->whereHas('category', function($q) use ($search) {
+                        $q->where('name', 'like', '%'. $search .'%');
+                    })
+                    ->orWhere('name', 'like', '%'.$search.'%')
+                    ->orWhere('title', 'like', '%'.$search.'%')
+                    ->orWhere('price', 'like', '%'.$search.'%')
+                    ->orWhere('description', 'like', '%'.$search.'%')
+                    ->orWhere('quota', 'like', '%'.$search.'%');
+                });
+            } else if ($filter != null) {
+                $events_query->whereHas('category', function($q) use ($filter) {
+                    $q->where('name', '=', $filter);
+                });
+            }
+        }
+
+        $events = $events_query->orderBy('date', 'desc')->limit(100)->get();
+
+        return FormatResponseJson::success($events, 'Event fetched successfully');
+    } catch (\Exception $e) {
+        return FormatResponseJson::error(null, $e->getMessage(), 400);
+    }
+}
+
     public function history() {
         try {
             //code...
