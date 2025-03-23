@@ -4,7 +4,7 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard'])
     <div class="container-fluid py-4">
         <div class="row mt-2">
-            <div class="col-lg-6 mb-lg-0 mb-4">
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-lg-0 mb-4">
                 <div class="card mb-3">
                     <div class="card-body p-3">
                         <h6>Jumlah Peserta</h6>
@@ -15,7 +15,7 @@
                 </div>
             </div>
             
-            <div class="col-lg-6 mb-lg-0 mb-4">
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-lg-0 mb-4">
                 <div class="card mb-3">
                     <div class="card-body p-3">
                         <div class="row">
@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6 mb-lg-0 mb-4">
+            <div class="col-lg-4 col-md-4 col-sm-12 mb-lg-0 mb-4">
                 <div class="card mb-3">
                     <div class="card-body p-3">
                         <div class="row">
