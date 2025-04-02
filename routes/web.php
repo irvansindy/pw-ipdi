@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\TransactionManagementController;
 use App\Http\Controllers\Admin\VisionAndMisionController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\OrganizationStructure;
+use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\IuranController;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
@@ -59,7 +60,6 @@ Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-
 Route::get('struktur-organisasi', [UserContentController::class,'organizationalStructure'])->name('struktur-organisasi');
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
-
 
 Route::group(['middleware' => ['auth', 'role:user']], function() {
 	Route::post('/check-transaction', [TransactionController::class,'checkTransaction'])->name('check-transaction');
@@ -144,6 +144,12 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/organization', [OrganizationStructure::class,'index'])->name('organization');
 	Route::get('/fetch-organization', [OrganizationStructure::class,'fetchOrganization'])->name('fetch-organization');
 	Route::post('/upload-video', [OrganizationStructure::class,'upload'])->name('upload-video');
+
+	Route::get('/news-management', [NewsController::class,'index'])->name('news-management');
+	Route::get('/fetch-news-management', [NewsController::class,'fetch'])->name('fetch-news-management');
+	Route::get('/detail-news-management', [NewsController::class,'show'])->name('detail-news-management');
+	Route::post('/store-news-management', [NewsController::class,'store'])->name('store-news-management');
+	Route::post('/update-news-management', [NewsController::class,'update'])->name('update-news-management');
 });
 
 Route::get('/send-mail', [TransactionManagementController::class,'sendEmail'])->name('send-mail');

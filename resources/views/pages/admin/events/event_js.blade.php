@@ -3,7 +3,6 @@
         // alert('hahahahah')
         $('#event_management').DataTable({
             processing: true,
-            // serverside: false,
             ajax: {
                 url: '{{ route("event-fetch") }}',
                 type: 'GET',
