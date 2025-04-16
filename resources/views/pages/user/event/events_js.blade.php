@@ -43,10 +43,8 @@
                     $.each(res.data, function(i, card) {
                         var button_regis = '';
 
-                        if (card.is_active === 1) {
-                            var button_regis = '<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>'
-                        } else {
-                            var button_regis = ''
+                        if (card.is_active == 1) {
+                            button_regis = `<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>`;
                         }
                         $('#list_events').append(`
                             <div class="col-md-4 my-2">
@@ -120,10 +118,8 @@
                     }
                     $.each(res.data, function(i, card) {
                         var button_regis = '';
-                        if (card.is_active === 1) {
-                            var button_regis = '<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>'
-                        } else {
-                            var button_regis = ''
+                        if (card.is_active == 1) {
+                            button_regis = `<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>`;
                         }
                         $('#list_events').append(`
                             <div class="col-md-4 my-2">

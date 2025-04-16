@@ -80,6 +80,7 @@ class EventManagementController extends Controller
                 "description"=> $request->description,
                 "quota"=> $request->quota,
                 "date"=> $request->date,
+                "date_end"=> $request->date,
                 "image"=> $file_name,
             ];
             $event = Events::create($data);

@@ -30,8 +30,8 @@
                                 @foreach ($event->eventDetail as $event_detail)
                                     <div class="col-md-12 col-sm-12">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" value="{{ $event_detail->id }}"
-                                                name="event_detail" id="detail_event_{{ $event_detail->id }}">
+                                            <input class="form-check-input event-detail-radio" type="radio" value="{{ $event_detail->id }}"
+                                                name="event_detail" id="detail_event_{{ $event_detail->id }}" data-price="{{ $event_detail->price }}">
                                             <label class="form-check-label text-muted"
                                                 for="detail_event_{{ $event_detail->id }}">({{ $event_detail->name . ' - Rp.' . number_format($event_detail->price, 0, ',', '.') }})
                                             </label>
@@ -45,7 +45,7 @@
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
                             <div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="event_hotel">
+                                    <input class="form-check-input" type="checkbox" value="" id="event_hotel" data-price="{{ $event->hotel->price }}">
                                     <label class="form-check-label text-muted" for="event_hotel">
                                         Include Hotel
                                         <br />({{ $event->hotel->name . ' - Rp.' . number_format($event->hotel->price, 0, ',', '.') }})

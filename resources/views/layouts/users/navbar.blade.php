@@ -37,6 +37,9 @@
                         <li>
                             <a class="dropdown-item {{ Route::currentRouteName() == 'struktur-organisasi' ? 'active' : '' }}" href="{{ route('struktur-organisasi') }}">Struktur Organisasi</a>
                         </li>
+                        <li>
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'struktur-organisasi' ? 'active' : '' }}" href="{{ route('struktur-organisasi') }}">Berita</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item mx-md-4">

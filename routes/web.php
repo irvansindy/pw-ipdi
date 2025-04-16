@@ -38,12 +38,14 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController as userVisiMision;
 use App\Http\Controllers\HistoryController as userHistory;
 use App\Http\Controllers\IuranController as userIuran;
+use App\Http\Controllers\NewsController as userNews;
 
 // Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
 
 // Route::get('/', [HomeController::class, 'index'])->name('index');
 // Route::get('/home-user', [UserContentController::class, 'index'])->name('home-user');
 Route::get('/', [UserContentController::class, 'index'])->name('home');
+Route::get('/fetch-headline', [UserContentController::class,'fetchHeadLine'])->name('fetch-headline');
 Route::get('/fetch-content', [UserContentController::class,'fetchContent'])->name('fetch-content');
 
 Route::get('/events', [UserContentController::class,'viewEvents'])->name('events');
@@ -58,6 +60,8 @@ Route::get('/sejarah', [userHistory::class, 'index'])->name('sejarah');
 Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-sejarah');
 
 Route::get('struktur-organisasi', [UserContentController::class,'organizationalStructure'])->name('struktur-organisasi');
+
+Route::get('berita', [userNews::class,'index'])->name('berita');
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 

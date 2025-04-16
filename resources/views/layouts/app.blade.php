@@ -31,8 +31,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs5.min.css"
         integrity="sha512-ngQ4IGzHQ3s/Hh8kMyG4FC74wzitukRMIcTOoKT3EyzFZCILOPF0twiXOQn75eDINUfKBYmzYn2AA8DkAk8veQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    {{-- <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet"> --}}
-    {{-- <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script> --}}
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
@@ -75,15 +74,6 @@
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/smooth-scrollbar.min.js') }}"></script>
-    {{-- <script>
-        var win = navigator.platform.indexOf('Win') > -1;
-        if (win && document.querySelector('#sidenav-scrollbar')) {
-            var options = {
-                damping: '0.5'
-            }
-            Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-        }
-    </script> --}}
     <!-- Github buttons -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
@@ -108,28 +98,6 @@
     {{-- <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script> --}}
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
-        // let scanner = new Instascan.Scanner({
-        //     video: document.getElementById('preview')
-        // });
-        // scanner.addListener('scan', function(content) {
-        //     // Menampilkan SweetAlert ketika QR code di-scan
-        //     Swal.fire({
-        //         title: 'QR Code Scanned!',
-        //         text: content,
-        //         icon: 'success',
-        //         confirmButtonText: 'OK'
-        //     });
-        // });
-        // Instascan.Camera.getCameras().then(function(cameras) {
-        //     if (cameras.length > 0) {
-        //         scanner.start(cameras[0]);
-        //     } else {
-        //         console.error('No cameras found.');
-        //     }
-        // }).catch(function(e) {
-        //     console.error(e);
-        // });
-
         function CreateOrUpdateOrDelete(url, method, data, id_modal) {
             $.ajax({
                 headers: {

@@ -9,28 +9,36 @@ use App\Models\CategoriesEvent;
 use App\Models\Vision;
 use App\Models\Mision;
 use App\Models\Bank;
+use App\Models\News;
 class UserContentController extends Controller
 {
-    // public $search;
-
-    // public function __construct($channelName, $message)
-    // {
-    //     $this->channelName = $channelName;
-    //     $this->message = $message;
-    // }
     public function index()
     {
         return view('pages.user.home');
     }
+    public function fetchHeadLine()
+    {
+        try {
+            $events = Events::latest()->limit(2)->get();
+            $news = News::latest()->limit(2)->get();
+            $headlines = [
+                'events' => $events,
+                'news' => $news,
+            ];
+            return FormatResponseJson::success($headlines, 'Headlines fetched successfully');
+        } catch (\Exception $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 500);
+        }
+    }
     public function fetchContent()
     {
         try {
-                $event_jnns = Events::with('category')->whereHas('category', function($q) {
-                    $q->where('name','like','%JNNS%');
-                })
-                ->orderBy('date', 'desc')
-                ->limit(1)
-                ->get();
+            $event_jnns = Events::with('category')->whereHas('category', function($q) {
+                $q->where('name','like','%JNNS%');
+            })
+            ->orderBy('date', 'desc')
+            ->limit(1)
+            ->get();
 
             $event_seminar = Events::with('category')->whereHas('category', function($q) {
                 $q->where('name','like','%Seminar%');
@@ -81,7 +89,6 @@ class UserContentController extends Controller
         ->where('id', $id)
         ->where('name','like','%'.$name.'%')
         ->first();
-        // dd($existing_event);
         $fetch_bank = Bank::first();
         return view('pages.user.event.detail_event', ['event' => $existing_event, 'bank' => $fetch_bank]);
     }
@@ -142,9 +149,11 @@ class UserContentController extends Controller
     try {
         $search = $request->input('search');
         $filter = $request->input('filter');
-
+        $date = date('Y');
+        // dd($search, $filter, $date);
         $events_query = Events::with(['category', 'EventDetail', 'hotel'])
-            ->where('events.date', 'like', '2025%');
+            ->where('events.date', 'like', $date.'%');
+            // ->where('events.date', 'like', '2024%');
         if ($search != null && $filter != null) {
             $events_query->whereHas('category', function($q) use ($filter) {
                 $q->where('name', '=', $filter);

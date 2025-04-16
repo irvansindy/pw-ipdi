@@ -36,7 +36,7 @@
                     'data': null,
                     wrap: true,
                     "render": function(item) {
-                        return '<button type="button" data-news_id="' +item.id +'" data-news_title="' +item.title +'" class="btn btn-outline-info btn-sm mt-2 detail_news_data" data-bs-hide="modal" data-bs-target="#formNews">View</button>'
+                        return '<button type="button" data-news_id="' +item.id +'" data-news_title="' +item.title +'" class="btn btn-outline-info btn-sm mt-2 detail_news_data" data-bs-toggle="modal" data-bs-target="#formNews">View</button>'
                     }
                 },
             ]

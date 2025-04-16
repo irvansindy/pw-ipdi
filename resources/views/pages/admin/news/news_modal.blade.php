@@ -14,7 +14,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="news_title" class="form-label">Title</label>
-                        <input type="text" class="form-control" id="news_id" name="news_id" required>
+                        <input type="hidden" class="form-control" id="news_id" name="news_id" required>
                         <input type="text" class="form-control" id="news_title" name="news_title" required>
                     </div>
                     <div class="mb-3">

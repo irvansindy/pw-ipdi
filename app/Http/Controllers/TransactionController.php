@@ -57,10 +57,10 @@ class TransactionController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-    public function createTransaction(Request $request)
+    public function createTransaction1(Request $request)
     {
         try {
-            // dd($request->price);
+            // dd($request->all());
             DB::beginTransaction();
 
             $event_id = $request->id;
@@ -79,7 +79,6 @@ class TransactionController extends Controller
             $existing_hotel = null;
             if ($detail_event_id) {
                 $existing_event_detail = EventDetail::where('id', intval($detail_event_id))->first();
-                // dd($existing_event_detail);
             }
             $final_event_price = $existing_event_detail != null ? intval($existing_event_detail->price) : intval($event_price);
             $check_hotel = intval($is_hotel_checked);
@@ -127,17 +126,6 @@ class TransactionController extends Controller
                 $numbering = $check_total_current_transaction + 1;
                 $result_number = $code_trans.'-'.$date_trans.'/'.$numbering;
                 $grand_total_amount = $final_event_price + $grand_total_hotel;
-                
-                // dd([
-                //     'harga event' => $final_event_price,
-                //     'harga hotel' => $final_hotel_price,
-                //     'grand total hotel' => $grand_total_hotel,
-                //     'existing_event' => $existing_event->category->name,
-                //     'current transaction' => $check_total_current_transaction,
-                //     'qouta' => $check_quota_event,
-                //     'code trans' => $result_number,
-                //     'grand total' => $grand_total_amount
-                // ]);
 
                 $create_transaction = Transactions::create([
                     'number' => $result_number,

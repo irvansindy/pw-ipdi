@@ -58,3 +58,10 @@ halaman iuran :
 - dashboard (done)
 - halaman detail untuk event yang sudah berlangsung dan berita (progress)
 - count down untuk alert sertifikat profile (done)
+
+15 April 2025
+- dev halaman berita di user.
+- penambahan upload file image untuk detail berita.
+- management roles
+- export excel data user iuran
+- editable carousel slider
