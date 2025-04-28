@@ -308,8 +308,9 @@
             let update_event_quota = $('#update_event_quota').val()
             let update_event_date = $('#update_event_date').val()
             let update_event_date_last_register = $('#update_event_date_last_register').val()
-            let update_is_active = $('#update_event_is_active').checked ? 1 : 0
+            let update_is_active = $('#update_event_is_active').is(':checked') ? 1 : 0;
 
+            alert(update_is_active)
             let form_data = new FormData();
             form_data.append('id', update_event_id);
             form_data.append('name', update_event_name);
@@ -372,19 +373,6 @@
                     title: 'Oops...',
                     text: 'Date Last Register event tidak boleh kosong',
                 })
-            }
-
-            let data = {
-                'id': update_event_id,
-                'name': update_event_name,
-                'title': update_event_title,
-                'category': update_event_category,
-                'price': update_event_price,
-                'description': update_event_description,
-                'quota': update_event_quota,
-                'date': update_event_date,
-                'date_end': update_event_date_last_register,
-                'is_active': update_is_active
             }
 
             $.ajax({

@@ -137,6 +137,7 @@ class EventManagementController extends Controller
     public function update(Request $request)
     {
         try {
+            dd($request->is_active);
             $current_event = Events::find($request->id);
             $validator = Validator::make($request->all(), [
                 "name"=> "required|string",
