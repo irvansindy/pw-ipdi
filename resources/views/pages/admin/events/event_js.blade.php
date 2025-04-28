@@ -310,7 +310,6 @@
             let update_event_date_last_register = $('#update_event_date_last_register').val()
             let update_is_active = $('#update_event_is_active').is(':checked') ? 1 : 0;
 
-            alert(update_is_active)
             let form_data = new FormData();
             form_data.append('id', update_event_id);
             form_data.append('name', update_event_name);
