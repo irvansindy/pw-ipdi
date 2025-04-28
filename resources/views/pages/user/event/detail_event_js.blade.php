@@ -20,7 +20,6 @@
 
         // Saat hotel checkbox diubah
         $('#event_hotel').on('change', function() {
-            alert('Hotel checkbox changed')
             if ($(this).is(':checked')) {
                 calculateHotelPrice(); // kalkulasi awal saat dicentang
             } else {
@@ -46,7 +45,6 @@
         }
         $(document).on('click', '#submit_regis_event', function(e) {
             e.preventDefault()
-            // alert('submit_regis_event')
             let event_id = $('#data_event_id').data('event_id')
             let event_hotel = $('#data_event_id').data('event_hotel')
             let price = $('#data_event_price').data('price')
@@ -69,7 +67,6 @@
                 total_room_hotel: total_room_hotel,
                 total_room_night: total_room_night
             }
-            console.log(data);
 
             $.ajax({
                 url: '{{ route('create-transaction') }}',

@@ -57,7 +57,7 @@ class TransactionController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-    public function createTransaction1(Request $request)
+    public function createTransaction(Request $request)
     {
         try {
             // dd($request->all());
@@ -88,7 +88,7 @@ class TransactionController extends Controller
             // dd($existing_hotel->price);
             $final_hotel_price = $existing_hotel != null ? intval($existing_hotel->price) : 0;
             $grand_total_hotel = $final_hotel_price * $total_room_hotel * $total_room_night;
-            // dd($final_hotel_price);
+            // dd($existing_event_detail->name);
             $check_total_current_transaction = Transactions::where('event_id', $event_id)->count();
             $check_quota_event = $existing_event->quota;
             
@@ -96,11 +96,11 @@ class TransactionController extends Controller
             if ($check_total_current_transaction < $check_quota_event) {
                 switch ($existing_event->category->name) {
                     case 'JNNS':
-                        if ($existing_event_detail->name == 'Simposium') {
+                        if (stripos($existing_event_detail->name, 'Simposium') !== false) {
                             $code_trans = 'JNNS-SYMP';
-                        } else if ($existing_event_detail->name == 'Workshop') {
+                        } else if (stripos($existing_event_detail->name, 'Workshop') !== false) {
                             $code_trans = 'JNNS-WS';
-                        } else if ($existing_event_detail->name == 'Paket') {
+                        } else if (stripos($existing_event_detail->name, 'Paket') !== false) {
                             $code_trans = 'JNNS-PKT';
                         }
                         break;
@@ -125,6 +125,8 @@ class TransactionController extends Controller
                 $date_trans = now()->format('y/m/d');
                 $numbering = $check_total_current_transaction + 1;
                 $result_number = $code_trans.'-'.$date_trans.'/'.$numbering;
+
+                // dd($result_number);
                 $grand_total_amount = $final_event_price + $grand_total_hotel;
 
                 $create_transaction = Transactions::create([

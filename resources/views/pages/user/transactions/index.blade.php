@@ -16,7 +16,7 @@
                     </div>
                     <div class="card-body pt-2 pb-2">
                         <div class="table-responsive">
-                            <table class="table align-items-center mb-0 data_tables" id="transaction_list">
+                            <table class="table align-items-center mb-0 data_tables" id="transaction_list" width="100%">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7">
