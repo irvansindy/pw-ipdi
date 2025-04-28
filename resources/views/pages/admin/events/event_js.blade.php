@@ -310,6 +310,20 @@
             let update_event_date_last_register = $('#update_event_date_last_register').val()
             let update_is_active = $('#update_event_is_active').checked ? 1 : 0
 
+            let form_data = new FormData();
+            form_data.append('id', update_event_id);
+            form_data.append('name', update_event_name);
+            form_data.append('title', update_event_title);
+            form_data.append('category', update_event_category);
+            form_data.append('price', update_event_price);
+            form_data.append('description', update_event_description);
+            form_data.append('quota', update_event_quota);
+            form_data.append('date', update_event_date);
+            form_data.append('hotel', update_event_hotel);
+            form_data.append('harga_hotel', update_event_harga_hotel);
+            form_data.append('last_register', update_event_date_last_register);
+            form_data.append('is_active', update_is_active);
+            form_data.append('image', $('input[name="update_event_image"]')[0].files[0]);
             if (update_event_name == '') {
                 Swal.fire({
                     icon: "error",
@@ -379,8 +393,11 @@
                 },
                 url: '{{ route('event-update') }}',
                 type: 'post',
-                data: data,
-                dataType: 'json',
+                data: form_data,
+                // dataType: 'json',
+                cache : false,
+                processData: false,
+                contentType: false,
                 success: function(res) {
                     Swal.fire({
                         icon: "success",

@@ -111,8 +111,7 @@ class EventManagementController extends Controller
 
             DB::commit();
             return FormatResponseJson::success($event, 'Event created successfully');
-        }  catch (ValidationException $e) {
-            // Return validation errors as JSON response
+        } catch (ValidationException $e) {
             DB::rollback();
             return FormatResponseJson::error(null, $e->errors(), 422);
         } catch (\Exception $e) {
@@ -139,8 +138,7 @@ class EventManagementController extends Controller
     {
         try {
             $current_event = Events::find($request->id);
-            // dd($request->all());
-            $this->validate($request, [
+            $validator = Validator::make($request->all(), [
                 "name"=> "required|string",
                 "title"=> "required|string",
                 "category"=> "required|string",
@@ -148,8 +146,12 @@ class EventManagementController extends Controller
                 "description"=> "required|string",
                 "quota"=> "required|integer",
                 "date"=> "required|string",
-                "date_end"=> "required|string",
+                "last_register"=> "required|string",
             ]);
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+            
 
             $current_event->update([
                 "name"=> $request->name,
@@ -159,12 +161,33 @@ class EventManagementController extends Controller
                 "description"=> $request->description,
                 "quota"=> $request->quota,
                 "date"=> $request->date,
-                "date_end"=> $request->date_end,
+                "last_register"=> $request->last_register,
                 "is_active" => $request->is_active,
             ]);
+
+            if ($request->file('image') != null) {
+                // Hapus file lama dulu
+                if ($current_event->image && file_exists(public_path('img/logos/IPDI/event/' . $current_event->image))) {
+                    unlink(public_path('img/logos/IPDI/event/' . $current_event->image));
+                }
+            
+                // Upload file baru
+                $file = $request->file('image');
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('img/logos/IPDI/event/'), $file_name);
+                $current_event->update([
+                    'image' => $file_name,
+                ]);
+            } else {
+                $file_name = $current_event->image;
+            }
             return FormatResponseJson::success($current_event,'Event updated successfully');
-        } catch (\Throwable $th) {
-            return FormatResponseJson::error(null, $th->getMessage(), 404);
+        }  catch (ValidationException $e) {
+            DB::rollback();
+            return FormatResponseJson::error(null, $e->errors(), 422);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return FormatResponseJson::error(null, $e->getMessage(), 500);
         }
     }
     public function indexPeserta()

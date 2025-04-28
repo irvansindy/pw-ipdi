@@ -11,4 +11,12 @@ class News extends Model
 
     protected $table = 'news';
     protected $guarded = [];
+    public function author()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function event()
+    {
+        return $this->belongsTo(Events::class);
+    }
 }

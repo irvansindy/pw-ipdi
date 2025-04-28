@@ -62,6 +62,7 @@ Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-
 Route::get('struktur-organisasi', [UserContentController::class,'organizationalStructure'])->name('struktur-organisasi');
 
 Route::get('berita', [userNews::class,'index'])->name('berita');
+Route::get('fetch-berita', [userNews::class,'fetchNews'])->name('fetch-berita');
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 

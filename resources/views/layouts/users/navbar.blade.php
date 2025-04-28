@@ -38,7 +38,7 @@
                             <a class="dropdown-item {{ Route::currentRouteName() == 'struktur-organisasi' ? 'active' : '' }}" href="{{ route('struktur-organisasi') }}">Struktur Organisasi</a>
                         </li>
                         <li>
-                            <a class="dropdown-item {{ Route::currentRouteName() == 'struktur-organisasi' ? 'active' : '' }}" href="{{ route('struktur-organisasi') }}">Berita</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'berita' ? 'active' : '' }}" href="{{ route('berita') }}">Berita</a>
                         </li>
                     </ul>
                 </li>
