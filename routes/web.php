@@ -95,6 +95,9 @@ Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('gue
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 // Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/ticket-qrcode', [TransactionController::class,'ticketQrCode'])->name('ticket-qrcode')->middleware('auth');
+Route::get('/generate-ticket-qrcode', [TransactionController::class,'generateTicketQrCode'])->name('generate-ticket-qrcode')->middleware('auth');
+Route::get('/generate-ticket-barcode', [TransactionController::class,'generateTicketBarcode'])->name('generate-ticket-barcode')->middleware('auth');
+Route::get('/generate-ticket-dummy', [TransactionController::class,'generateQrAndBarcode'])->name('generate-ticket-dummy')->middleware('auth');
 
 Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');

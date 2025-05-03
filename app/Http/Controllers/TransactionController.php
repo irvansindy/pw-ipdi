@@ -14,14 +14,11 @@ use App\Models\TransactionDetail;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\FormatResponseJson;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
-use BaconQrCode\Writer;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use Mpdf\Mpdf;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Picqer\Barcode\BarcodeGeneratorPNG;
+use Illuminate\Support\Facades\File;
 class TransactionController extends Controller
 {
     public function checkTransaction(Request $request)
@@ -212,7 +209,6 @@ class TransactionController extends Controller
     }
     public function ticketQrCode(Request $request)
     {
-        // dd($request->transnumber);
         // Membuat QR code dan menyimpan sebagai file gambar
         $qrcodePath = public_path('qrcode.png');
         // QrCode::format('png')->size(200)->generate($request->transnumber, $qrcodePath);
@@ -257,5 +253,150 @@ class TransactionController extends Controller
         // Simpan PDF ke file atau kirim ke browser
         // 'I' untuk menampilkan di browser, 'D' untuk mengunduh
         return $mpdf->Output('Ticket.pdf', 'I');
+    }
+    public function generateTicketQrCode(Request $request)
+    {
+        // Membuat QR code dan menyimpan sebagai file gambar
+        $qrcodePath = public_path('qrcode.png');
+        $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
+        file_put_contents($qrcodePath, $qrcodeImage);
+
+        // Load existing PDF
+        $pdfPath = public_path('img/logos/bg/ticket_for_qrcode.pdf');
+        $mpdf = new Mpdf();
+        $mpdf->AddPage('L', '', '', '', '', 5, 45, 25, 20, 5, 5);
+        $pagecount = $mpdf->SetSourceFile($pdfPath);
+        $tplId = $mpdf->ImportPage($pagecount);
+        $mpdf->UseTemplate($tplId, 10, 10, 275);
+
+        $mpdf->SetFillColor(255, 255, 255); // Set latar belakang putihj
+        $mpdf->Rect(49, 89, 62, 62, 'F'); // Gambar kotak dengan latar putih
+        $mpdf->Image($qrcodePath, 50, 90, 60, 60, 'png', '', true, false); // QR code di atas rectangle putih
+
+
+        // Menambahkan username dan transnumber
+        $text = Auth::user()->username;
+        $html = "
+        <div style='position: absolute; bottom: 330px; right: 170px; color: white; font-size: 30px;'>
+            $text
+            <br>
+            {$request->transnumber}
+        </div>";
+        $mpdf->WriteHTML($html);
+
+        // Output PDF
+        $pdfOutput = $mpdf->Output('Ticket.pdf', 'I');
+
+        // Hapus file QR code setelah dipakai
+        if (file_exists($qrcodePath)) {
+            unlink($qrcodePath);
+        }
+
+        return $pdfOutput;
+
+    }
+    public function generateTicketBarcode(Request $request)
+    {
+        $transnumber = $request->transnumber ?? 'MDTTHR15.';
+        $barcodePath = public_path('barcode_white.png');
+    
+        // Generate barcode (black on transparent)
+        $generator = new BarcodeGeneratorPNG();
+        $barcodeRaw = $generator->getBarcode($transnumber, $generator::TYPE_CODE_128, 3, 100);
+    
+        // Convert barcode to image
+        $barcodeImg = imagecreatefromstring($barcodeRaw);
+        $width = imagesx($barcodeImg);
+        $height = imagesy($barcodeImg);
+    
+        // Buat canvas putih
+        $canvas = imagecreatetruecolor($width, $height);
+        $white = imagecolorallocate($canvas, 255, 255, 255);
+        imagefill($canvas, 0, 0, $white);
+    
+        // Tempelkan barcode ke canvas putih
+        imagecopy($canvas, $barcodeImg, 0, 0, 0, 0, $width, $height);
+        imagepng($canvas, $barcodePath);
+    
+        // Cleanup memory
+        imagedestroy($barcodeImg);
+        imagedestroy($canvas);
+    
+        // Muat template PDF
+        $pdfPath = public_path('img/logos/bg/ticket_for_qrcode.pdf');
+        $mpdf = new Mpdf();
+        $mpdf->AddPage('L', '', '', '', '', 5, 45, 25, 20, 5, 5);
+        $pagecount = $mpdf->SetSourceFile($pdfPath);
+        $tplId = $mpdf->ImportPage($pagecount);
+        $mpdf->UseTemplate($tplId, 10, 10, 275);
+    
+        // Tambahkan background putih di PDF (agar jika barcode transparan tetap aman)
+        $mpdf->Rect(49, 99, 102, 30, 'F'); // opsional, sebagai jaga-jaga
+    
+        // Tambahkan barcode ke PDF
+        $mpdf->Image($barcodePath, 50, 100, 100, 20, 'png', '', true, false);
+    
+        // // Tambahkan teks transnumber di bawah barcode (posisi presisi)
+        // $barcodeText = "
+        // <div style='position: absolute; left: 85px; top: 132px; font-size: 14pt; font-family: Arial; color: black;'>
+        //     {$transnumber}
+        // </div>";
+        // $mpdf->WriteHTML($barcodeText);
+    
+        // Tambahkan informasi user
+        $username = Auth::user()->username ?? 'Guest';
+        $userText = "
+        <div style='position: absolute; bottom: 280px; right: 170px; color: white; font-size: 30px;'>
+            {$username}<br>{$transnumber}
+        </div>";
+        $mpdf->WriteHTML($userText);
+    
+        // Output ke browser
+        $output = $mpdf->Output('Ticket.pdf', 'I');
+    
+        // Hapus barcode
+        File::delete($barcodePath);
+    
+        return $output;
+    }
+    public function generateQrAndBarcode(Request $request)
+    {
+        $data = $request->transnumber ?? 'MDTTHR15.';
+
+        // ===== QR CODE (PNG format, high quality) =====
+        $qrImage = QrCode::format('png')->size(300)->margin(2)->generate($data);
+        $qrBase64 = base64_encode($qrImage);
+        $qrHtml = "
+            <div style='text-align: center; margin-top: 100px;'>
+                <img src='data:image/png;base64,{$qrBase64}' style='width: 300px; height: 300px;' />
+                <div style='margin-top: 20px; font-size: 18pt;'>$data</div>
+            </div>
+        ";
+
+        // ===== BARCODE (Code 128) =====
+        $generator = new BarcodeGeneratorPNG();
+        $barcodeImage = $generator->getBarcode($data, $generator::TYPE_CODE_128, 3, 100);
+        $barcodeBase64 = base64_encode($barcodeImage);
+        $barcodeHtml = "
+            <div style='text-align: center; margin-top: 100px;'>
+                <img src='data:image/png;base64,{$barcodeBase64}' style='width: 400px; height: 100px;' />
+                <div style='margin-top: 20px; font-size: 18pt;'>$data</div>
+            </div>
+        ";
+
+        // ===== Generate PDF with mPDF =====
+        $mpdf = new Mpdf();
+
+        // Page 1 - QR Code
+        $mpdf->WriteHTML($qrHtml);
+        $mpdf->AddPage();
+
+        // Page 2 - Barcode
+        $mpdf->WriteHTML($barcodeHtml);
+
+        // Output PDF
+        return response($mpdf->Output('qr_barcode.pdf', 'S'))
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'inline; filename="qr_barcode.pdf"');
     }
 }
