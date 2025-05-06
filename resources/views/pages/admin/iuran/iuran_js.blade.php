@@ -115,7 +115,7 @@
                                 <td>${i+1}</td>
                                 <td>${user.user.username}</td>
                                 <td>${user.user.nira_ipdi != null ? user.user.nira_ipdi : 'Kosong'}</td>
-                                <td>${user.user.dialisis.name != null ? user.user.dialisis.name : 'Kosong'}</td>
+                                <td>${user.user.dialisis != null ? user.user.dialisis.name : 'Kosong'}</td>
                                 <td>${user.tahun_iuran}</td>
                             </tr>
                         `)
