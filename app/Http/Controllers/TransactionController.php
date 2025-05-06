@@ -257,14 +257,14 @@ class TransactionController extends Controller
         // 'I' untuk menampilkan di browser, 'D' untuk mengunduh
         return $mpdf->Output('Ticket.pdf', 'I');
     }
-    public function generateTicketQrCode(Request $request)
+    public function generateTicketQrCodeOld(Request $request)
     {
         $existing_transaction = Transactions::where('token_register', $request->transnumber)->first();
         // Generate QR code dan simpan sementara
         $qrcodePath = public_path('qrcode.png');
         $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
         file_put_contents($qrcodePath, $qrcodeImage);
-
+        
         // Load template PDF
         $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
         $mpdf = new Mpdf();
@@ -308,7 +308,60 @@ class TransactionController extends Controller
 
         return $output;
     }
+    public function generateTicketQrCode(Request $request)
+{
+    $existing_transaction = Transactions::where('token_register', $request->transnumber)->first();
 
+    // Generate QR code
+    $qrcodePath = public_path('qrcode.png');
+    $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
+    file_put_contents($qrcodePath, $qrcodeImage);
+
+    // Siapkan mPDF TANPA AddPage
+    $mpdf = new Mpdf([
+        'orientation' => 'L',
+        'margin_left' => 0,
+        'margin_right' => 0,
+        'margin_top' => 0,
+        'margin_bottom' => 0,
+    ]);
+
+    // Gunakan template sebagai ukuran penuh halaman
+    $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
+    $pagecount = $mpdf->SetSourceFile($pdfPath);
+    $tplId = $mpdf->ImportPage($pagecount);
+    $mpdf->UseTemplate($tplId, 5, 0, null, null, true); // `true` untuk adjustPageSize
+
+    // Posisi QR code di tengah
+    $qrWidth = 90;
+    $qrHeight = 90;
+    $qrX = ($mpdf->w - $qrWidth) / 2;
+    $qrY = 160;
+
+    $mpdf->SetFillColor(255, 255, 255);
+    $mpdf->Rect($qrX - 1, $qrY - 1, $qrWidth + 2, $qrHeight + 2, 'F');
+    $mpdf->Image($qrcodePath, $qrX, $qrY, $qrWidth, $qrHeight, 'png', '', true, false);
+
+    $textX = 65;   // tengah relatif terhadap QR dan teks
+$textY = 165;  // tepat di atas "Show E-Ticket"
+
+
+    $htmlTopLeft = "
+    <div style='position: absolute; top: {$textY}mm; left: {$textX}mm; width: 80mm; font-size: 18pt; text-align: center; line-height: 1.2; color: #000; font-weight: bold;'>
+        <strong>{$existing_transaction->transactionDetail[0]->user->username}</strong><br>
+        <strong>{$existing_transaction->transactionDetail[0]->user->name}</strong><br>
+        <strong>{$existing_transaction->number}</strong>
+    </div>";
+
+
+    $mpdf->WriteHTML($htmlTopLeft);
+
+    // Output dan hapus QR
+    $mpdf->Output('Ticket.pdf', 'I');
+    if (file_exists($qrcodePath)) {
+        unlink($qrcodePath);
+    }
+}
 
     // bg_jnns_vxii_qrcode.pdf
     private function tukarSimbol($input)
