@@ -347,10 +347,10 @@ $textY = 165;  // tepat di atas "Show E-Ticket"
 
 
     $htmlTopLeft = "
-    <div style='position: absolute; top: {$textY}mm; left: {$textX}mm; width: 80mm; font-size: 18pt; text-align: center; line-height: 1.2; color: #000; font-weight: bold;'>
-        <strong>{$existing_transaction->transactionDetail[0]->user->username}</strong><br>
-        <strong>{$existing_transaction->transactionDetail[0]->user->name}</strong><br>
-        <strong>{$existing_transaction->number}</strong>
+    <div style='position: absolute; top: {$textY}mm; left: {$textX}mm; width: 90mm; font-size: 22pt; text-align: center; line-height: 1.1; color: #000; font-weight: bold;'>
+        {$existing_transaction->transactionDetail[0]->user->username}
+        <br/>
+        {$existing_transaction->number}
     </div>";
 
 
