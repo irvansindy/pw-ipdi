@@ -308,7 +308,9 @@ class TransactionController extends Controller
     {
         // Ambil nomor transaksi dari request
         $transnumber = $request->input('transnumber') ?? null;
-        // dd($transnumber);
+
+        $existing_transaction = Transactions::where('token_register', $transnumber)->first();
+        // dd($existing_transaction->transactionDetail[0]->user->username);
         // Ganti karakter '/' dengan '-', '?' dengan '_', dan '&' dengan kosong
         $transnumber_for_barcode = str_replace(['/', '?', '&'], ['-', '_', ''], $transnumber);
 
@@ -324,33 +326,42 @@ class TransactionController extends Controller
         file_put_contents($barcodePath, base64_decode($barcodeBase64));
 
         // Load template PDF
-        $pdfPath = public_path('img/logos/bg/jnns_xvii.pdf');
+        $pdfPath = public_path('img/logos/bg/bg_jnns_xvii.pdf');
         $mpdf = new Mpdf();
         $mpdf->AddPage('L', '', '', '', '', 5, 45, 25, 20, 5, 5);
 
         // Gunakan halaman PDF sebagai template background
         $pagecount = $mpdf->SetSourceFile($pdfPath);
         $tplId = $mpdf->ImportPage($pagecount);
-        $mpdf->UseTemplate($tplId, 10, 10, 275);
+        $mpdf->UseTemplate($tplId, 10, 8, 275);
 
         // Hitung posisi tengah untuk barcode
         $pageWidth = $mpdf->w;
         $barcodeWidth = 80;  // Lebar barcode
-        $barcodeHeight = 15; // Tinggi barcode
+        $barcodeHeight = 20; // Tinggi barcode
         $barcodeX = ($pageWidth - $barcodeWidth) / 2;
-        $barcodeY = 135;
+        $barcodeY = 120;
 
         // Tambahkan gambar barcode ke PDF
         $mpdf->Image($barcodePath, $barcodeX, $barcodeY, $barcodeWidth, $barcodeHeight, 'png', '', true, false);
 
         // Menambahkan nomor transaksi di bawah barcode
         $transText = "
-            <div style='position: absolute; top: " . ($barcodeY + $barcodeHeight + 2) . "mm; left: " . $barcodeX . "mm; font-size: 10pt; text-align: center; width: {$barcodeWidth}mm;'>
-                {$transnumber}
+            <div style='position: absolute; top: " . ($barcodeY + $barcodeHeight + 2) . "mm; left: " . $barcodeX . "mm; font-size: 14pt; text-align: center; width: {$barcodeWidth}mm;'>
             </div>";
         $mpdf->WriteHTML($transText);
 
-        // Hapus barcode sementara
+        $leftTextX = $barcodeX - 85;
+        $leftTextY = $barcodeY - 20;
+        $leftText = "
+            <div style='position: absolute; top: {$leftTextY}mm; left: {$leftTextX}mm; font-size: 14pt; text-align: center; width: 70mm; font-weight: bold;'>
+                {$existing_transaction->transactionDetail[0]->user->username}
+                <br>
+                {$existing_transaction->number}
+            </div>";
+
+        $mpdf->WriteHTML($leftText);
+
         File::delete($barcodePath);
 
         // Output PDF ke browser
