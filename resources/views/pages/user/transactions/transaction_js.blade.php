@@ -50,6 +50,7 @@
                                 return `
                                     <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> 
                                     <a href="/generate-ticket-barcode?transnumber=${transNumber}" class="btn btn-outline-danger btn-sm mt-2">Ticket</a>
+                                    <a href="/generate-ticket-qrcode?transnumber=${transNumber}" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>
                                 `;
                             }
                         } else {

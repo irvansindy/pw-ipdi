@@ -259,45 +259,58 @@ class TransactionController extends Controller
     }
     public function generateTicketQrCode(Request $request)
     {
-        // Membuat QR code dan menyimpan sebagai file gambar
+        $existing_transaction = Transactions::where('token_register', $request->transnumber)->first();
+        // Generate QR code dan simpan sementara
         $qrcodePath = public_path('qrcode.png');
         $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
         file_put_contents($qrcodePath, $qrcodeImage);
 
-        // Load existing PDF
-        $pdfPath = public_path('img/logos/bg/ticket_for_qrcode.pdf');
+        // Load template PDF
+        $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
         $mpdf = new Mpdf();
         $mpdf->AddPage('L', '', '', '', '', 5, 45, 25, 20, 5, 5);
         $pagecount = $mpdf->SetSourceFile($pdfPath);
         $tplId = $mpdf->ImportPage($pagecount);
         $mpdf->UseTemplate($tplId, 10, 10, 275);
 
-        $mpdf->SetFillColor(255, 255, 255); // Set latar belakang putihj
-        $mpdf->Rect(49, 89, 62, 62, 'F'); // Gambar kotak dengan latar putih
-        $mpdf->Image($qrcodePath, 50, 90, 60, 60, 'png', '', true, false); // QR code di atas rectangle putih
+        // Posisi QR Code (tengah halaman)
+        $pageWidth = $mpdf->w; // Lebar halaman
+        $qrWidth = 50;
+        $qrHeight = 50;
+        $qrX = ($pageWidth - $qrWidth) / 2;
+        $qrY = 95;
 
+        // Tambahkan latar belakang putih untuk QR
+        $mpdf->SetFillColor(255, 255, 255);
+        $mpdf->Rect($qrX - 1, $qrY - 1, $qrWidth + 2, $qrHeight + 2, 'F');
 
-        // Menambahkan username dan transnumber
-        $text = Auth::user()->username;
-        $html = "
-        <div style='position: absolute; bottom: 330px; right: 170px; color: white; font-size: 30px;'>
-            $text
-            <br>
-            {$request->transnumber}
-        </div>";
-        $mpdf->WriteHTML($html);
+        // Tampilkan QR code
+        $mpdf->Image($qrcodePath, $qrX, $qrY, $qrWidth, $qrHeight, 'png', '', true, false);
+
+        // Posisi transnumber di atas kiri "Show E-Ticket"
+        $textX = 30;  // Disesuaikan agar sejajar kiri teks "Show E-Ticket"
+        $textY = 100; // Disesuaikan agar muncul tepat di atas teks "Show E-Ticket"
+        $htmlTopLeft = "
+            <div style='position: absolute; top: {$textY}mm; left: {$textX}mm; font-size: 14pt; color: #000; text-align: center; font-weight: bold; width: 70mm;'>
+                {$existing_transaction->transactionDetail[0]->user->username}
+                <br>
+                {$existing_transaction->number}
+            </div>";
+        $mpdf->WriteHTML($htmlTopLeft);
 
         // Output PDF
-        $pdfOutput = $mpdf->Output('Ticket.pdf', 'I');
+        $output = $mpdf->Output('Ticket.pdf', 'I');
 
-        // Hapus file QR code setelah dipakai
+        // Hapus QR code sementara
         if (file_exists($qrcodePath)) {
             unlink($qrcodePath);
         }
 
-        return $pdfOutput;
-
+        return $output;
     }
+
+
+    // bg_jnns_vxii_qrcode.pdf
     private function tukarSimbol($input)
     {
         $step1 = str_replace('-', '~', $input);
