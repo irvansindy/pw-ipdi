@@ -74,6 +74,8 @@ Route::group(['middleware' => ['auth', 'role:user']], function() {
 	Route::get('/detail-transaksi', [TransactionController::class,'detailTransaction'])->name('detail-transaksi');
 	Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
 	Route::get('detail-event/{id}/{name}', [UserContentController::class, 'detailEvents'])->name('detail-event');
+	Route::get('/tukar-format', [TransactionController::class, 'tukarFormat']);
+
 	Route::get('/iuran-anggota', [userIuran::class,'index'])->name('iuran-anggota');
 	Route::get('/create-iuran-anggota', [userIuran::class,'viewCreateIuran'])->name('create-iuran-anggota');
 	Route::get('/fetch-iuran-anggota', [userIuran::class,'fetchIuran'])->name('fetch-iuran-anggota');

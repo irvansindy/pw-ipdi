@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Picqer\Barcode\BarcodeGeneratorPNG;
 use Illuminate\Support\Facades\File;
+use \Milon\Barcode\DNS1D;
+use Illuminate\Support\Str;
 class TransactionController extends Controller
 {
     public function checkTransaction(Request $request)
@@ -57,7 +59,6 @@ class TransactionController extends Controller
     public function createTransaction(Request $request)
     {
         try {
-            // dd($request->all());
             DB::beginTransaction();
 
             $event_id = $request->id;
@@ -128,6 +129,8 @@ class TransactionController extends Controller
 
                 $create_transaction = Transactions::create([
                     'number' => $result_number,
+                    // 'token_register' => Str::uuid(),
+                    'token_register' => Str::random(30),
                     'user_id' => $user_id,
                     'event_id' => $event_id,
                     'date' => now()->format('Y-m-d H:i:s'),
@@ -295,73 +298,68 @@ class TransactionController extends Controller
         return $pdfOutput;
 
     }
+    private function tukarSimbol($input)
+    {
+        $step1 = str_replace('-', '~', $input);
+        $step2 = str_replace('/', '-', $step1);
+        return str_replace('~', '/', $step2);
+    }
     public function generateTicketBarcode(Request $request)
     {
-        $transnumber = $request->transnumber ?? 'MDTTHR15.';
+        // Ambil nomor transaksi dari request
+        $transnumber = $request->input('transnumber') ?? null;
+        // dd($transnumber);
+        // Ganti karakter '/' dengan '-', '?' dengan '_', dan '&' dengan kosong
+        $transnumber_for_barcode = str_replace(['/', '?', '&'], ['-', '_', ''], $transnumber);
+
+        // dd($transnumber_for_barcode);
+        // Generate barcode sebagai base64 PNG menggunakan format 'C39' (Code 39)
+        $barcode = new DNS1D();
+        $barcodeBase64 = $barcode->getBarcodePNG($transnumber_for_barcode, 'C128');
+
+        // Tentukan path untuk menyimpan barcode sementara
         $barcodePath = public_path('barcode_white.png');
-    
-        // Generate barcode (black on transparent)
-        $generator = new BarcodeGeneratorPNG();
-        $barcodeRaw = $generator->getBarcode($transnumber, $generator::TYPE_CODE_128, 3, 100);
-    
-        // Convert barcode to image
-        $barcodeImg = imagecreatefromstring($barcodeRaw);
-        $width = imagesx($barcodeImg);
-        $height = imagesy($barcodeImg);
-    
-        // Buat canvas putih
-        $canvas = imagecreatetruecolor($width, $height);
-        $white = imagecolorallocate($canvas, 255, 255, 255);
-        imagefill($canvas, 0, 0, $white);
-    
-        // Tempelkan barcode ke canvas putih
-        imagecopy($canvas, $barcodeImg, 0, 0, 0, 0, $width, $height);
-        imagepng($canvas, $barcodePath);
-    
-        // Cleanup memory
-        imagedestroy($barcodeImg);
-        imagedestroy($canvas);
-    
-        // Muat template PDF
-        $pdfPath = public_path('img/logos/bg/ticket_for_qrcode.pdf');
+
+        // Simpan barcode sementara
+        file_put_contents($barcodePath, base64_decode($barcodeBase64));
+
+        // Load template PDF
+        $pdfPath = public_path('img/logos/bg/jnns_xvii.pdf');
         $mpdf = new Mpdf();
         $mpdf->AddPage('L', '', '', '', '', 5, 45, 25, 20, 5, 5);
+
+        // Gunakan halaman PDF sebagai template background
         $pagecount = $mpdf->SetSourceFile($pdfPath);
         $tplId = $mpdf->ImportPage($pagecount);
         $mpdf->UseTemplate($tplId, 10, 10, 275);
-    
-        // Tambahkan background putih di PDF (agar jika barcode transparan tetap aman)
-        $mpdf->Rect(49, 99, 102, 30, 'F'); // opsional, sebagai jaga-jaga
-    
-        // Tambahkan barcode ke PDF
-        $mpdf->Image($barcodePath, 50, 100, 100, 20, 'png', '', true, false);
-    
-        // // Tambahkan teks transnumber di bawah barcode (posisi presisi)
-        // $barcodeText = "
-        // <div style='position: absolute; left: 85px; top: 132px; font-size: 14pt; font-family: Arial; color: black;'>
-        //     {$transnumber}
-        // </div>";
-        // $mpdf->WriteHTML($barcodeText);
-    
-        // Tambahkan informasi user
-        $username = Auth::user()->username ?? 'Guest';
-        $userText = "
-        <div style='position: absolute; bottom: 280px; right: 170px; color: white; font-size: 30px;'>
-            {$username}<br>{$transnumber}
-        </div>";
-        $mpdf->WriteHTML($userText);
-    
-        // Output ke browser
-        $output = $mpdf->Output('Ticket.pdf', 'I');
-    
-        // Hapus barcode
+
+        // Hitung posisi tengah untuk barcode
+        $pageWidth = $mpdf->w;
+        $barcodeWidth = 80;  // Lebar barcode
+        $barcodeHeight = 15; // Tinggi barcode
+        $barcodeX = ($pageWidth - $barcodeWidth) / 2;
+        $barcodeY = 135;
+
+        // Tambahkan gambar barcode ke PDF
+        $mpdf->Image($barcodePath, $barcodeX, $barcodeY, $barcodeWidth, $barcodeHeight, 'png', '', true, false);
+
+        // Menambahkan nomor transaksi di bawah barcode
+        $transText = "
+            <div style='position: absolute; top: " . ($barcodeY + $barcodeHeight + 2) . "mm; left: " . $barcodeX . "mm; font-size: 10pt; text-align: center; width: {$barcodeWidth}mm;'>
+                {$transnumber}
+            </div>";
+        $mpdf->WriteHTML($transText);
+
+        // Hapus barcode sementara
         File::delete($barcodePath);
-    
-        return $output;
+
+        // Output PDF ke browser
+        return $mpdf->Output('Ticket.pdf', 'I');
     }
     public function generateQrAndBarcode(Request $request)
     {
-        $data = $request->transnumber ?? 'MDTTHR15.';
+        $data = $request->transnumber ?? NULL;
+        // $encodedData = urlencode($data);
 
         // ===== QR CODE (PNG format, high quality) =====
         $qrImage = QrCode::format('png')->size(300)->margin(2)->generate($data);

@@ -6,7 +6,6 @@
             <span class="text-muted">Registrasi Acara/Event</span>
         </h2>
         <div class="row">
-            {{-- {{ dd($event->hotel) }} --}}
             <div class="col-md-4 order-md-2 mb-4">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-muted" id="data_event_id" data-event_id="{{ $event->id }}"

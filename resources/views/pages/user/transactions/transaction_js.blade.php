@@ -28,31 +28,38 @@
                     "defaultContent": "<i>Not set</i>"
                 },
                 {
-                    'data': null,
+                    data: null,
                     title: 'Action',
                     wrap: true,
-                    "render": function(item) {
+                    render: function(item) {
                         if (item.transactions != null) {
-                            if (item.transactions.status == 'pending') {
-                                return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-success btn-sm mt-2 upload_transaction" data-bs-toggle="modal" data-bs-target="#uploadTransaction">Upload</button>'
-                            } else if (item.transactions.status == 'progress')  {
-                                return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>'
-                            } else if (item.transactions.status == 'success') {
-                                return '<button type="button" data-transaction_id="'+item.transactions.id+'" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> <a href="/generate-ticket-dummy?transnumber=' + item.transactions.number + '" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>'
+                            const transId = item.transactions.id;
+                            const transNumber = item.transactions.token_register;
+                            // const encodedTransNumber = encodeURIComponent(transNumber);
+
+                            if (item.transactions.status === 'pending') {
+                                return `
+                                    <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> 
+                                    <button type="button" data-transaction_id="${transId}" class="btn btn-outline-success btn-sm mt-2 upload_transaction" data-bs-toggle="modal" data-bs-target="#uploadTransaction">Upload</button>
+                                `;
+                            } else if (item.transactions.status === 'progress') {
+                                return `
+                                    <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>
+                                `;
+                            } else if (item.transactions.status === 'success') {
+                                return `
+                                    <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button> 
+                                    <a href="/generate-ticket-barcode?transnumber=${transNumber}" class="btn btn-outline-danger btn-sm mt-2">Ticket</a>
+                                `;
                             }
                         } else {
-                            return ''
+                            return '';
                         }
                     }
+
                 },
             ]
         })
-
-        // $("#searchInput").change(function(){
-        //     var searchValue = document.getElementById("searchInput").value;
-        //     table.rows(':contains("'+searchValue+'")').select();
-        //     document.getElementById("searchInput").value = "";
-        // });
 
         $(document).on('click', '#refresh_transaction', function(e) {
             e.preventDefault()

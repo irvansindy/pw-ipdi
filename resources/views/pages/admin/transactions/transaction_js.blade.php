@@ -38,6 +38,7 @@
                         <tr>
                             <td>${index + 1}</td>
                             <td>${transaction.number ?? 'not set'}</td>
+                            <td>${transaction.token_register ?? 'not set'}</td>
                             <td>${transaction.event?.name ?? 'not set'}</td>
                             <td>${transaction.user?.username ?? 'not set'}</td>
                             <td>${transaction.status ?? 'not set'}</td>
