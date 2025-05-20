@@ -34,7 +34,7 @@
                             @foreach(['jnns', 'resertifikasi', 'seminar', 'wkd', 'kongres_wilayah'] as $tab)
                             <div class="tab-pane fade p-0 px-md-2 px-sm-2 @if($loop->first) show active @endif" id="{{ $tab }}" role="tabpanel">
                                 <div class="d-flex justify-content-end align-items-center gap-2 mb-3 px-2 flex-wrap">
-                                    <select class="form-select year-filter w-auto" id="year_filter_{{ $tab }}">
+                                    <select class="form-select year-filter w-auto" id="{{ $tab }}">
                                         @for($year = now()->year; $year >= now()->year - 10; $year--)
                                             <option value="{{ $year }}">{{ $year }}</option>
                                         @endfor
@@ -42,7 +42,7 @@
                                     <button type="button" class="btn bg-gradient-danger mt-3 mt-sm-3 mt-md-3 refresh-data" data-bs-toggle="tooltip" title="Refresh Table" data-table="{{ $tab }}">
                                         <i class="fas fa-sync"></i>
                                     </button>
-                                    <button type="button" class="btn bg-gradient-success mt-sm-3 mt-md-3 export-excel" data-bs-toggle="tooltip" title="Refresh to Excel" data-table="{{ $tab }}">
+                                    <button type="button" class="btn bg-gradient-success mt-sm-3 mt-md-3 export-excel" data-bs-toggle="tooltip" title="Export to Excel" data-table="{{ $tab }}">
                                         <i class="fas fa-file-excel"></i>
                                     </button>
                                 </div>

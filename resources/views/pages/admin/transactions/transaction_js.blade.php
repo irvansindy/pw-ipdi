@@ -14,9 +14,6 @@
                 success: function(response) {
                     let transactions = response.data[tableId]; // Ambil data transaksi sesuai tabel
                     let role = response.data.role;
-                    
-                    console.log(transactions);
-                    
                     let $table = $('#' + tableId);
                     $table.DataTable().clear().destroy();
                     $table.find('tbody').empty();
@@ -98,7 +95,9 @@
         $('.export-excel').click(function (e) {
             e.preventDefault();
             let tabName = $(this).data('table');
-            let selectedYear = $('#transaction_' + tabName + '_management_year_filter').val();
+            
+            // Ambil nilai dari <select> berdasarkan ID tab yang sesuai
+            let selectedYear = $(this).closest('.tab-pane').find('.year-filter').val();
 
             // Redirect ke route export dengan parameter tahun dan tab aktif
             let exportUrl = "{{ route('transaction-export-excel') }}?year=" + selectedYear + "&category=" + tabName;
