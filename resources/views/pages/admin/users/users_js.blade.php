@@ -30,7 +30,7 @@
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        return '<a href="#" class="text-info font-weight-bold text-xs mx-2 edit_user" data-user_id="'+item.id+'" data-username="'+item.username+'" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a> <a href="#" class="text-danger font-weight-bold text-xs mx-2 delete_user" data-user_id="'+item.id+'" data-username="'+item.username+'" data-bs-toggle="modal" data-bs-target="#form_delete_user" data-toggle="tooltip" data-original-title="Delete user">Delete</a>'
+                        return '<a href="#" class="text-info font-weight-bold text-xs mx-2 edit_user" data-user_id="'+item.id+'" data-username="'+item.username+'" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a>'
                     }
                 },
             ],

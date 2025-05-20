@@ -14,268 +14,313 @@ class DialisisSeeder extends Seeder
     {
         DB::table('master_dialises')->insert([
             [
-                "name" => "Ciputra Hospital Citra Garden City",
+                "RS PELNI JAKARTA BARAT"
             ],
             [
-                "name" => "Fresenius Medical Care",
+                "RS Dr. Cipto Mangunkusumo"
             ],
             [
-                "name" => "Jakarta Kidney Center",
+                "RS PGI Cikini"
             ],
             [
-                "name" => "Klinik Cipta Husada",
+                "RS Pusat Pertamina Jakarta"
             ],
             [
-                "name" => "Klinik HD Sartika",
+                "RS Dr Suyoto"
             ],
             [
-                "name" => "Klinik Hemodialisis Lions",
+                "RS.ISLAM JAKARTA CEMPAKA PUTIH"
             ],
             [
-                "name" => "Klinik Hemodialisis Rena Medika Jakarta",
+                "MRCCC SILOAM HOSPITALS SEMANGGI"
             ],
             [
-                "name" => "Klinik Hemodialisis Tidore Lestari Husada",
+                "RS Tebet"
             ],
             [
-                "name" => "Klinik Pandaoni Medika",
+                "RS Atmajaya"
             ],
             [
-                "name" => "Klinik Raycare Hemodialisis",
+                "RS Umum Pekerja Jakarta"
             ],
             [
-                "name" => "Klinik Utama Medik",
+                "RS Budhi Asih"
             ],
             [
-                "name" => "Klinik Utama Medikatama Dialysis Center",
+                "RS Prikasih"
             ],
             [
-                "name" => "Mayapada Hospital Kuningan Jakarta Selatan",
+                "RS YARSI"
             ],
             [
-                "name" => "Mayapada Hospital Lebak Bulus",
+                "RS Hermina Daan Mogot"
             ],
             [
-                "name" => "MRCCC Siloam Hospitals Semanggi",
+                "RS PANTAI INDAH KAPUK"
             ],
             [
-                "name" => "RS. Abdul Radjak Jakarta",
+                "RSU Adhyaksa"
             ],
             [
-                "name" => "RS. Antam Medika Jakarta",
+                "RS DUTA INDAH  JAKARTA"
             ],
             [
-                "name" => "RS. Atmajaya",
+                "RS. Hermina Kemayoran"
             ],
             [
-                "name" => "RS. Bhayangkara Lemdiklat Polri",
+                "RSKD Duren Sawit"
             ],
             [
-                "name" => "RS. Bhayangkara TK.I Raden Said Sukanto Jakarta",
+                "RSI Sukapura"
             ],
             [
-                "name" => "RS. Budhi Asih",
+                "RS Antam Medika Jakarta"
             ],
             [
-                "name" => "RS. Dik Pusdikkes",
+                "RSUD Cengkareng"
             ],
             [
-                "name" => "RS. Dr Suyoto",
+                "RS Setia Mitra"
             ],
             [
-                "name" => "RS. Dr. Cipto Mangunkusumo",
+                "RS. Mitra Keluarga Kelapa Gading"
             ],
             [
-                "name" => "RS. Duta Indah Jakarta",
+                "RSAL dr. Mintohardjo"
             ],
             [
-                "name" => "RS. Gading Pluit Jakarta",
+                "RS Menteng Mitra Afia"
             ],
             [
-                "name" => "RS. Grhakedoya",
+                "RSAU dr. Esnawan Antariksa"
             ],
             [
-                "name" => "RS. Haji Jakarta",
+                "Jakarta Kidney Center"
             ],
             [
-                "name" => "RS. Harapan Bunda Jakarta Timur",
+                "Fresenius Medical Care"
             ],
             [
-                "name" => "RS. Harapan Jayakarta",
+                "RS MIKA Kemayoran  Jakarta"
             ],
             [
-                "name" => "RS. Harum Sisma Medika",
+                "Klinik Hemodialisis Rena Medika Jakarta"
             ],
             [
-                "name" => "RS. Hermina Daan Mogot",
+                "RS MOH Ridwan Meuraksa Jakarta Timur"
             ],
             [
-                "name" => "RS. Hermina Jatinegara",
+                "Klinik Utama Muslimat NU Cipta Husada"
             ],
             [
-                "name" => "RS. Husada",
+                "SILOAM HOSPITALS KEBON JERUK"
             ],
             [
-                "name" => "RS. Islam Pondok Kopi",
+                "RS ROYAL PROGRESS"
             ],
             [
-                "name" => "RS. Jakarta",
+                "RSUD Tarakan Jakarta"
             ],
             [
-                "name" => "RS. Jantung Harapan Kita",
+                "Mayapada Hospital Kuningan Jakarta Selatan"
             ],
             [
-                "name" => "RS. Medistra",
+                "Tzu Chi Hospital PIK"
             ],
             [
-                "name" => "RS. Menteng Mitra Afia",
+                "RS PONDOK INDAH"
             ],
             [
-                "name" => "RS. MIKA Kemayoran Jakarta",
+                "RS MEDISTRA"
             ],
             [
-                "name" => "RS. Mitra Keluarga Kalideres",
+                "RS Sumber Waras Jakarta"
             ],
             [
-                "name" => "RS. MMC",
+                "RS Bhayangkara TK.I Raden Said Sukanto Jakarta"
             ],
             [
-                "name" => "RS. MOH Ridwan Meuraksa Jakarta Timur",
+                "RSUD Koja Jakarta"
             ],
             [
-                "name" => "RS. Mulyasari Jakarta",
+                "RS PELABUHAN "
             ],
             [
-                "name" => "RS. Pantai Indah Kapuk",
+                "Rs Grhakedoya"
             ],
             [
-                "name" => "RS. Patria IKKT",
+                "RS. Kanker Dharmais"
             ],
             [
-                "name" => "RS. Pelabuhan",
+                "RSUP PERSAHABATAN"
             ],
             [
-                "name" => "RS. Pelni Jakarta Barat",
+                "Klinik HD Sartika"
             ],
             [
-                "name" => "RS. Pertamina Jaya",
+                "RSUD Pasar Minggu"
             ],
             [
-                "name" => "RS. PGI Cikini",
+                "RS Pluit"
             ],
             [
-                "name" => "RS. Pluit",
+                "RS Harapan Bunda Jakarta Timur"
             ],
             [
-                "name" => "RS. Pondok Indah",
+                "RSUP Fatmawati"
             ],
             [
-                "name" => "RS. Premier Jatinegara",
+                "RS Jakarta"
             ],
             [
-                "name" => "RS. Prikasih",
+                "RS MMC"
             ],
             [
-                "name" => "RS. Pusat Pertamina Jakarta",
+                "RS Harum Sisma Medika"
             ],
             [
-                "name" => "RS. Royal Progress",
+                "RSPAD Gatot Soebroto Jakarta"
             ],
             [
-                "name" => "RS. Royal Taruma Jakarta Barat",
+                "RS Gading Pluit Jakarta "
             ],
             [
-                "name" => "RS. Setia Mitra",
+                "RS HERMINA JATINEGARA"
             ],
             [
-                "name" => "RS. Siloam Asri Hospital",
+                "RS Abdul Radjak Jakarta"
             ],
             [
-                "name" => "RS. St. Carolus",
+                "RS Mitra Keluarga Kalideres"
             ],
             [
-                "name" => "RS. Sumber Waras Jakarta",
+                "RS Mulyasari Jakarta"
             ],
             [
-                "name" => "RS. Ukrida",
+                "RS Patria IKKT"
             ],
             [
-                "name" => "RS. Umum Pekerja Jakarta",
+                "RS Zahirah Jakarta"
             ],
             [
-                "name" => "RS. Yarsi",
+                "Klinik Utama Medikatama Dialysis Center"
             ],
             [
-                "name" => "RS. EMC Pulomas",
+                "RS Haji Jakarta"
             ],
             [
-                "name" => "RS. Hermina Kemayoran",
+                "RS Dik Pusdikkes"
             ],
             [
-                "name" => "RS. Kanker Dharmais",
+                "RSAB Harapan Kita"
             ],
             [
-                "name" => "RS. Mitra Keluarga Kelapa Gading",
+                "Yayasan Ginjal Diatrans Indonesia H3"
             ],
             [
-                "name" => "RS. Islam Jakarta Cempaka Putih",
+                "PT Interskala Sehat Sejahtera"
             ],
             [
-                "name" => "RSAB Harapan Kita",
+                "RS BHAYANGKARA LEMDIKLAT POLRI"
             ],
             [
-                "name" => "RSAL Dr. Mintohardjo",
+                "Ciputra Hospital Citra Garden City"
             ],
             [
-                "name" => "RSAU Dr. Esnawan Antariksa",
+                "RSPI Puri Indah"
             ],
             [
-                "name" => "RSI Sukapura",
+                "RSUD PASAR REBO"
             ],
             [
-                "name" => "RSKD Duren Sawit",
+                "Klinik Utama Medik"
             ],
             [
-                "name" => "RSPAD Gatot Soebroto Jakarta",
+                "Klinik Hemodialisis Lions"
             ],
             [
-                "name" => "RSPI Prof Dr Sulianti Saroso",
+                "RS Asia Columbia Asia Pulomas"
             ],
             [
-                "name" => "RSPI Puri Indah",
+                "RS ISLAM PONDOK KOPI"
             ],
             [
-                "name" => "RSU Adhyaksa",
+                "RS Royal Taruma Jakarta Barat"
             ],
             [
-                "name" => "RSUD Cengkareng",
+                "RSPI Prof Dr Sulianti Saroso"
             ],
             [
-                "name" => "RSUD Koja Jakarta",
+                "RS HUSADA"
             ],
             [
-                "name" => "RSUD Pasar Minggu",
+                "RS St. Carolus"
             ],
             [
-                "name" => "RSUD Pasar Rebo",
+                "Klinik Pandaoni Medika"
             ],
             [
-                "name" => "RSUD Tarakan Jakarta",
+                "RS Jantung Harapan Kita"
             ],
             [
-                "name" => "RSUP Fatmawati",
+                "Klinik Hemodialisis Tidore Lestari Husada"
             ],
             [
-                "name" => "RSUP Persahabatan",
+                "RS Kramat 128"
             ],
             [
-                "name" => "Siloam Hospitals Kebon Jeruk",
+                "RS. EMC PULOMAS"
             ],
             [
-                "name" => "Tzu Chi Hospital PIK",
+                "RS Premier Jatinegara"
             ],
             [
-                "name" => "Yayasan Ginjal Diatrans Indonesia H3",
+                "RS. Marinir Cilandak"
+            ],
+            [
+                "RS Pertamina Jaya"
+            ],
+            [
+                "Mayapada Hospital Lebak Bulus"
+            ],
+            [
+                "RS UKRIDA"
+            ],
+            [
+                "RS SILOAM ASRI HOSPITAL"
+            ],
+            [
+                "RS Harapan Jayakarta"
+            ],
+            [
+                "RS Murni Teguh Sudirman Jakarta"
+            ],
+            [
+                "RS FIRDAUS"
+            ],
+            [
+                "RSU Bunda Jakarta"
+            ],
+            [
+                "RSU Aulia"
+            ],
+            [
+                "RS UKI"
+            ],
+            [
+                "RS Bhakti Mulia"
+            ],
+            [
+                "RS Jantung Binawaluya"
+            ],
+            [
+                "RS Puri Medika"
+            ],
+            [
+                "RSU Eka Permata Hijau"
+            ],
+            [
+                "Klinik Hemodialisis Muslimat NU Cipta Husada2"
             ]
         ]);
     }

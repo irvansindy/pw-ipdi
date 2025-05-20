@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\OrganizationStructure;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\IuranController;
+use App\Http\Controllers\Admin\ScreeningQrCodeAudience;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController as userVisiMision;
@@ -160,6 +161,9 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/detail-news-management', [NewsController::class,'show'])->name('detail-news-management');
 	Route::post('/store-news-management', [NewsController::class,'store'])->name('store-news-management');
 	Route::post('/update-news-management', [NewsController::class,'update'])->name('update-news-management');
+
+	Route::get('/attendance-audience', [ScreeningQrCodeAudience::class,'index'])->name('attendance-audience');
+	Route::get('/check-audience', [ScreeningQrCodeAudience::class,'getDataAudienceById'])->name('check-audience');
 });
 
 Route::get('/send-mail', [TransactionManagementController::class,'sendEmail'])->name('send-mail');

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan QR untuk Redirect</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #qr-input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0; /* Sembunyikan input */
+      height: 1px;
+      width: 1px;
+      z-index: -1;
+    }
+
+    .container {
+      text-align: center;
+      margin-top: 100px;
+    }
+
+    .scan-info {
+      font-size: 1.2rem;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Silakan Scan QR Code Anda</h1>
+    <p class="scan-info">QR akan diproses otomatis dan mengarahkan ke halaman terkait.</p>
+    <!-- Input tersembunyi untuk menerima input dari scanner -->
+    <input type="text" id="qr-input" autofocus>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      const $qrInput = $('#qr-input');
+
+      // Fokus selalu ke input
+      function maintainFocus() {
+        $qrInput.focus(); 
+      }
+
+      maintainFocus();
+      setInterval(maintainFocus, 1000); // Jika user klik di luar, tetap kembalikan fokus
+
+      // Saat scanner 'mengetik' ke input dan menekan Enter
+      $qrInput.on('keypress', function(e) {
+        if (e.which === 13) {
+          let scannedValue = $qrInput.val().trim(); // Contoh: "user/12345"
+
+          if (scannedValue !== '') {
+            console.log('Hasil scan:', scannedValue);
+
+            // Redirect ke halaman detail
+            window.location.href = '/detail/' + scannedValue;
+
+            // Clear input
+            $qrInput.val('');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
