@@ -17,7 +17,15 @@ class RoleManagementController extends Controller
         return view('pages.admin.roles.index',compact('roles'))
             ->with('i', ($request->input('page', 1) - 1) * 5);
     }
-
+    public function fetch()
+    {
+        try {
+            $roles = Role::orderBy('id', 'DESC')->get();
+            return FormatResponseJson::success($roles, 'Roles fetched successfully');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error($th->getMessage());
+        }
+    }
     /**
      * Store a newly created resource in storage.
      */

@@ -6,7 +6,7 @@
             <form action="" method="POST" id="form_create_role">
                 @csrf
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Create New Role</h5>
+                    <h5 class="modal-title" id="formCreateRoleLabel">Create New Role</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #172b4d !important;">
                         <span aria-hidden="true">&times;</span>
                     </button>

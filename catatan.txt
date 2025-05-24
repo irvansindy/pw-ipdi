@@ -52,15 +52,18 @@ halaman iuran :
 - untuk create data iuran tidak usah menggunakan data modal, tapi buka halaman baru. untuk field form :
     Nama, Center Dialisis, Uang Pangkal, Biaya Iuran, File Upload, Tanggal Transfer. untuk admin iuran anggota baru sebesar 50K + 20k, iuran tetap untuk tahun setelahnya 50k. : (done) charge 350k
 - file upload untuk bukti transaction harus berbarengan diuploadnya (done) charge 100k
-- untuk event dibuat admin cms untuk mengatur tiap data event baru (done) charge 200k
+- untuk event dibuat admin cms untuk mengatur tiap data event baru (done) charge @200k
 - untuk user regis event, akan dibuatkan halaman baru untuk regis, tidak usah memakai data modal. (done) 550k
 - penambahan sub menu pada master menu home (Event yang sudah berlangsung, Berita terbaru) (done) 350k
 - dashboard (done) charge 150k
+
 - halaman detail untuk event yang sudah berlangsung dan berita (done) charge 150k
+
 - count down untuk alert sertifikat profile (done) charge 100k
 
 15 April 2025
 - dev halaman berita di user. (done) charge 450k
+
 - penambahan upload file image untuk detail berita (progress) 150k
 - management roles (progress) 350k
 - export excel data user iuran (done) 200k

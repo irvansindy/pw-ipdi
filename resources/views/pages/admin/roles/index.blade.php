@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100', 'title' => 'User Role'])
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'User Role'])
@@ -9,13 +9,12 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Roles</h6>
-                            <button type="button" class="btn bg-gradient-primary ms-auto" data-bs-toggle="modal" data-bs-target="#formCreateRole">+ Role</button>
+                            <button type="button" class="btn bg-gradient-primary ms-auto" id="for_create_role" data-bs-toggle="modal" data-bs-target="#formCreateRole">+ Role</button>
                         </div>
                     </div>
-                    {{-- {{ Auth::User()->roles()->first() }} --}}
                     <div class="card-body px-0 pt-0 pb-2">
-                        <div class="table-responsive p-0 px-2">
-                            <table class="table align-items-center mb-0" id="role_management">
+                        <div class="table-responsive p-0 px-md-2">
+                            <table class="table align-items-center mb-0" id="role_management" width="100%">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
@@ -25,11 +24,11 @@
                                             class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Role Name
                                         </th>
-                                        <th class="text-secondary opacity-7"></th>
+                                        {{-- <th class="text-secondary opacity-7"></th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @php
+                                    {{-- @php
                                         $no = 1;
                                     @endphp
                                     @foreach ($roles as $key => $role)
@@ -53,7 +52,7 @@
                                             </a>
                                         </td>
                                     </tr>
-                                    @endforeach
+                                    @endforeach --}}
                                 </tbody>
                             </table>
                         </div>

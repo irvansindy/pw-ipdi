@@ -10,4 +10,8 @@ class Menu extends Model
     use HasFactory;
     protected $table = 'menus';
     protected $guarded = [];
+    public function permissions()
+    {
+        return $this->hasMany(\Spatie\Permission\Models\Permission::class, 'name','permission');
+    }
 }

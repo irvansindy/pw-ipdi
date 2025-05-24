@@ -34,6 +34,7 @@ use App\Http\Controllers\Admin\OrganizationStructure;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\IuranController;
 use App\Http\Controllers\Admin\ScreeningQrCodeAudience;
+use App\Http\Controllers\Admin\MenuPermissionController;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController as userVisiMision;
@@ -102,6 +103,15 @@ Route::get('/generate-ticket-qrcode', [TransactionController::class,'generateTic
 Route::get('/generate-ticket-barcode', [TransactionController::class,'generateTicketBarcode'])->name('generate-ticket-barcode')->middleware('auth');
 Route::get('/generate-ticket-dummy', [TransactionController::class,'generateQrAndBarcode'])->name('generate-ticket-dummy')->middleware('auth');
 
+Route::group(['middleware' => ['auth', 'role:superadmin']], function() {
+	Route::get('/menu-permission', [MenuPermissionController::class, 'index'])->name('menu-permission');
+	Route::get('/fetch-menu-permission', [MenuPermissionController::class, 'fetch'])->name('fetch-menu-permission');
+	Route::get('/fetch-menu-permission-by-id', [MenuPermissionController::class, 'fetchById'])->name('fetch-menu-permission-by-id');
+	Route::post('/store-menu-permission', [MenuPermissionController::class, 'store'])->name('store-menu-permission');
+	Route::post('/update-menu-permission', [MenuPermissionController::class, 'update'])->name('update-menu-permission');
+	// Route::post('/delete-menu-permission', [MenuPermissionController::class, 'delete'])->name('delete-menu-permission');
+});
+
 Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 	Route::get('fetch-member-for-dashboard', [HomeController::class,'fetchMember'])->name('fetch-member-for-dashboard');
@@ -111,6 +121,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/fetch-users', [UserManagementController::class, 'fetch'])->name('fetch-users');
 	Route::get('/users-export-excel', [UserManagementController::class, 'exportExcel'])->name('users-export-excel');
 	Route::get('/roles', [RoleManagementController::class, 'index'])->name('roles');
+	Route::get('/fetch-roles', [RoleManagementController::class, 'fetch'])->name('fetch-roles');
 	Route::post('/delete-user', [UserManagementController::class, 'delete'])->name('delete-user');
 	Route::post('/role-store', [RoleManagementController::class, 'store'])->name('role-store');
 	
