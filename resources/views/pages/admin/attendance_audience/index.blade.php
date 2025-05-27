@@ -54,7 +54,7 @@
             }
 
             maintainFocus();
-            setInterval(maintainFocus, 1000); // Jaga agar tetap fokus
+            setInterval(maintainFocus, 10000); // Jaga agar tetap fokus
 
             let timeout;
 
@@ -85,7 +85,7 @@
                                 $result.html("Data QR Code: " + response.data.number + "<br>" +
                                     "Nama: " + response.data.user.username + "<br>" +
                                     "Nira IPDI: " + response.data.user.nira_ipdi + "<br>" +
-                                    "Nira IPDI: " + response.data.user.nama_perusahaan + "<br>" +
+                                    "Center Dialisis: " + response.data.user.nama_perusahaan + "<br>" +
                                     "Event/Acara: " + response.data.event.title + "<br>" +
                                     "Jam kedatangan: " + moment().tz("Asia/Jakarta").format("DD-MM-YYYY HH:mm:ss") + "<br>" +
                                     "Status Pembayaran: " + response.data.status);
