@@ -27,7 +27,8 @@ class TransactionExport implements FromCollection, WithHeadings
                 b.number_phone, 
                 b.nama_perusahaan, 
                 b.center_dialisis, 
-                c.number 
+                c.number,
+                c.proof_of_payment
             FROM transaction_details a
             JOIN users b ON a.user_id = b.id
             JOIN transactions c ON a.transaction_id = c.id
@@ -37,7 +38,21 @@ class TransactionExport implements FromCollection, WithHeadings
             AND YEAR(c.created_at) = ?", [$this->category, $this->year]
         );
 
-        return collect($list_transaction);
+        // Ubah hasil ke collection dengan link file bukti transaksi
+        $data = collect($list_transaction)->map(function ($item) {
+            return [
+                $item->username,
+                $item->nik,
+                $item->email,
+                $item->number_phone,
+                $item->nama_perusahaan,
+                $item->center_dialisis,
+                $item->number,
+                url('uploads/bukti_transaksi/' . $item->proof_of_payment), // gunakan url() agar bisa diakses di browser
+            ];
+        });
+
+        return $data;
     }
 
     public function headings(): array
@@ -50,6 +65,7 @@ class TransactionExport implements FromCollection, WithHeadings
             'Asal Instansi',
             'Asal Dialisis',
             'Nomor Transaksi',
+            'Bukti Transaksi (Link)',
         ];
     }
 }

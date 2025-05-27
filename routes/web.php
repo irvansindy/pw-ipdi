@@ -119,6 +119,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('jnns-for-dashboard', [HomeController::class,'userJnns'])->name('jnns-for-dashboard');
 	Route::get('/users', [UserManagementController::class, 'index'])->name('users');
 	Route::get('/fetch-users', [UserManagementController::class, 'fetch'])->name('fetch-users');
+	Route::get('/fetch-admin', [UserManagementController::class, 'fetchAdmin'])->name('fetch-admin');
 	Route::get('/users-export-excel', [UserManagementController::class, 'exportExcel'])->name('users-export-excel');
 	Route::get('/roles', [RoleManagementController::class, 'index'])->name('roles');
 	Route::get('/fetch-roles', [RoleManagementController::class, 'fetch'])->name('fetch-roles');

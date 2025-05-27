@@ -35,6 +35,42 @@
                 },
             ],
         })
+        
+        $('#admin_management').DataTable({
+            processing: true,
+            ajax: {
+                url: '{{ route("fetch-admin") }}',
+                type: 'GET',
+            },
+            columns: [
+                {
+                    "data": null,
+                    "render": function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+                {
+                    "data": "username",
+                    "defaultContent": "<i>Not set</i>"
+                },
+                {
+                    "data": "email",
+                    "defaultContent": "<i>Not set</i>"
+                },
+                {
+                    "data": "email",
+                    "defaultContent": "<i>Not set</i>"
+                },
+                {
+                    'data': null,
+                    title: 'Action',
+                    wrap: true,
+                    "render": function(item) {
+                        return '<a href="#" class="text-info font-weight-bold text-xs mx-2 edit_user" data-user_id="'+item.id+'" data-username="'+item.username+'" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a>'
+                    }
+                },
+            ],
+        })
 
         $(document).on('click', '.edit_user', function(e) {
             e.preventDefault()

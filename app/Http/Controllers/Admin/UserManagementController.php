@@ -15,11 +15,7 @@ use App\Exports\ExportUser;
 class UserManagementController extends Controller
 {
     function index() {
-        $users = User::whereHas('roles', function ($query) {
-            $query->where('name', 'user');
-        })
-        ->get();
-        return view("pages.admin.users.index", compact("users"));
+        return view("pages.admin.users.index");
     }
     public function fetch()
     {
@@ -28,6 +24,18 @@ class UserManagementController extends Controller
                 $query->where('name', 'user');
             })->get();
             return FormatResponseJson::success($users, 'Data user berhasil diambil');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
+    public function fetchAdmin()
+    {
+        try {
+            $admin = User::whereHas('roles', function ($query) {
+                $query->where('name', '!=', 'user');
+            })->get();
+            
+            return FormatResponseJson::success($admin, 'Data admin berhasil diambil');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
