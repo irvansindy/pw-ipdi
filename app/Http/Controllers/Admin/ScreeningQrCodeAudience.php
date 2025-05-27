@@ -16,7 +16,6 @@ class ScreeningQrCodeAudience extends Controller
     {
         try {
             $id = $request->id;
-            // dd($id);
             $data = Transactions::with(['event','user.dialisis'])
             ->where('number', $id)
             ->orWhere('token_register', $id)->first();

@@ -78,14 +78,11 @@
                             dataType: 'json',
                             async: true,
                             success: function(response) {
-                                // Tampilkan data di sini
-                                console.log(response);
-                                // Misalnya, tampilkan data di elemen lain
-                                // $result.text("Data QR Code: " + response.data);
+                                let dialisis = response.data.user.dialisis != null ? response.data.user.dialisis.name : response.data.user.dialisis;
                                 $result.html("Data QR Code: " + response.data.number + "<br>" +
                                     "Nama: " + response.data.user.username + "<br>" +
                                     "Nira IPDI: " + response.data.user.nira_ipdi + "<br>" +
-                                    "Center Dialisis: " + response.data.user.nama_perusahaan + "<br>" +
+                                    "Center Dialisis: " + dialisis + "<br>" +
                                     "Event/Acara: " + response.data.event.title + "<br>" +
                                     "Jam kedatangan: " + moment().tz("Asia/Jakarta").format("DD-MM-YYYY HH:mm:ss") + "<br>" +
                                     "Status Pembayaran: " + response.data.status);
