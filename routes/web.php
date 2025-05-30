@@ -123,7 +123,6 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/users-export-excel', [UserManagementController::class, 'exportExcel'])->name('users-export-excel');
 	Route::get('/roles', [RoleManagementController::class, 'index'])->name('roles');
 	Route::get('/fetch-roles', [RoleManagementController::class, 'fetch'])->name('fetch-roles');
-	Route::post('/delete-user', [UserManagementController::class, 'delete'])->name('delete-user');
 	Route::post('/role-store', [RoleManagementController::class, 'store'])->name('role-store');
 	
 	Route::get('/event', [EventManagementController::class, 'index'])->name('event');
@@ -147,9 +146,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin']], function() {
 	Route::get('/list-audience', [TransactionManagementController::class,'listAudience'])->name('list-audience');
 	Route::get('/transaction-export-excel', [TransactionManagementController::class,'exportExcel'])->name('transaction-export-excel');
 	Route::post('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
-	Route::post('/delete-transaction', [TransactionManagementController::class,'deleteTransaction'])->name('delete-transaction');
 	Route::post('/update-audience', [TransactionManagementController::class,'updateAudience'])->name('update-audience');
-	// Route::get('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
 
 	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');
 	Route::get('/fetch-vision', [VisionAndMisionController::class,'fetchVision'])->name('fetch-vision');

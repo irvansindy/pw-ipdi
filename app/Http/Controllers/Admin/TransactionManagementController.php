@@ -105,31 +105,6 @@ class TransactionManagementController extends Controller
             'body' => 'The Body',
         ]));
     }
-    public function deleteTransaction(Request $request)
-    {
-        try {
-            DB::beginTransaction();
-            $transaction = Transactions::find($request->transaction_id);   
-            TransactionDetail::where('transaction_id', $request->transaction_id)->get()->each->delete();;
-            // dd($transaction->id);
-            if ($transaction->proof_of_payment != null) {
-                if (File::exists(public_path('uploads/bukti_transaksi/'.$transaction->proof_of_payment))) {
-                    // dd($delete_attachment[$i]->document);
-                    File::delete(public_path('uploads/bukti_transaksi/'.$transaction->proof_of_payment));
-                }
-            }
-            $transaction->delete();
-            DB::commit();
-            return FormatResponseJson::success($transaction,'Transaksi berhasil dihapus');
-        } catch (\Throwable $th) {
-            DB::rollback();
-            return FormatResponseJson::error(null, $th->getMessage(), 500);
-        }
-    }
-    // public function exportExcel()
-    // {
-    //     return Excel::download(new TransactionExport, 'list_transaksi.xlsx');
-    // }
     public function exportExcel(Request $request)
     {
         $category = $request->input('category'); // Ambil kategori dari request

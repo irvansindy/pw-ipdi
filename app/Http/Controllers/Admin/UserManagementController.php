@@ -49,16 +49,6 @@ class UserManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
-    public function delete(Request $request) 
-    {
-        try {
-            $user = User::findOrFail($request->user_id);
-            $user->delete();
-            return FormatResponseJson::success($user, 'Data user berhasil dihapus');
-        } catch (\Throwable $th) {
-            return FormatResponseJson::error(null, $th->getMessage(), 500);
-        }
-    }
     public function exportExcel()
     {
         return Excel::download(new ExportUser(), 'list_user.xlsx');
