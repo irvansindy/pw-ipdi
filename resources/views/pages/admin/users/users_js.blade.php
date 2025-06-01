@@ -72,69 +72,61 @@
             ],
         })
 
-        $(document).on('click', '.edit_user', function(e) {
-            e.preventDefault()
-            let user_id = $(this).data('user_id')
-            $('#form_edit_user_data')[0].reset()
+        $(document).on('click', '.edit_user', function() {
+            var userId = $(this).data('user_id');
+            var username = $(this).data('username');
+            $('#form_edit_user').find('#user_id').val(userId);
+            $('#form_edit_user').find('#username').val(username);
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route("delete-user") }}',
-                type: 'POST',
+                url: '{{ route("fetch-user-by-id") }}', 
+                type: 'GET',
                 data: {
-                    user_id: user_id
+                    id: userId
                 },
                 dataType: 'json',
-                async: true,
                 success: function(res) {
-                    
-                }
-            })
-        })
-        
-        $(document).on('click', '.delete_user', function(e) {
-            e.preventDefault()
-            let user_id = $(this).data('user_id')
-            let username = $(this).data('username')
-            $('#delete_username').empty()
-            $('#delete_user_id').empty()
-            $('#delete_user_id').val(user_id)
-            $('#delete_username').html('Yakin ingin menghapus user '+username)
-        })
-        
-        $(document).on('click', '#confirm_delete_user', function(e) {
-            e.preventDefault()
-            let user_id = $('#delete_user_id').val()
-            
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route("delete-user") }}',
-                type: 'POST',
-                data: {
-                    user_id: user_id
-                },
-                dataType: 'json',
-                async: true,
-                success: function(res) {
-                    $('#form_delete_user').modal('hide')
-                    $('#user_management').DataTable().ajax.reload();
-                    Swal.fire({
-                        icon: "success",
-                        title: 'Success!',
-                        text: res.meta.message,
-                    })
+                    $('#form_edit_user_data')[0].reset()
+                    let user = res.data;
+                    $('#form_edit_user_data').find('#user_id').val(user.id);
+                    $('#form_edit_user_data').find('#username').val(user.username);
+                    $('#form_edit_user_data').find('#email').val(user.email);
+                    $('#form_edit_user_data').find('#nik').val(user.nik);
+                    $('#form_edit_user_data').find('#nira_ppni').val(user.nira_ppni);
+                    $('#form_edit_user_data').find('#nira_ipdi').val(user.nira_ipdi);
+                    $('#form_edit_user_data').find('#pw_ipdi_provinsi').val(user.pw_ipdi_provinsi);
+                    $('#form_edit_user_data').find('#nama_perusahaan').val(user.nama_perusahaan);
+                    $('#form_edit_user_data').find('#pw_ipdi_provinsi_current').val(user.pw_ipdi_provinsi);
+                    // Set value pada select
+                    $('#form_edit_user_data').find('#center_dialisis').val(user.center_dialisis);
+                    $('#form_edit_user_data').find('#number_phone').val(user.number_phone);
+                    $('#form_edit_user_data').find('#alamat_center_dialisis_perusahaan').val(user.alamat_center_dialisis_perusahaan);
+                    $('#form_edit_user_data').find('#last_edication').val(user.last_edication);
                 },
                 error: function(xhr) {
-                    let response_error = JSON.parse(xhr.responseText)
-                    console.log(response_error)
-                    Swal.fire({
-                        icon: "error",
-                        title: 'Error!',
-                        text: 'gagal menghapus data, silahkan hubungi super admin.',
-                    })
+                    $('#form_edit_user_data')[0].reset()
+                    alert('Error fetching user data.');
+                }
+            })
+        });
+
+        $(document).on('click', '#update_user', function(e) {
+            e.preventDefault();
+            let form_data = new FormData($('#form_edit_user_data')[0])
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("fetch-user-by-id") }}', 
+                type: 'POST',
+                data: form_data,
+                contentType: false,
+                processData: false,
+                success: function(res) {
+                    
                 }
             })
         })

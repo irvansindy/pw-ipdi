@@ -8,7 +8,7 @@
     </div>
     <hr class="horizontal dark mt-0">
     <div class="collapse navbar-collapse w-auto h-auto mb-3" id="sidenav-collapse-main">
-        <ul class="navbar-nav" id="master_menu">
+        {{-- <ul class="navbar-nav" id="master_menu">
             @php
                 $user = Auth::user();
                 $role = $user->roles->first();
@@ -106,7 +106,57 @@
                     </a>
                 </li>
 
-                @endif
-        </ul>
+                @endif 
+            </ul>
+            --}}
+            @php
+    use Illuminate\Support\Facades\DB;
+
+    $userPermissions = auth()->user()->getAllPermissions()->pluck('name')->toArray();
+
+    $rawMenus = DB::table('menus')
+        ->where('is_active', 1)
+        ->orderBy('parent_id')
+        ->orderBy('id')
+        ->get();
+
+    $menus = $rawMenus->filter(function ($menu) use ($userPermissions) {
+        return !$menu->permission || in_array($menu->permission, $userPermissions);
+    });
+
+    $menuTree = $menus->whereNull('parent_id')->map(function ($parent) use ($menus) {
+        $parent->children = $menus->where('parent_id', $parent->id);
+        return $parent;
+    });
+@endphp
+
+<ul class="navbar-nav" id="master_menu">
+    @foreach ($menuTree as $menu)
+        <li class="nav-item">
+            <a class="nav-link {{ request()->is(ltrim($menu->url, '/')) ? 'active' : '' }}" href="{{ url($menu->url) }}">
+                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                    {!! $menu->icon !!}
+                </div>
+                <span class="nav-link-text ms-1">{{ $menu->name }}</span>
+            </a>
+
+            @if ($menu->children->isNotEmpty())
+                <ul class="navbar-nav ps-3">
+                    @foreach ($menu->children as $child)
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->is(ltrim($child->url, '/')) ? 'active' : '' }}" href="{{ url($child->url) }}">
+                                <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                                    {!! $child->icon !!}
+                                </div>
+                                <span class="nav-link-text ms-1">{{ $child->name }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </li>
+    @endforeach
+</ul>
+
     </div>
 </aside>

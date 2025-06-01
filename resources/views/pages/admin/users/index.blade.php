@@ -111,7 +111,7 @@
         </div>
     </div>
     @include('pages.admin.users.edit')
-    @include('pages.admin.users.delete')
+    {{-- @include('pages.admin.users.delete') --}}
 @endsection
 @push('js')
     @include('pages.admin.users.users_js')

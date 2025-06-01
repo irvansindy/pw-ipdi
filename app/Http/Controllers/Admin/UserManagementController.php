@@ -49,6 +49,14 @@ class UserManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
+    public function update(Request $request)
+    {
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
     public function exportExcel()
     {
         return Excel::download(new ExportUser(), 'list_user.xlsx');

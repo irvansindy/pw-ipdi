@@ -151,7 +151,7 @@ class MenuPermissionController extends Controller
             // Berikan permission ke role yang dipilih
             foreach ($selectedRoleIds as $roleId) {
                 $role = Role::findById($roleId);
-                if (!$role->hasPermissionTo($permission)) {
+                if (!$role->hasPermissionTo($permission, 'web')) {
                     $role->givePermissionTo($permission);
                 }
             }
