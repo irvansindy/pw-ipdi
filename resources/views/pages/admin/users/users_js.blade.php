@@ -130,5 +130,51 @@
                 }
             })
         })
+
+        $(document).on('click', '#create_admin_user', function() {
+            $('#user_for_admin').select2({
+                placeholder: 'Pilih User',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#modalAdminCMS')
+            });
+            $('#roles_admin_cms').select2({
+                placeholder: 'Pilih Role',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('#modalAdminCMS')
+            });
+        });
+
+        $(document).on('click', '#submit_admin_cms', function () {
+            let user_id = $('#user_for_admin').val();
+            let roles = $('#roles_admin_cms').val(); // ini array karena multiple
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("create-admin-cms") }}',
+                type: 'POST',
+                data: {
+                    user_id: user_id,
+                    roles: roles
+                },
+                success: function (res) {
+                    if (res.status === 'success') {
+                        alert('Admin CMS created successfully');
+                        $('#modalAdminCMS').modal('hide');
+                        $('#admin_management').DataTable().ajax.reload();
+                    } else {
+                        alert('Error: ' + (res.message ?? 'Unknown error'));
+                    }
+                },
+                error: function (xhr) {
+                    let err = xhr.responseJSON?.message ?? 'Error creating Admin CMS';
+                    alert(err);
+                }
+            });
+        });
+
     })
 </script>

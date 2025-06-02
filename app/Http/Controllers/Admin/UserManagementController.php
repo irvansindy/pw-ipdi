@@ -49,6 +49,20 @@ class UserManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
+    public function storeAdmin(Request $request)
+    {
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => bcrypt($request->password),
+            ]);
+            $user->assignRole('admin');
+            return FormatResponseJson::success($user, 'User admin berhasil dibuat');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
     public function update(Request $request)
     {
         try {

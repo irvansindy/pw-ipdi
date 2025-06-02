@@ -26,7 +26,9 @@
                         </ul>
                         <div class="tab-content mt-3" id="myTabContent">
                             <div class="tab-pane fade p-0 px-md-2 px-sm-2 show active" id="admin" role="tabpanel">
-                                <button class="btn btn-primary float-right start-end"><i class="fas fa-plus"></i></button>
+                                <div class="float-right">
+                                    <button class="btn btn-primary float-right start-end" id="create_admin_user" data-bs-toggle="modal" data-bs-target="#modalAdminCMS"><i class="fas fa-plus"></i></button>
+                                </div>
                                 <div class="table-responsive p-0 px-2">
                                     <table class="table align-items-center mb-0" id="admin_management">
                                         <thead>
@@ -111,6 +113,7 @@
         </div>
     </div>
     @include('pages.admin.users.edit')
+    @include('pages.admin.users.modal_admin_cms')
     {{-- @include('pages.admin.users.delete') --}}
 @endsection
 @push('js')
