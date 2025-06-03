@@ -122,6 +122,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('/fetch-users', [UserManagementController::class, 'fetch'])->name('fetch-users');
 	Route::get('/fetch-admin', [UserManagementController::class, 'fetchAdmin'])->name('fetch-admin');
 	Route::get('/fetch-user-by-id', [UserManagementController::class, 'fetchById'])->name('fetch-user-by-id');
+	Route::get('/create-admin-cms', [UserManagementController::class, 'storeAdmin'])->name('create-admin-cms');
 
 	Route::get('/users-export-excel', [UserManagementController::class, 'exportExcel'])->name('users-export-excel');
 	Route::get('/roles', [RoleManagementController::class, 'index'])->name('roles');
