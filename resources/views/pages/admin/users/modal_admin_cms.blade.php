@@ -17,9 +17,7 @@
                         <label for="example-text-input" class="form-control-label">Nama</label>
                         <Select class="form-control" name="user_for_admin" id="user_for_admin">
                             @php
-                                $users = \App\Models\User::whereHas('roles', function ($query) {
-                                    $query->where('name', 'user');
-                                })->get();
+                                $users = \App\Models\User::all();
                                 foreach ($users as $user) {
                                     echo "<option value='{$user->id}'>{$user->username} - {$user->email}</option>";
                                 }
