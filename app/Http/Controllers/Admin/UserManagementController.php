@@ -52,12 +52,18 @@ class UserManagementController extends Controller
     public function storeAdmin(Request $request)
     {
         try {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => bcrypt($request->password),
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'roles'   => 'required|array',
+                'roles.*' => 'exists:roles,id',
             ]);
-            $user->assignRole('admin');
+            $user = User::findOrFail($request->user_id);
+            // dd($request->all());
+            // Ambil nama role berdasarkan ID
+            $roleNames = Role::whereIn('id', $request->roles)->pluck('name')->toArray();
+
+            // Assign multiple roles
+            $user->syncRoles($roleNames);
             return FormatResponseJson::success($user, 'User admin berhasil dibuat');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 500);

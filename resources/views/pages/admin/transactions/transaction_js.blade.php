@@ -189,56 +189,6 @@
             })
         })
 
-        $(document).on('click', '.delete_transaction', function(e) {
-            e.preventDefault()
-            let transaction_id = $(this).data('transaction_id')
-            let transaction_number = $(this).data('transaction_number')
-            $('#delete_transaction_id').empty()
-            $('#delete_transaction_number').empty()
-            $('#delete_transaction_id').val(transaction_id)
-            $('#delete_transaction_number').html('Yakin ingin menghapus transaksi dengan nomor ' +
-                transaction_number)
-            $('#confirm_delete_transaction').attr('data-transaction_id', transaction_id)
-            $('#confirm_delete_transaction').attr('data-transaction_number', transaction_number)
-        })
-
-        $(document).on('click', '#confirm_delete_transaction', function(e) {
-            e.preventDefault()
-            let transaction_id = $(this).data('transaction_id')
-            let delete_transaction_id = $('#delete_transaction_id').val()
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('delete-transaction') }}',
-                type: 'POST',
-                data: {
-                    transaction_id: transaction_id,
-                    delete_transaction_id: delete_transaction_id
-                },
-                dataType: 'json',
-                async: true,
-                success: function(res) {
-                    $('#form_delete_transaction').modal('hide')
-                    $('#transaction_management').DataTable().ajax.reload();
-                    Swal.fire({
-                        icon: "success",
-                        title: 'Success!',
-                        text: res.meta.message,
-                    })
-                },
-                error: function(xhr) {
-                    let response_error = JSON.parse(xhr.responseText)
-                    console.log(response_error)
-                    Swal.fire({
-                        icon: "error",
-                        title: 'Error!',
-                        text: 'gagal menghapus data, silahkan hubungi admin.',
-                    })
-                }
-            })
-        })
-
         $(document).on('keyup', '#myInput', function(e) {
             if (tex !== "" && e.keyCode === 13) {
                 $('#myInput').val(tex).focus();
