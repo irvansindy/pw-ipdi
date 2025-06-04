@@ -31,12 +31,10 @@ class LoginController extends Controller
 
             // return redirect()->intended('dashboard');
             $user = Auth::user();
-            if ($user->hasRole('superadmin')) {
-                return redirect()->route('dashboard');
-            } elseif ($user->hasRole('admin')) {
-                return redirect()->route('dashboard');
-            } else {
+            if ($user->hasRole('user')) {
                 return redirect()->route('home');
+            } else {
+                return redirect()->route('dashboard');
             }
         }
 
