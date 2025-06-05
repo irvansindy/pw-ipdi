@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100', 'title' => 'Dashboard'])
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard'])
@@ -72,14 +72,12 @@
 @endsection
 
 @push('js')
-    <script src="./assets/js/plugins/chartjs.min.js"></script>
+    <script src="{{ asset('assets/js/plugins/chartjs.min.js') }}"></script>
     <script>
-
         $(document).ready(function() {
             $('#yearFilter').select2();
             $('#yearFilterJnns').select2();
             getMember()
-
             function getMember() {
                 $.ajax({
                     url: '{{ route('fetch-member-for-dashboard') }}',

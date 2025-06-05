@@ -47,11 +47,9 @@
         @yield('content')
     @endguest
 
-    @auth
+    {{-- @auth
         @if (Auth::user()->getRoleNames()[0] == 'admin' || Auth::user()->getRoleNames()[0] == 'superadmin')
-            @if (Request::is('/') || Request::is('events'))
-                {{-- <div class="min-height-300 bg-primary position-absolute w-100"></div> --}}
-                {{-- @include('layouts.navbars.auth.sidenav') --}}
+            @if (Request::is('/') || Request::is('events'))\
                 <main class="main-content border-radius-lg">
                     @yield('content')
                 </main>
@@ -67,7 +65,31 @@
                 @yield('content')
             </main>
         @endif
+    @endauth --}}
+    @auth
+        @php
+            $role = Auth::user()->getRoleNames()[0];
+        @endphp
+
+        @if (in_array($role, ['admin', 'superadmin', 'ketua', 'sekretaris', 'bendahara', 'admin-verificator']))
+            @if (Request::is('/') || Request::is('events'))
+                <main class="main-content border-radius-lg">
+                    @yield('content')
+                </main>
+            @else
+                <div class="min-height-300 bg-primary position-absolute w-100"></div>
+                @include('layouts.navbars.auth.sidenav')
+                <main class="main-content border-radius-lg">
+                    @yield('content')
+                </main>
+            @endif
+        @elseif($role == 'user')
+            <main class="main-content border-radius-lg">
+                @yield('content')
+            </main>
+        @endif
     @endauth
+
 
     <!--   Core JS Files   -->
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>
