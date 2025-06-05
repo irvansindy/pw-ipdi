@@ -168,5 +168,36 @@
             });
         });
 
+        $(document).on('click', '.role_admin', function() {
+            var userId = $(this).data('user_id');
+            var username = $(this).data('username');
+            $('#form_role_admin').find('#user_id').val(userId);
+            $('#form_role_admin').find('#username').val(username);
+            alert('Role Admin for ' + username);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route("fetch-admin-by-id") }}', 
+                type: 'GET',
+                data: {
+                    id: userId
+                },
+                dataType: 'json',
+                success: function(res) {
+                    $('#form_role_admin_data')[0].reset()
+                    let user = res.data;
+                    $('#form_role_admin_data').find('#user_id').val(user.id);
+                    $('#form_role_admin_data').find('#username').val(user.username);
+                    $('#form_role_admin_data').find('#email').val(user.email);
+                    $('#form_role_admin_data').find('#roles').val(user.roles);
+                },
+                error: function(xhr) {
+                    $('#form_role_admin_data')[0].reset()
+                    alert('Error fetching user data.');
+                }
+            })
+        });
+
     })
 </script>

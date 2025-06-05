@@ -69,6 +69,19 @@ class UserManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
+    public function fetchAdminById(Request $request)
+    {
+        try {
+            $user = User::with(['roles'])->where('id', $request->id)->first();
+            if (!$user) {
+                return FormatResponseJson::error(null, 'User tidak ditemukan', 404);
+            }
+            $roles = $user->getRoleNames();
+            return FormatResponseJson::success($user, 'Data user berhasil diambil');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
     public function update(Request $request)
     {
         try {
