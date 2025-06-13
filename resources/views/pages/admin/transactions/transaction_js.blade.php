@@ -15,6 +15,7 @@
                     let transactions = response.data[tableId]; // Ambil data transaksi sesuai tabel
                     let role = response.data.role;
                     let $table = $('#' + tableId);
+
                     $table.DataTable().clear().destroy();
                     $table.find('tbody').empty();
 
@@ -22,14 +23,14 @@
                         let actions =
                             `<button type="button" data-transaction_id="${transaction.id}" class="btn btn-outline-info btn-sm detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>`;
 
-                        if (role === 'admin') {
+                        if (role === 'admin' || role === 'superadmin') {
                             actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-danger btn-sm delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" data-table_id="${tableId}" class="btn btn-outline-danger btn-sm delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
                         }
-                        if (transaction.status === 'success') {
-                            actions +=
-                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">Check Attendance</button>`;
-                        }
+                        // if (transaction.status === 'success') {
+                        //     actions +=
+                        //         `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">Check Attendance</button>`;
+                        // }
 
                         $table.find('tbody').append(`
                         <tr>
@@ -277,6 +278,55 @@
                 }
             })
         })
+        
+        $(document).on('click', '.delete_transaction', function(e) {
+            e.preventDefault()
+            let transaction_id = $(this).data('transaction_id')
+            let transaction_number = $(this).data('transaction_number')
+            let table_id = $(this).data('table_id')
+            
+            $('#delete_transaction_id').val(transaction_id)
+            $('#delete_transaction_number').html(transaction_number)
+            $('#confirm_delete_transaction').attr('data-transaction_id', transaction_id)
+            $('#confirm_delete_transaction').attr('data-transaction_number', transaction_number)
+        })
+
+        $(document).on('click', '#confirm_delete_transaction', function(e) {
+            e.preventDefault()
+            let transaction_id = $(this).data('transaction_id')
+            let transaction_number = $(this).data('transaction_number')
+            
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('delete-audience') }}',
+                type: 'post',
+                data: {
+                    transaction_id: transaction_id
+                },
+                dataType: 'json',
+                async: true,
+                success: function(res) {
+                    $('#form_delete_transaction').modal('hide')
+                    Swal.fire({
+                        icon: "success",
+                        title: 'Success!',
+                        text: res.meta.message,
+                    })
+                    fetchTransactions('transaction_' + res.data.category + '_management', currentYear);
+                },
+                error: function(xhr) {
+                    let response_error = JSON.parse(xhr.responseText)
+                    Swal.fire({
+                        icon: "error",
+                        title: 'Error!',
+                        text: 'gagal menghapus transaksi, silahkan hubungi admin.',
+                    })
+                }
+            })
+        })
+    
     })
     $('.form-select, .year-filter').select2()
 </script>

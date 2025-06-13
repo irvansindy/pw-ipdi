@@ -1,6 +1,5 @@
 {{-- modal --}}
 <div class="modal fade" id="form_delete_transaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"  role="dialog" aria-labelledby="form_delete_transaction_label" aria-hidden="true">
-    {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered me-lg-8" role="document"> --}}
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content modal-dialog-scrollable" >
             <form action="" method="POST" id="form_delete_transaction_data">

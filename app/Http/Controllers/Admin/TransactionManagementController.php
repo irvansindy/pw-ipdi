@@ -136,4 +136,19 @@ class TransactionManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
+    public function deleteAudience(Request $request)
+    {
+        try {
+            $transaction_detail = TransactionDetail::where('transaction_id', $request->transaction_id)->first();
+            if (!$transaction_detail) {
+                return FormatResponseJson::error(null, 'Data tidak ditemukan', 404);
+            }
+            $transaction = Transactions::find($request->transaction_id);
+            $transaction_detail->delete();
+            $transaction->delete();
+            return FormatResponseJson::success(null, 'Peserta berhasil dihapus');
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
 }

@@ -152,6 +152,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('/transaction-export-excel', [TransactionManagementController::class,'exportExcel'])->name('transaction-export-excel');
 	Route::post('/transaction-approval', [TransactionManagementController::class,'approval'])->name('transaction-approval');
 	Route::post('/update-audience', [TransactionManagementController::class,'updateAudience'])->name('update-audience');
+	Route::post('/delete-audience', [TransactionManagementController::class,'deleteAudience'])->name('delete-audience');
 
 	Route::get('/vision-mision', [VisionAndMisionController::class,'viewVisionMision'])->name('vision-mision');
 	Route::get('/fetch-vision', [VisionAndMisionController::class,'fetchVision'])->name('fetch-vision');
