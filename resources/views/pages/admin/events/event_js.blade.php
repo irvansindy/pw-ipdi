@@ -63,7 +63,7 @@
                     $('#create_event_category').empty()
                     $('#create_event_category').append('<option value="">Pilih Satu</option>')
                     $.each(res.data, function (i, data) {
-                        $('#create_event_category').append('<option value="'+ data.id + '">'+ data.name + '</option>')
+                        $('#create_event_category').append('<option value="'+ data.id + '" data-event_category="'+data.name+'">'+ data.name + '</option>')
                     })
                 }
             })
@@ -72,8 +72,14 @@
         $(document).on('change', '#create_event_category', function(e) {
             e.preventDefault()
             var value_category = $("#create_event_category option:selected").val();
-            // alert(value_category)
-            if (value_category == 1) {
+            let selectedValue = $('#create_event_category option:selected').data('event_category');
+
+            // if (selectedValue.toLowerCase() === 'jnns') {
+            //     alert(selectedValue);
+            // } else {
+            //     alert('Lainnya');
+            // }
+            if (selectedValue.toLowerCase() === 'jnns') {
                 $('.detail_event').empty()
                 $('#master_event_price').empty()
                 $('.detail_event').append(`
@@ -258,6 +264,95 @@
                     $.each(res.data[1], function(i, data) {
                         $('#update_event_category').append('<option value="' + data.id + '">' + data.name + '</option>')
                     })
+
+                    if (res.data[0].category.name.toLowerCase() === 'jnns') {
+                        $('.detail_event_update').empty();
+                        $('.update_event_price').empty();
+
+                        const details = res.data[0].event_detail;
+
+                        if (Array.isArray(details) && details.length > 0) {
+                            let html = '<div class="row g-3 align-items-center form-group">';
+
+                            details.forEach((detail, index) => {
+                                html += `
+                                    <div class="col-md-4">
+                                        <label for="update_event_detail_price_${index}">Harga ${detail.name.charAt(0).toUpperCase() + detail.name.slice(1)}</label>
+                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="${detail.name}">
+                                        <input type="text" name="update_event_detail_price[]" class="form-control" id="update_event_detail_price_${index}" value="${detail.price}">
+                                    </div>
+                                `;
+                            });
+
+                            html += '</div>';
+                            $('.detail_event_update').append(html);
+
+                        } else {
+                            // Jika event_detail kosong, tampilkan 3 input kosong default
+                            $('.detail_event_update').append(`
+                                <div class="row g-3 align-items-center form-group">
+                                    <div class="col-md-4">
+                                        <label>Harga Simposium</label>
+                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="simposium">
+                                        <input type="text" name="update_event_detail_price[]" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Harga Workshop</label>
+                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="workshop">
+                                        <input type="text" name="update_event_detail_price[]" class="form-control">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Harga Paket</label>
+                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="paket">
+                                        <input type="text" name="update_event_detail_price[]" class="form-control">
+                                    </div>
+                                </div>
+                            `);
+                        }
+
+                    } else {
+                        $('.detail_event_update').empty();
+                        $('.update_event_price').empty().append(`
+                            <div class="form-group">
+                                <label for="update_event_price">Price</label>
+                                <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
+                            </div>
+                        `);
+                    }
+
+
+                    // if (res.data[0].category.name.toLowerCase() === 'jnns') {
+                    //     $('.detail_event_update').empty()
+                    //     $('.update_event_price').empty()
+                    //     $('.detail_event_update').append(`
+                    //         <div class="row g-3 align-items-center form-group">
+                    //             <div class="col-md-4">
+                    //                 <label for="update_event_detail_name_simposium">Harga Simposium</label>
+                    //                 <input type="hidden" name="update_event_detail_name[]" id="update_event_detail_name_simposium" class="form-control" value="simposium">
+                    //                 <input type="text" name="update_event_detail_price[]" id="update_event_detail_price_simposium" class="form-control">
+                    //             </div>
+                    //             <div class="col-md-4">
+                    //                 <label for="update_event_detail_name_simposium">Harga Workshop</label>
+                    //                 <input type="hidden" name="update_event_detail_name[]" id="update_event_detail_name_simposium" class="form-control" value="workshop">
+                    //                 <input type="text" name="update_event_detail_price[]" id="update_event_detail_price_simposium" class="form-control">
+                    //             </div>
+                    //             <div class="col-md-4">
+                    //                 <label for="update_event_detail_name_simposium">Harga Paket</label>
+                    //                 <input type="hidden" name="update_event_detail_name[]" id="update_event_detail_name_simposium" class="form-control" value="paket">
+                    //                 <input type="text" name="update_event_detail_price[]" id="update_event_detail_price_simposium" class="form-control">
+                    //             </div>
+                    //         </div>
+                    //     `)
+                    // } else {
+                    //     $('.detail_event_update').empty()
+                    //     $('.update_event_price').append(`
+                    //         <div class="form-group">
+                    //             <label for="update_event_price">Price</label>
+                    //             <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
+                    //         </div>
+                    //     `)
+                    // }
+                    
                     $('#update_event_price').val(res.data[0].price)
                     if(res.data[0].hotel != null) {
                         $('#update_check_event_hotel').prop('checked', true) 
@@ -296,19 +391,150 @@
             })
         })
 
-        $(document).on('click', '#update_event', function(e) {
-            e.preventDefault()
+        // $(document).on('click', '#update_event', function(e) {
+        //     e.preventDefault()
 
-            let update_event_id = $('#update_event_id').val()
-            let update_event_name = $('#update_event_name').val()
-            let update_event_title = $('#update_event_title').val()
-            let update_event_category = $('#update_event_category').val()
-            let update_event_price = $('#update_event_price').val()
-            let update_event_description = $('#update_event_description').val()
-            let update_event_quota = $('#update_event_quota').val()
-            let update_event_date = $('#update_event_date').val()
-            let update_event_date_last_register = $('#update_event_date_last_register').val()
+        //     let update_event_id = $('#update_event_id').val()
+        //     let update_event_name = $('#update_event_name').val()
+        //     let update_event_title = $('#update_event_title').val()
+        //     let update_event_category = $('#update_event_category').val()
+        //     let update_event_price = $('#update_event_price').val()
+        //     let update_event_description = $('#update_event_description').val()
+        //     let update_event_quota = $('#update_event_quota').val()
+        //     let update_event_date = $('#update_event_date').val()
+        //     let update_event_date_last_register = $('#update_event_date_last_register').val()
+        //     let update_is_active = $('#update_event_is_active').is(':checked') ? 1 : 0;
+
+        //     let form_data = new FormData();
+        //     form_data.append('id', update_event_id);
+        //     form_data.append('name', update_event_name);
+        //     form_data.append('title', update_event_title);
+        //     form_data.append('category', update_event_category);
+        //     form_data.append('price', update_event_price);
+        //     form_data.append('description', update_event_description);
+        //     form_data.append('quota', update_event_quota);
+        //     form_data.append('date', update_event_date);
+        //     form_data.append('hotel', update_event_hotel);
+        //     form_data.append('harga_hotel', update_event_harga_hotel);
+        //     form_data.append('last_register', update_event_date_last_register);
+        //     form_data.append('is_active', update_is_active);
+        //     form_data.append('image', $('input[name="update_event_image"]')[0].files[0]);
+        //     if (update_event_name == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Nama event tidak boleh kosong',
+        //         })
+        //     } else if (update_event_title == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Title event tidak boleh kosong',
+        //         })
+        //     } else if (update_event_category == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Category event tidak boleh kosong',
+        //         })
+        //     } else if (update_event_price == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Price event tidak boleh kosong',
+        //         })
+        //     } else if (update_event_description == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Description event tidak boleh kosong',
+        //         })
+        //     } else if (update_event_quota == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Quota event tidak boleh kosong',
+        //         })
+        //     } else if (update_event_date == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Date event tidak boleh kosong',
+        //         })
+        //     } else if (update_event_date_last_register == '') {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: 'Oops...',
+        //             text: 'Date Last Register event tidak boleh kosong',
+        //         })
+        //     }
+
+        //     $.ajax({
+        //         headers: {
+        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        //         },
+        //         url: '{{ route('event-update') }}',
+        //         type: 'post',
+        //         data: form_data,
+        //         // dataType: 'json',
+        //         cache : false,
+        //         processData: false,
+        //         contentType: false,
+        //         success: function(res) {
+        //             Swal.fire({
+        //                 icon: "success",
+        //                 title: res.meta.message,
+        //             });
+        //             $('#formUpdateEvent').modal('toggle');
+        //             $('.data_tables').DataTable().ajax.reload();
+        //             // location.reload()
+        //         },
+        //         error: function(xhr, status, error) {
+        //             var errorMessage = JSON.parse(xhr.responseText);
+        //             Swal.fire({
+        //                 icon: "error",
+        //                 title: "Oops....",
+        //                 text: errorMessage.data.message,
+        //                 // text: "User role cannot empty"
+        //             })
+        //         }
+        //     })
+        // })
+
+        $(document).on('click', '#update_event', function(e) {
+            e.preventDefault();
+
+            let update_event_id = $('#update_event_id').val();
+            let update_event_name = $('#update_event_name').val();
+            let update_event_title = $('#update_event_title').val();
+            let update_event_category = $('#update_event_category').val();
+            let update_event_price = $('#update_event_price').val();
+            let update_event_description = $('#update_event_description').val();
+            let update_event_quota = $('#update_event_quota').val();
+            let update_event_date = $('#update_event_date').val();
+            let update_event_date_last_register = $('#update_event_date_last_register').val();
+            let update_event_hotel = $('#update_event_hotel').val();
+            let update_event_harga_hotel = $('#update_event_harga_hotel').val();
             let update_is_active = $('#update_event_is_active').is(':checked') ? 1 : 0;
+
+            // Validasi sebelum kirim
+            if (update_event_name == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Nama event tidak boleh kosong' });
+            } else if (update_event_title == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Title event tidak boleh kosong' });
+            } else if (update_event_category == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Category event tidak boleh kosong' });
+            } else if (update_event_price == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Price event tidak boleh kosong' });
+            } else if (update_event_description == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Description event tidak boleh kosong' });
+            } else if (update_event_quota == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Quota event tidak boleh kosong' });
+            } else if (update_event_date == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Date event tidak boleh kosong' });
+            } else if (update_event_date_last_register == '') {
+                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Date Last Register event tidak boleh kosong' });
+            }
 
             let form_data = new FormData();
             form_data.append('id', update_event_id);
@@ -323,66 +549,30 @@
             form_data.append('harga_hotel', update_event_harga_hotel);
             form_data.append('last_register', update_event_date_last_register);
             form_data.append('is_active', update_is_active);
-            form_data.append('image', $('input[name="update_event_image"]')[0].files[0]);
-            if (update_event_name == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Nama event tidak boleh kosong',
-                })
-            } else if (update_event_title == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Title event tidak boleh kosong',
-                })
-            } else if (update_event_category == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Category event tidak boleh kosong',
-                })
-            } else if (update_event_price == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Price event tidak boleh kosong',
-                })
-            } else if (update_event_description == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Description event tidak boleh kosong',
-                })
-            } else if (update_event_quota == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Quota event tidak boleh kosong',
-                })
-            } else if (update_event_date == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Date event tidak boleh kosong',
-                })
-            } else if (update_event_date_last_register == '') {
-                Swal.fire({
-                    icon: "error",
-                    title: 'Oops...',
-                    text: 'Date Last Register event tidak boleh kosong',
-                })
+
+            // Gambar jika ada
+            const file = $('input[name="update_event_image"]')[0].files[0];
+            if (file) {
+                form_data.append('image', file);
             }
+
+            // Append event_detail (name[] dan price[])
+            $('input[name="update_event_detail_name[]"]').each(function(index) {
+                form_data.append('update_event_detail_name[]', $(this).val());
+            });
+
+            $('input[name="update_event_detail_price[]"]').each(function(index) {
+                form_data.append('update_event_detail_price[]', $(this).val());
+            });
 
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 url: '{{ route('event-update') }}',
-                type: 'post',
+                type: 'POST',
                 data: form_data,
-                // dataType: 'json',
-                cache : false,
+                cache: false,
                 processData: false,
                 contentType: false,
                 success: function(res) {
@@ -392,19 +582,27 @@
                     });
                     $('#formUpdateEvent').modal('toggle');
                     $('.data_tables').DataTable().ajax.reload();
-                    // location.reload()
                 },
                 error: function(xhr, status, error) {
-                    var errorMessage = JSON.parse(xhr.responseText);
-                    Swal.fire({
-                        icon: "error",
-                        title: "Oops....",
-                        text: errorMessage.data.message,
-                        // text: "User role cannot empty"
-                    })
+                    if (xhr.status === 422) {
+                        let response = xhr.responseJSON;
+                        let firstError = Object.values(response.data)[0][0];
+                        Swal.fire({
+                            icon: "error",
+                            title: "Validation Error",
+                            text: firstError,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: xhr.responseJSON?.data?.message || "Something went wrong!",
+                        });
+                    }
                 }
-            })
-        })
+            });
+        });
+
     })
     $(function() {
         $(".price").keyup(function(e) {

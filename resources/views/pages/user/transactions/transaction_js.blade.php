@@ -94,15 +94,21 @@
                     $('#detail_id').html(res.data.number)
                     $('#detail_username').html(res.data.user.username)
                     $('#detail_event').html(res.data.event.name)
-                    $('#detail_date').html(moment(res.data.event.date).format('lll'))
+                    let detail_event = res.data.event.event_detail
+                    if (detail_event != null) {
+                        $('#detail_date').html(moment(res.data.event.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event.event_detail.end_date).format('lll'))
+                    } else {
+                        $('#detail_date').html(moment(res.data.event.date).format('lll'))
+                    }
+                    // $('#detail_date').html(moment(res.data.event.date).format('lll'))
                     $('#detail_status').html(res.data.status)
-                    $('#detail_price').html(res.data.price)
+                    $('#detail_price').html('Rp.'+res.data.price)
                     if (res.data.with_hotel == true) {
                         $('.is_with_hotel').empty()
                         $('.is_with_hotel').append(`
                         <div class="col-sm-6 col-sm-6 col-6">
                             <span style="font-weight: 700 !important;">Harga Hotel</span>
-                            <p id="">${res.data.harga_hotel}</p>
+                            <p id="">Rp.${res.data.harga_hotel}</p>
                         </div>
                         
                         `)

@@ -41,10 +41,16 @@
                             </select>
                             <input type="hidden" class="form-control" id="update_event_category_value" name="update_event_category_value" value="">
                         </div>
-                        <div class="form-group">
-                            <label for="update_event_price">Price</label>
-                            <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
+                        <div class="detail_event_update">
+
                         </div>
+                        <div class="update_event_price">
+                            <div class="form-group">
+                                <label for="update_event_price">Price</label>
+                                <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="" name="update_check_event_hotel" id="update_check_event_hotel">

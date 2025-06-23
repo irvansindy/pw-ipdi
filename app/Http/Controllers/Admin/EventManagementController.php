@@ -123,7 +123,7 @@ class EventManagementController extends Controller
     {
         try {
             $event_id = $request->id;
-            $event = Events::with(['category', 'hotel'])->findOrFail($event_id);
+            $event = Events::with(['eventDetail', 'category', 'hotel'])->findOrFail($event_id);
             $categories = CategoriesEvent::all();
             $data = [
                 $event,
@@ -134,7 +134,7 @@ class EventManagementController extends Controller
             return FormatResponseJson::error(null, $th->getMessage(), 404);
         }
     }
-    public function update(Request $request)
+    public function updateOld(Request $request)
     {
         try {
             $current_event = Events::find($request->id);
@@ -183,6 +183,106 @@ class EventManagementController extends Controller
             }
             return FormatResponseJson::success($current_event,'Event updated successfully');
         }  catch (ValidationException $e) {
+            DB::rollback();
+            return FormatResponseJson::error(null, $e->errors(), 422);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return FormatResponseJson::error(null, $e->getMessage(), 500);
+        }
+    }
+    public function update(Request $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $current_event = Events::find($request->id);
+
+            $validator = Validator::make($request->all(), [
+                "name" => "required|string",
+                "title" => "required|string",
+                "category" => "required|string",
+                "price" => "required|string",
+                "description" => "required|string",
+                "quota" => "required|integer",
+                "date" => "required|string",
+                "last_register" => "required|string",
+            ]);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+            $current_event = Events::find($request->id);
+            if (!$current_event) {
+                return FormatResponseJson::error(null, 'Event not found', 404);
+            }
+            $current_event->update([
+                "name" => $request->name,
+                "title" => $request->title,
+                "category_event_id" => $request->category,
+                "price" => $request->price,
+                "description" => $request->description,
+                "quota" => $request->quota,
+                "date" => $request->date,
+                "last_register" => $request->last_register,
+                "is_active" => $request->is_active,
+            ]);
+
+            // Handle gambar jika dikirim
+            if ($request->file('image') != null) {
+                if ($current_event->image && file_exists(public_path('img/logos/IPDI/event/' . $current_event->image))) {
+                    unlink(public_path('img/logos/IPDI/event/' . $current_event->image));
+                }
+
+                $file = $request->file('image');
+                $file_name = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('img/logos/IPDI/event/'), $file_name);
+
+                $current_event->update([
+                    'image' => $file_name,
+                ]);
+            }
+
+            /**
+             * Handle EventDetail update/create/delete
+             */
+            $names = $request->input('update_event_detail_name');
+            $prices = $request->input('update_event_detail_price');
+
+            if (is_array($names) && is_array($prices)) {
+                // Ambil semua detail lama
+                $existingDetails = EventDetail::where('event_id', $current_event->id)->get()->keyBy('name');
+
+                $namesUsed = [];
+
+                foreach ($names as $index => $name) {
+                    $price = $prices[$index];
+                    $namesUsed[] = $name;
+
+                    if ($existingDetails->has($name)) {
+                        // Update jika ada
+                        $existingDetails[$name]->update([
+                            'price' => $price,
+                        ]);
+                    } else {
+                        // Insert baru jika tidak ada
+                        EventDetail::create([
+                            'event_id' => $current_event->id,
+                            'name' => $name,
+                            'price' => $price,
+                        ]);
+                    }
+                }
+
+                // Hapus event_detail yang tidak ada dalam input
+                EventDetail::where('event_id', $current_event->id)
+                    ->whereNotIn('name', $namesUsed)
+                    ->delete();
+            }
+
+            DB::commit();
+
+            return FormatResponseJson::success($current_event, 'Event updated successfully');
+        } catch (ValidationException $e) {
             DB::rollback();
             return FormatResponseJson::error(null, $e->errors(), 422);
         } catch (\Exception $e) {
