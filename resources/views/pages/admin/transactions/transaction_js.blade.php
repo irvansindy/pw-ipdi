@@ -27,10 +27,10 @@
                             actions +=
                                 `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" data-table_id="${tableId}" class="btn btn-outline-danger btn-sm delete_transaction" data-bs-toggle="modal" data-bs-target="#form_delete_transaction">Delete</button>`;
                         }
-                        // if (transaction.status === 'success') {
-                        //     actions +=
-                        //         `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">Check Attendance</button>`;
-                        // }
+                        if (transaction.status === 'success') {
+                            actions +=
+                                `<button type="button" data-transaction_id="${transaction.id}" data-transaction_number="${transaction.number}" class="btn btn-outline-success btn-sm check_attendance_transaction" data-bs-toggle="modal" data-bs-target="#detailAttendance">Check Attendance</button>`;
+                        }
 
                         $table.find('tbody').append(`
                         <tr>
