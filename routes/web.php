@@ -97,7 +97,6 @@ Route::get('/reset-password', [ResetPassword::class, 'show'])->middleware('guest
 Route::post('/reset-password', [ResetPassword::class, 'send'])->middleware('guest')->name('reset.perform');
 Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
-// Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/ticket-qrcode', [TransactionController::class,'ticketQrCode'])->name('ticket-qrcode')->middleware('auth');
 Route::get('/generate-ticket-qrcode', [TransactionController::class,'generateTicketQrCode'])->name('generate-ticket-qrcode')->middleware('auth');
 Route::get('/generate-ticket-barcode', [TransactionController::class,'generateTicketBarcode'])->name('generate-ticket-barcode')->middleware('auth');
@@ -109,7 +108,6 @@ Route::group(['middleware' => ['auth', 'role:superadmin']], function() {
 	Route::get('/fetch-menu-permission-by-id', [MenuPermissionController::class, 'fetchById'])->name('fetch-menu-permission-by-id');
 	Route::post('/store-menu-permission', [MenuPermissionController::class, 'store'])->name('store-menu-permission');
 	Route::post('/update-menu-permission', [MenuPermissionController::class, 'update'])->name('update-menu-permission');
-	// Route::post('/delete-menu-permission', [MenuPermissionController::class, 'delete'])->name('delete-menu-permission');
 });
 
 Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|bendahara|admin-verificator']], function() {
@@ -179,6 +177,8 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 
 	Route::get('/attendance-audience', [ScreeningQrCodeAudience::class,'index'])->name('attendance-audience');
 	Route::get('/check-audience', [ScreeningQrCodeAudience::class,'getDataAudienceById'])->name('check-audience');
+	Route::get('/view-list-audience', [ScreeningQrCodeAudience::class,'viewListAudience'])->name('view-list-audience');
+	Route::get('/fetch-data-is-attendance', [ScreeningQrCodeAudience::class,'fetchDataIsAttendance'])->name('fetch-data-is-attendance');
 });
 
 Route::get('/send-mail', [TransactionManagementController::class,'sendEmail'])->name('send-mail');

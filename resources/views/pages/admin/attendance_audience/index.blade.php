@@ -7,15 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* #qr-input {
+        .top-right-button {
             position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            height: 1px;
-            width: 1px;
-            z-index: -1;
-        } */
+            top: 20px;
+            right: 30px;
+            background-color: #0d6efd;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+
+        .top-right-button:hover {
+            background-color: #0b5ed7;
+        }
+
 
         .container {
             text-align: center;
@@ -33,6 +42,8 @@
 <body>
 
     <div class="container">
+        <a href="{{ route('view-list-audience') }}" class="top-right-button">List Peserta Hadir</a>
+
         <h1>Silakan Scan QR Code</h1>
         <p class="text-muted">Data akan tampil otomatis setelah QR terbaca.</p>
         <form action="">
