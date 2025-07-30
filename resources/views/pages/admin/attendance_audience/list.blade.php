@@ -13,7 +13,7 @@
                     </div>
 
                     <div class="card-body px-3 pt-3 pb-2">
-                        <div class="row mb-3 px-2">
+                        {{-- <div class="row mb-3 px-2">
                             <div class="col-md-3">
                                 <label for="category" class="form-label">Filter Kategori Event</label>
                                 <select id="category" class="form-select">
@@ -22,6 +22,31 @@
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
+                            </div> --}}
+                            <div class="row mb-3 px-2">
+                                <div class="col-md-3 mr-3 mb-3">
+                                    {{-- <label for="category" class="form-label">Filter Kategori Event</label> --}}
+                                    <select id="category" class="form-select">
+                                        <option value="">Semua Kategori</option>
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mr-3 mb-3">
+                                    {{-- <label for="year" class="form-label">Filter Tahun</label> --}}
+                                    <select id="year" class="form-select year-filter">
+                                        <option value="">Semua Tahun</option>
+                                        @for ($i = 0; $i <= 5; $i++)
+                                            <option value="{{ now()->year - $i }}">{{ now()->year - $i }}</option>
+                                        @endfor
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button id="exportExcel" class="btn btn-success">
+                                        Export ke Excel
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
@@ -56,7 +81,13 @@
 
         /* Khusus untuk dropdown kategori */
         #category.form-select {
-            width: 250px !important;
+            width: 200px !important;
+            height: 45px;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
+        .year-filter {
+            width: 150px !important;
             height: 45px;
             font-size: 1rem;
             padding: 0.5rem 1rem;
@@ -75,6 +106,7 @@
                     url: '{{ route('fetch-data-is-attendance') }}', // ganti dengan nama route kamu
                     data: function(d) {
                         d.category = $('#category').val();
+                        d.year = $('#year').val();
                     }
                 },
                 columns: [{
@@ -111,9 +143,21 @@
 
             });
 
-            $('#category').change(function() {
+            $('#category, #year').change(function() {
                 table.ajax.reload();
             });
+
+            $('#exportExcel').click(function () {
+                const category = $('#category').val();
+                const year = $('#year').val();
+
+                let url = '{{ route('export-attendance') }}?';
+                if (category) url += `category=${category}&`;
+                if (year) url += `year=${year}`;
+
+                window.location.href = url;
+            });
+
         });
     </script>
 @endpush

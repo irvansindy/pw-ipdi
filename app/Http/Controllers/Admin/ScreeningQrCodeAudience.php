@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Transactions;
 use App\Models\CategoriesEvent;
 use App\Helpers\FormatResponseJson;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportAttendance;
 class ScreeningQrCodeAudience extends Controller
 {
     public function index()
@@ -60,5 +62,14 @@ class ScreeningQrCodeAudience extends Controller
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, 'Gagal mendapatkan status kehadiran', 400);
         }
+    }
+    public function export(Request $request)
+    {
+        $category = $request->input('category');
+        $year = $request->input('year');
+
+        $fileName = 'attendance_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new ExportAttendance($category, $year), $fileName);
     }
 }

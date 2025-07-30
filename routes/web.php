@@ -179,6 +179,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('/check-audience', [ScreeningQrCodeAudience::class,'getDataAudienceById'])->name('check-audience');
 	Route::get('/view-list-audience', [ScreeningQrCodeAudience::class,'viewListAudience'])->name('view-list-audience');
 	Route::get('/fetch-data-is-attendance', [ScreeningQrCodeAudience::class,'fetchDataIsAttendance'])->name('fetch-data-is-attendance');
+	Route::get('/export-attendance', [ScreeningQrCodeAudience::class,'export'])->name('export-attendance');
 });
 
 Route::get('/send-mail', [TransactionManagementController::class,'sendEmail'])->name('send-mail');
