@@ -17,7 +17,7 @@ class NewsController extends Controller
             $news = News::with(['author:id,username', 'event.category']) // optimasi: ambil field yang dibutuhkan
                 ->orderBy('created_at', 'desc')
                 ->get();
-    
+
             return FormatResponseJson::success($news, 'Berita berhasil diambil');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, 'Gagal mengambil berita');

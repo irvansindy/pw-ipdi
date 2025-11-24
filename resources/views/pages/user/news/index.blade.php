@@ -82,7 +82,7 @@
                 <div class="container py-5">
                     <h2 class="mb-4">Berita terkini</h2>
                     <div class="latest-news-carousel owl-carousel">
-                        
+
                     </div>
                 </div>
             </div>
@@ -155,7 +155,7 @@
 
         /*** Latest News End ***/
     </style>
-    
+
 @endpush
 @push('js')
     <script src="{{ asset('assets/js/waypoints/waypoints.min.js') }}"></script>
