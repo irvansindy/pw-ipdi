@@ -23,7 +23,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\ResetPassword;
-use App\Http\Controllers\ChangePassword;   
+use App\Http\Controllers\ChangePassword;
 use App\Http\Controllers\Admin\RoleManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\EventManagementController;
@@ -63,8 +63,13 @@ Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-
 
 Route::get('struktur-organisasi', [UserContentController::class,'organizationalStructure'])->name('struktur-organisasi');
 
-Route::get('berita', [userNews::class,'index'])->name('berita');
-Route::get('fetch-berita', [userNews::class,'fetchNews'])->name('fetch-berita');
+// Route::get('berita', [userNews::class,'index'])->name('berita');
+// Route::get('fetch-berita', [userNews::class,'fetchNews'])->name('fetch-berita');
+
+// News Routes
+Route::get('/berita', [userNews::class, 'index'])->name('news.index');
+Route::get('/berita/{id}', [userNews::class, 'show'])->name('news.show');
+Route::get('/api/berita', [userNews::class, 'fetchNews'])->name('news.fetch');
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 
@@ -115,7 +120,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('fetch-member-for-dashboard', [HomeController::class,'fetchMember'])->name('fetch-member-for-dashboard');
 	Route::get('iuran-for-dashboard', [HomeController::class,'paymentIuran'])->name('iuran-for-dashboard');
 	Route::get('jnns-for-dashboard', [HomeController::class,'userJnns'])->name('jnns-for-dashboard');
-	
+
 	Route::get('/users', [UserManagementController::class, 'index'])->name('users');
 	Route::get('/fetch-users', [UserManagementController::class, 'fetch'])->name('fetch-users');
 	Route::get('/fetch-admin', [UserManagementController::class, 'fetchAdmin'])->name('fetch-admin');
@@ -127,7 +132,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('/roles', [RoleManagementController::class, 'index'])->name('roles');
 	Route::get('/fetch-roles', [RoleManagementController::class, 'fetch'])->name('fetch-roles');
 	Route::post('/role-store', [RoleManagementController::class, 'store'])->name('role-store');
-	
+
 	Route::get('/event', [EventManagementController::class, 'index'])->name('event');
 	Route::get('/event-category', [EventManagementController::class, 'fetchCategory'])->name('event-category');
 	Route::get('/event-hotel', [EventManagementController::class, 'fetchHotel'])->name('event-hotel');
@@ -142,7 +147,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::post('/store-iuran', [IuranController::class,'storeIuran'])->name('store-iuran');
 	Route::post('/update-iuran', [IuranController::class,'updateIuran'])->name('update-iuran');
 	Route::post('/approve-iuran', [IuranController::class,'approveIuran'])->name('approve-iuran');
-	
+
 	Route::get('/transaction', [TransactionManagementController::class,'index'])->name('transaction');
 	Route::get('/transaction-fetch', [TransactionManagementController::class,'fetch'])->name('transaction-fetch');
 	Route::get('/transaction-detail', [TransactionManagementController::class,'detail'])->name('transaction-detail');
@@ -159,12 +164,12 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::post('/upsert-vision', [VisionAndMisionController::class,'createOrUpdateVision'])->name('upsert-vision');
 	Route::get('/detail-mision', [VisionAndMisionController::class,'detailMision'])->name('detail-mision');
 	Route::post('/upsert-mision', [VisionAndMisionController::class,'createOrUpdateMision'])->name('upsert-mision');
-	
+
 	Route::get('/history', [HistoryController::class,'index'])->name('history');
 	Route::get('/fetch-history', [HistoryController::class,'fetchHistory'])->name('fetch-history');
 	Route::get('/detail-history', [HistoryController::class,'detailHistory'])->name('detail-history');
 	Route::post('/upsert-history', [HistoryController::class,'createOrUpdateHistory'])->name('upsert-history');
-	
+
 	Route::get('/organization', [OrganizationStructure::class,'index'])->name('organization');
 	Route::get('/fetch-organization', [OrganizationStructure::class,'fetchOrganization'])->name('fetch-organization');
 	Route::post('/upload-video', [OrganizationStructure::class,'upload'])->name('upload-video');
@@ -194,7 +199,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('/update-photo-profile', [UserProfileController::class, 'updatePhotoProfile'])->name('update-photo-profile');
 	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static');
 	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
-	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static'); 
+	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static');
 	Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 	Route::get('fetch-member-for-dashboard', [HomeController::class,'fetchMember'])->name('fetch-member-for-dashboard');

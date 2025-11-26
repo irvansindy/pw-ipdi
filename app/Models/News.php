@@ -13,10 +13,11 @@ class News extends Model
     protected $guarded = [];
     public function author()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'author_id');
     }
+
     public function event()
     {
-        return $this->belongsTo(Events::class);
+        return $this->belongsTo(Events::class, 'event_id');
     }
 }
