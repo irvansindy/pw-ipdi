@@ -32,13 +32,13 @@
                 <div class="col-md-12">
                     <h1 class="text-center">Visi</h1>
                     <ul class="list-unstyled ms-md-5 mt-md-4" id="list_visi" style="text-align: justify !important;">
-                        
+
                     </ul>
                 </div>
                 <div class="col-md-12">
                     <h1 class="text-center">Misi</h1>
                     <ol type="1" id="list_misi" style="text-align: justify !important;">
-                        
+
                     </ol>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                     </h3>
                 </div>
                 <div class="col-md-6 text-end">
-                    <a href="{{ route('berita') }}" class="btn btn-secondary">View All</a>
+                    <a href="{{ route('news.index') }}" class="btn btn-secondary">View All</a>
                 </div>
             </div>
             <div class="row mt-2">
@@ -111,7 +111,7 @@
                                 <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/5.png') }}" style="height: 10% !important;" loading="lazy">
                             </div>
                         </a>
-                        
+
                     </div>
                 </div>
             </div>
