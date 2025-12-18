@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $superAdmin = User::create([
-            'username' => 'Irvan Sindy', 
+            'username' => 'Irvan Sindy',
             'email' => 'superadmin@gmail.com',
             'password' => 'pass12345'
         ]);
@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
 
         // Creating Product Manager User
         $user = User::create([
-            'username' => 'user pertama', 
+            'username' => 'user pertama',
             'email' => 'userpertama@gmail.com',
             'password' => 'pass12345'
         ]);

@@ -38,7 +38,7 @@
                             <a class="dropdown-item {{ Route::currentRouteName() == 'struktur-organisasi' ? 'active' : '' }}" href="{{ route('struktur-organisasi') }}">Struktur Organisasi</a>
                         </li>
                         <li>
-                            <a class="dropdown-item {{ Route::currentRouteName() == 'berita' ? 'active' : '' }}" href="{{ route('berita') }}">Berita</a>
+                            <a class="dropdown-item {{ Route::currentRouteName() == 'news.index' ? 'active' : '' }}" href="{{ route('news.index') }}">Berita</a>
                         </li>
                     </ul>
                 </li>
@@ -89,7 +89,7 @@
                             </li>
                         </ul>
                     </li>
-                    
+
                 @else
                     <li class="nav-item ms-md-6">
                         <a class="btn bg-gradient-primary my-1 me-2" href="{{ route('login') }}">Login</a>
