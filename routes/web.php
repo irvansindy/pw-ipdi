@@ -73,7 +73,7 @@ Route::get('/api/berita', [userNews::class, 'fetchNews'])->name('news.fetch');
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 
-Route::group(['middleware' => ['auth', 'role:user']], function() {
+Route::group(['middleware' => ['auth', 'role:user|admin|superadmin|ketua|sekretaris|bendahara|admin-verificator']], function() {
 	Route::post('/check-transaction', [TransactionController::class,'checkTransaction'])->name('check-transaction');
 	Route::post('/create-transaction', [TransactionController::class,'createTransaction'])->name('create-transaction');
 	Route::get('/list-transaksi', [TransactionController::class,'viewTransaction'])->name('list-transaksi');
@@ -81,6 +81,7 @@ Route::group(['middleware' => ['auth', 'role:user']], function() {
 	Route::get('/detail-transaksi', [TransactionController::class,'detailTransaction'])->name('detail-transaksi');
 	Route::post('/upload-transaction', [TransactionController::class,'uploadTransaction'])->name('upload-transaction');
 	Route::get('detail-event/{id}/{name}', [UserContentController::class, 'detailEvents'])->name('detail-event');
+	Route::DELETE('/delete-transaksi', [TransactionController::class,'deleteTransaction'])->name('delete-transaksi');
 	Route::get('/tukar-format', [TransactionController::class, 'tukarFormat']);
 
 	Route::get('/iuran-anggota', [userIuran::class,'index'])->name('iuran-anggota');
@@ -92,6 +93,11 @@ Route::group(['middleware' => ['auth', 'role:user']], function() {
 	Route::post('/generate-payment-iuran', [userIuran::class,'generatePaymentIuran'])->name('generate-payment-iuran');
 	Route::post('/store-iuran-peserta', [userIuran::class,'storeIuran'])->name('store-iuran-peserta');
 	Route::post('/upload-iuran-peserta', [userIuran::class,'uploadIuran'])->name('upload-iuran-peserta');
+
+	// Upload transaction files (multiple)
+	Route::post('/upload-transaction', [TransactionController::class, 'uploadTransaction'])->name('upload-transaction');
+	// Delete transaction file
+	Route::delete('/delete-transaction-file', [TransactionController::class, 'deleteTransactionFile'])->name('delete-transaction-file');
 });
 
 Route::get('/register', [RegisterController::class, 'create'])->middleware('guest')->name('register');

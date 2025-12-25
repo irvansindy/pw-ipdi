@@ -22,16 +22,13 @@
                                         <th class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7">
                                             No
                                         </th>
-                                        <th
-                                            class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Transaction Number
                                         </th>
-                                        <th
-                                            class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Event
                                         </th>
-                                        <th
-                                            class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th class="text-uppercase text-primary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Status
                                         </th>
                                         <th class="text-primary opacity-7"></th>

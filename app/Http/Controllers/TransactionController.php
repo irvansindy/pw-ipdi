@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Bank;
 use App\Models\Hotel;
 use App\Models\TransactionDetail;
+use App\Models\TransactionFile;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\FormatResponseJson;
 use Illuminate\Support\Facades\DB;
@@ -21,6 +22,7 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 use Illuminate\Support\Facades\File;
 use \Milon\Barcode\DNS1D;
 use Illuminate\Support\Str;
+
 class TransactionController extends Controller
 {
     public function checkTransaction(Request $request)
@@ -28,7 +30,7 @@ class TransactionController extends Controller
         try {
             if (Auth::check()) {
                 $event_id = $request->input("event_id");
-                
+
                 $check_transaction = Transactions::where("event_id", $event_id)
                 ->where("user_id", Auth::user()->id)
                 ->first();
@@ -40,7 +42,7 @@ class TransactionController extends Controller
                 $fetch_bank = Bank::all();
 
                 $fetch_hotel = Hotel::all();
-                // dd($check_user_data);
+
                 $data = [
                     $check_transaction,
                     $fetch_currect_event,
@@ -56,422 +58,445 @@ class TransactionController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
+
     public function createTransaction(Request $request)
     {
         try {
             DB::beginTransaction();
 
+            // Validasi input
+            $request->validate([
+                'id' => 'required|exists:events,id',
+                'user_id' => 'required|exists:users,id',
+                'price' => 'required|numeric',
+            ]);
+
             $event_id = $request->id;
             $event_price = $request->price;
             $user_id = $request->user_id;
             $detail_event_id = $request->detail_event;
-            // dd($detail_event_id);
             $event_hotel_id = $request->event_hotel;
             $is_hotel_checked = $request->is_hotel_checked;
-            $total_room_hotel = $request->total_room_hotel;
-            $total_room_night = $request->total_room_night;
-            
-            $existing_event = Events::with(['category'])
-            ->where('id', $event_id)->first();
+            $total_room_hotel = $request->total_room_hotel ?? 0;
+            $total_room_night = $request->total_room_night ?? 0;
+
+            // Cek apakah user sudah pernah daftar event ini
+            $existing_user_transaction = Transactions::where('event_id', $event_id)
+                ->where('user_id', $user_id)
+                ->whereIn('status', ['pending', 'progress', 'success'])
+                ->first();
+
+            if ($existing_user_transaction) {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'Anda sudah terdaftar untuk event ini', 400);
+            }
+
+            // Get event data
+            $existing_event = Events::with(['category'])->find($event_id);
+
+            if (!$existing_event) {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'Event tidak ditemukan', 404);
+            }
+
             $existing_event_detail = null;
             $existing_hotel = null;
+
+            // Ambil detail event jika ada
             if ($detail_event_id) {
-                $existing_event_detail = EventDetail::where('id', intval($detail_event_id))->first();
+                $existing_event_detail = EventDetail::where('id', intval($detail_event_id))
+                    ->where('event_id', $event_id)
+                    ->first();
+
+                if (!$existing_event_detail) {
+                    DB::rollBack();
+                    return FormatResponseJson::error(null, 'Detail event tidak ditemukan', 404);
+                }
             }
-            $final_event_price = $existing_event_detail != null ? intval($existing_event_detail->price) : intval($event_price);
+
+            // Hitung harga event
+            $final_event_price = $existing_event_detail != null
+                ? intval($existing_event_detail->price)
+                : intval($event_price);
+
+            // Proses hotel jika dipilih
             $check_hotel = intval($is_hotel_checked);
+            $grand_total_hotel = 0;
+
             if ($check_hotel == 1) {
-                $existing_hotel = EventHotel::where('id', $event_hotel_id)->first();
+                if (!$event_hotel_id) {
+                    DB::rollBack();
+                    return FormatResponseJson::error(null, 'Hotel ID tidak ditemukan', 400);
+                }
+
+                $existing_hotel = EventHotel::where('id', $event_hotel_id)
+                    ->where('event_id', $event_id)
+                    ->first();
+
+                if (!$existing_hotel) {
+                    DB::rollBack();
+                    return FormatResponseJson::error(null, 'Hotel tidak ditemukan', 404);
+                }
+
+                if ($total_room_hotel <= 0 || $total_room_night <= 0) {
+                    DB::rollBack();
+                    return FormatResponseJson::error(null, 'Jumlah kamar dan malam hotel harus diisi', 400);
+                }
+
+                $final_hotel_price = intval($existing_hotel->price);
+                $grand_total_hotel = $final_hotel_price * $total_room_hotel * $total_room_night;
             }
-            // dd($existing_hotel->price);
-            $final_hotel_price = $existing_hotel != null ? intval($existing_hotel->price) : 0;
-            $grand_total_hotel = $final_hotel_price * $total_room_hotel * $total_room_night;
-            // dd($existing_event_detail->name);
-            $check_total_current_transaction = Transactions::where('event_id', $event_id)->count();
+
+            // Cek quota event
+            $check_total_current_transaction = Transactions::where('event_id', $event_id)
+                ->whereIn('status', ['pending', 'progress', 'success'])
+                ->count();
             $check_quota_event = $existing_event->quota;
-            
+
+            if ($check_total_current_transaction >= $check_quota_event) {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'Maaf, kuota event sudah penuh', 400);
+            }
+
+            // Generate transaction code
             $code_trans = '';
-            if ($check_total_current_transaction < $check_quota_event) {
-                switch ($existing_event->category->name) {
-                    case 'JNNS':
+            $category_name = $existing_event->category->name;
+
+            switch ($category_name) {
+                case 'JNNS':
+                    if ($existing_event_detail) {
                         if (stripos($existing_event_detail->name, 'Simposium') !== false) {
                             $code_trans = 'JNNS-SYMP';
                         } else if (stripos($existing_event_detail->name, 'Workshop') !== false) {
                             $code_trans = 'JNNS-WS';
                         } else if (stripos($existing_event_detail->name, 'Paket') !== false) {
                             $code_trans = 'JNNS-PKT';
+                        } else {
+                            $code_trans = 'JNNS-GEN';
                         }
-                        break;
-                    case 'Seminar':
-                        $code_trans = 'SMNR';
-                        break;
-                    case 'Resertifikasi':
-                        $code_trans = 'RSTF';
-                        break;
-                    case 'WKD':
-                        $code_trans = 'WKD';
-                        break;
-                    case 'Kongres Wilayah':
-                        $code_trans = 'KOWIL';
-                        break;
-                    
-                    default:
-                    $code_trans = '';
-                        break;
-                }
-
-                $date_trans = now()->format('y/m/d');
-                $numbering = $check_total_current_transaction + 1;
-                $result_number = $code_trans.'-'.$date_trans.'/'.$numbering;
-
-                // dd($result_number);
-                $grand_total_amount = $final_event_price + $grand_total_hotel;
-
-                $create_transaction = Transactions::create([
-                    'number' => $result_number,
-                    // 'token_register' => Str::uuid(),
-                    'token_register' => Str::random(30),
-                    'user_id' => $user_id,
-                    'event_id' => $event_id,
-                    'date' => now()->format('Y-m-d H:i:s'),
-                    'status' => 'pending',
-                    'price' => $grand_total_amount,
-                    'with_hotel' => $is_hotel_checked,
-                    'harga_hotel' => $grand_total_hotel,
-                    'total_room' => $total_room_hotel,
-                    'total_night' => $total_room_night,
-                    'proof_of_payment' => null
-                ]);
-                $data_user = [
-                    'transaction_id' => $create_transaction->id,
-                    'user_id' => $user_id,
-                    'is_attendanced' => 0,
-                    'created_at' => date('Y-m-d H:i:s'),
-                ];
-                TransactionDetail::create($data_user);
-                
-                DB::commit();
-                return FormatResponseJson::success($create_transaction, 'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.');
-            } else {
-                DB::rollBack();
-                return FormatResponseJson::error(null, 'Gagal melakukan transaksi', 400);
+                    } else {
+                        $code_trans = 'JNNS-GEN';
+                    }
+                    break;
+                case 'Seminar':
+                    $code_trans = 'SMNR';
+                    break;
+                case 'Resertifikasi':
+                    $code_trans = 'RSTF';
+                    break;
+                case 'WKD':
+                    $code_trans = 'WKD';
+                    break;
+                case 'Kongres Wilayah':
+                    $code_trans = 'KOWIL';
+                    break;
+                default:
+                    $code_trans = 'EVT';
+                    break;
             }
 
+            $date_trans = now()->format('y/m/d');
+            $numbering = $check_total_current_transaction + 1;
+            $result_number = $code_trans . '-' . $date_trans . '/' . $numbering;
+
+            // Calculate grand total
+            $grand_total_amount = $final_event_price + $grand_total_hotel;
+
+            // Create transaction dengan event_detail_id
+            $create_transaction = Transactions::create([
+                'number' => $result_number,
+                'token_register' => Str::random(30),
+                'user_id' => $user_id,
+                'event_id' => $event_id,
+                'event_detail_id' => $detail_event_id,
+                'date' => now()->format('Y-m-d H:i:s'),
+                'status' => 'pending',
+                'price' => $grand_total_amount,
+                'with_hotel' => $is_hotel_checked,
+                'harga_hotel' => $grand_total_hotel,
+                'total_room' => $total_room_hotel,
+                'total_night' => $total_room_night,
+                'proof_of_payment' => null
+            ]);
+
+            // Create transaction detail
+            TransactionDetail::create([
+                'transaction_id' => $create_transaction->id,
+                'user_id' => $user_id,
+                'is_attendanced' => 0,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+
+            DB::commit();
+
+            // Return dengan data lengkap
+            $transaction_with_detail = Transactions::with(['event', 'event.eventDetail', 'transactionDetail'])
+                ->find($create_transaction->id);
+
+            return FormatResponseJson::success(
+                $transaction_with_detail,
+                'Berhasil melakukan transaksi, silahkan upload bukti transfer untuk konfirmasi pendaftaran. Cek riwayat transaksi untuk upload.'
+            );
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return FormatResponseJson::error(null, $e->errors(), 422);
         } catch (\Exception $e) {
             DB::rollBack();
-            return FormatResponseJson::error(null, $e->getMessage(), 500);
+            return FormatResponseJson::error(null, 'Terjadi kesalahan: ' . $e->getMessage(), 500);
         }
     }
+
     public function viewTransaction()
     {
         return view('pages.user.transactions.index');
     }
+
     public function transactionHistory()
     {
         try {
-            $list_transaction = TransactionDetail::with(['transactions.event'])->where('user_id', Auth::user()->id)->get();
-            // dd($list_transaction);
-            // $transactions = Transactions::with('event')->where('user_id', Auth::user()->id)->get();
-            return FormatResponseJson::success($list_transaction,'Transaction fetched successfully');
+            $list_transaction = TransactionDetail::with([
+                'transactions.event.eventDetail',
+                'transactions.event.category',
+                'transactions.eventDetail',
+                'user'
+            ])
+            ->where('user_id', Auth::user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            return FormatResponseJson::success($list_transaction, 'Transaction fetched successfully');
         } catch (\Exception $e) {
-            return FormatResponseJson::error(null, 'Gagal melakukan transaksi', 400);
+            return FormatResponseJson::error(null, 'Gagal mengambil riwayat transaksi: ' . $e->getMessage(), 400);
         }
     }
+
     public function detailTransaction(Request $request)
     {
         try {
-            $transaction = Transactions::with(['event.eventDetail','transactionDetail.user', 'user'])
+            $transaction = Transactions::with([
+                'event.eventDetail',
+                'event.category',
+                'eventDetail',
+                'transactionDetail.user',
+                'user',
+                'files'
+            ])
             ->where('user_id', Auth::user()->id)
             ->find($request->transaction_id);
-            // ->find(4);
-            return FormatResponseJson::success($transaction,'Transaction fetched successfully');
+
+            if (!$transaction) {
+                return FormatResponseJson::error(null, 'Transaksi tidak ditemukan', 404);
+            }
+
+            return FormatResponseJson::success($transaction, 'Transaction fetched successfully');
         } catch (\Exception $e) {
-            return FormatResponseJson::error(null, 'Gagal mendapatkan data transaksi', 400);
+            return FormatResponseJson::error(null, 'Gagal mendapatkan data transaksi: ' . $e->getMessage(), 400);
         }
     }
+
     public function uploadTransaction(Request $request)
-    {
-        try {
-            $request->validate([
-                'file_upload_transaction' => 'required|mimes:png,jpg,pdf|max:128'
-            ]);
-            
-            $file = $request->file('file_upload_transaction');
-            $file_name = time().'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('uploads/bukti_transaksi'), $file_name);
-            $transaction = Transactions::find($request->id);
-            $transaction->update([
-                'status' => 'progress',
-                'proof_of_payment' => $file_name
-            ]);
-            return FormatResponseJson::success($transaction,'Transaction fetched successfully');
-        } catch (\Exception $e) {
-            return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi', 500);
-            // return FormatResponseJson::error(null, $e->getMessage(), 400);
-        }
-    }
-    public function ticketQrCode(Request $request)
-    {
-        // Membuat QR code dan menyimpan sebagai file gambar
-        $qrcodePath = public_path('qrcode.png');
-        // QrCode::format('png')->size(200)->generate($request->transnumber, $qrcodePath);
-        QrCode::size(300)->generate($request->transnumber, $qrcodePath);
-
-        // Load existing PDF
-        $pdfPath = public_path('img/logos/bg/ticket_for_qrcode.pdf');
-        // Buat instance mPDF
-        $mpdf = new Mpdf();
-        $mpdf->AddPage(
-            'L', // L - landscape, P - portrait 
-            '',
-            '',
-            '',
-            '',
-            5, // margin_left
-            45, // margin right
-            25, // margin top
-            20, // margin bottom
-            5, // margin header
-            5
-        );
-        // Set isi PDF
-        $pagecount = $mpdf->SetSourceFile($pdfPath);
-        $tplId = $mpdf->ImportPage($pagecount);
-
-        // Add the existing PDF as a template
-        $mpdf->UseTemplate($tplId, 10, 10, 275);
-
-        // Menambahkan QR code ke PDF di pojok kiri bawah
-        $mpdf->Image($qrcodePath, 50, 95, 55, 55, 'png', '', true, false);
-        // Add text to the PDF at the bottom right corner
-        $text = Auth::user()->username;
-        $number = 'number';
-        $html = "
-        <div style='position: absolute; bottom: 330px; right: 170px; color: white; font-size: 30px;'>
-            $text
-            <br>
-            $request->transnumber
-        </div>";
-        $mpdf->WriteHTML($html);
-        // Simpan PDF ke file atau kirim ke browser
-        // 'I' untuk menampilkan di browser, 'D' untuk mengunduh
-        return $mpdf->Output('Ticket.pdf', 'I');
-    }
-    public function generateTicketQrCodeOld(Request $request)
-    {
-        $existing_transaction = Transactions::where('token_register', $request->transnumber)->first();
-        // Generate QR code dan simpan sementara
-        $qrcodePath = public_path('qrcode.png');
-        $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
-        file_put_contents($qrcodePath, $qrcodeImage);
-        
-        // Load template PDF
-        $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
-        $mpdf = new Mpdf();
-        $mpdf->AddPage('L', '', '', '', '', 5, 45, 25, 20, 5, 5);
-        $pagecount = $mpdf->SetSourceFile($pdfPath);
-        $tplId = $mpdf->ImportPage($pagecount);
-        $mpdf->UseTemplate($tplId, 10, 10, 275);
-
-        // Posisi QR Code (tengah halaman)
-        $pageWidth = $mpdf->w; // Lebar halaman
-        $qrWidth = 50;
-        $qrHeight = 50;
-        $qrX = ($pageWidth - $qrWidth) / 2;
-        $qrY = 95;
-
-        // Tambahkan latar belakang putih untuk QR
-        $mpdf->SetFillColor(255, 255, 255);
-        $mpdf->Rect($qrX - 1, $qrY - 1, $qrWidth + 2, $qrHeight + 2, 'F');
-
-        // Tampilkan QR code
-        $mpdf->Image($qrcodePath, $qrX, $qrY, $qrWidth, $qrHeight, 'png', '', true, false);
-
-        // Posisi transnumber di atas kiri "Show E-Ticket"
-        $textX = 30;  // Disesuaikan agar sejajar kiri teks "Show E-Ticket"
-        $textY = 100; // Disesuaikan agar muncul tepat di atas teks "Show E-Ticket"
-        $htmlTopLeft = "
-            <div style='position: absolute; top: {$textY}mm; left: {$textX}mm; font-size: 14pt; color: #000; text-align: center; font-weight: bold; width: 70mm;'>
-                {$existing_transaction->transactionDetail[0]->user->username}
-                <br>
-                {$existing_transaction->number}
-            </div>";
-        $mpdf->WriteHTML($htmlTopLeft);
-
-        // Output PDF
-        $output = $mpdf->Output('Ticket.pdf', 'I');
-
-        // Hapus QR code sementara
-        if (file_exists($qrcodePath)) {
-            unlink($qrcodePath);
-        }
-
-        return $output;
-    }
-    public function generateTicketQrCode(Request $request)
 {
-    $existing_transaction = Transactions::where('token_register', $request->transnumber)->first();
+    try {
+        DB::beginTransaction();
 
-    // Generate QR code
-    $qrcodePath = public_path('qrcode.png');
-    $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
-    file_put_contents($qrcodePath, $qrcodeImage);
+        // Validasi input
+        $request->validate([
+            'id' => 'required|exists:transactions,id',
+            'files.*' => 'required|mimes:png,jpg,jpeg,pdf|max:2048',
+            'descriptions.*' => 'nullable|string|max:255'
+        ], [
+            'files.*.required' => 'File harus diupload',
+            'files.*.mimes' => 'File harus berformat: png, jpg, jpeg, atau pdf',
+            'files.*.max' => 'Ukuran file maksimal 2MB',
+        ]);
 
-    // Siapkan mPDF TANPA AddPage
-    $mpdf = new Mpdf([
-        'orientation' => 'L',
-        'margin_left' => 0,
-        'margin_right' => 0,
-        'margin_top' => 0,
-        'margin_bottom' => 0,
-    ]);
+        $transaction_id = $request->id;
 
-    // Gunakan template sebagai ukuran penuh halaman
-    $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
-    $pagecount = $mpdf->SetSourceFile($pdfPath);
-    $tplId = $mpdf->ImportPage($pagecount);
-    $mpdf->UseTemplate($tplId, 5, 0, null, null, true); // `true` untuk adjustPageSize
+        // Cek apakah transaksi milik user yang login
+        $transaction = Transactions::where('id', $transaction_id)
+            ->where('user_id', Auth::user()->id)
+            ->first();
 
-    // Posisi QR code di tengah
-    $qrWidth = 90;
-    $qrHeight = 90;
-    $qrX = ($mpdf->w - $qrWidth) / 2;
-    $qrY = 160;
+        if (!$transaction) {
+            DB::rollBack();
+            return FormatResponseJson::error(null, 'Transaksi tidak ditemukan', 404);
+        }
 
-    $mpdf->SetFillColor(255, 255, 255);
-    $mpdf->Rect($qrX - 1, $qrY - 1, $qrWidth + 2, $qrHeight + 2, 'F');
-    $mpdf->Image($qrcodePath, $qrX, $qrY, $qrWidth, $qrHeight, 'png', '', true, false);
+        // Cek status transaksi
+        if ($transaction->status !== 'pending') {
+            DB::rollBack();
+            return FormatResponseJson::error(null, 'Hanya transaksi dengan status pending yang dapat diupload bukti pembayaran', 400);
+        }
 
-    $textX = 65;   // tengah relatif terhadap QR dan teks
-$textY = 165;  // tepat di atas "Show E-Ticket"
+        $uploadedFiles = [];
+        $files = $request->file('files');
+        $descriptions = $request->input('descriptions', []);
 
+        // Loop untuk upload multiple files
+        foreach ($files as $index => $file) {
+            // ===== PENTING: Ambil info SEBELUM move file =====
+            $originalName = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+            $fileSize = round($file->getSize() / 1024, 2); // KB - ambil sebelum move
+            $mimeType = $file->getClientMimeType(); // ambil sebelum move
 
-    $htmlTopLeft = "
-    <div style='position: absolute; top: {$textY}mm; left: {$textX}mm; width: 90mm; font-size: 22pt; text-align: center; line-height: 1.1; color: #000; font-weight: bold;'>
-        {$existing_transaction->transactionDetail[0]->user->username}
-        <br/>
-        {$existing_transaction->number}
-    </div>";
+            // Generate unique filename
+            $fileName = time() . '_' . $index . '_' . uniqid() . '.' . $extension;
 
+            // Move file to public directory
+            $file->move(public_path('uploads/bukti_transaksi'), $fileName);
 
-    $mpdf->WriteHTML($htmlTopLeft);
+            // Get description
+            $description = $descriptions[$index] ?? null;
 
-    // Output dan hapus QR
-    $mpdf->Output('Ticket.pdf', 'I');
-    if (file_exists($qrcodePath)) {
-        unlink($qrcodePath);
+            // Save to database
+            $transactionFile = TransactionFile::create([
+                'transaction_id' => $transaction_id,
+                'file_name' => $originalName,
+                'file_path' => $fileName,
+                'description' => $description,
+                'file_type' => 'payment_proof',
+                'file_size' => $fileSize,
+                'mime_type' => $mimeType
+            ]);
+
+            $uploadedFiles[] = $transactionFile;
+        }
+
+        // Update transaction status dan simpan file pertama sebagai proof_of_payment utama
+        $transaction->update([
+            'status' => 'progress',
+            'proof_of_payment' => $uploadedFiles[0]->file_path ?? null
+        ]);
+
+        DB::commit();
+
+        return FormatResponseJson::success([
+            'transaction' => $transaction,
+            'uploaded_files' => $uploadedFiles
+        ], 'Berhasil mengupload ' . count($uploadedFiles) . ' file');
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        DB::rollBack();
+        return FormatResponseJson::error($e->errors(), 'Validasi gagal', 422);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi: ' . $e->getMessage(), 500);
     }
 }
 
-    // bg_jnns_vxii_qrcode.pdf
-    private function tukarSimbol($input)
+    public function deleteTransactionFile(Request $request)
     {
-        $step1 = str_replace('-', '~', $input);
-        $step2 = str_replace('/', '-', $step1);
-        return str_replace('~', '/', $step2);
+        try {
+            DB::beginTransaction();
+
+            $file = TransactionFile::where('id', $request->file_id)
+                ->whereHas('transaction', function($q) {
+                    $q->where('user_id', Auth::user()->id);
+                })
+                ->first();
+
+            if (!$file) {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'File tidak ditemukan', 404);
+            }
+
+            // Hapus file fisik
+            $filePath = public_path('uploads/bukti_transaksi/' . $file->file_path);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            // Hapus dari database
+            $file->delete();
+
+            DB::commit();
+            return FormatResponseJson::success(null, 'File berhasil dihapus');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return FormatResponseJson::error(null, 'Gagal menghapus file: ' . $e->getMessage(), 500);
+        }
     }
-    public function generateTicketBarcode(Request $request)
+
+    public function deleteTransaction(Request $request)
     {
-        // Ambil nomor transaksi dari request
-        $transnumber = $request->input('transnumber') ?? null;
+        try {
+            DB::beginTransaction();
 
-        $existing_transaction = Transactions::where('token_register', $transnumber)->first();
-        // dd($existing_transaction->transactionDetail[0]->user->username);
-        // Ganti karakter '/' dengan '-', '?' dengan '_', dan '&' dengan kosong
-        $transnumber_for_barcode = str_replace(['/', '?', '&'], ['-', '_', ''], $transnumber);
+            $transaction = Transactions::with('transactionDetail')
+                ->where('user_id', Auth::user()->id)
+                ->find($request->transaction_id);
 
-        // dd($transnumber_for_barcode);
-        // Generate barcode sebagai base64 PNG menggunakan format 'C39' (Code 39)
-        $barcode = new DNS1D();
-        $barcodeBase64 = $barcode->getBarcodePNG($transnumber_for_barcode, 'C128');
+            if (!$transaction) {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'Transaksi tidak ditemukan', 404);
+            }
 
-        // Tentukan path untuk menyimpan barcode sementara
-        $barcodePath = public_path('barcode_white.png');
+            if ($transaction->status !== 'pending') {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'Hanya transaksi dengan status pending yang dapat dihapus', 400);
+            }
 
-        // Simpan barcode sementara
-        file_put_contents($barcodePath, base64_decode($barcodeBase64));
+            TransactionDetail::where('transaction_id', $transaction->id)->delete();
+            $transaction->delete();
 
-        // Load template PDF
-        $pdfPath = public_path('img/logos/bg/bg_jnns_xvii.pdf');
-        $mpdf = new Mpdf();
-        $mpdf->AddPage('L', '', '', '', '', 5, 45, 25, 20, 5, 5);
+            DB::commit();
+            return FormatResponseJson::success(null, 'Transaksi berhasil dihapus');
 
-        // Gunakan halaman PDF sebagai template background
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return FormatResponseJson::error(null, 'Gagal menghapus transaksi: ' . $e->getMessage(), 500);
+        }
+    }
+
+    public function generateTicketQrCode(Request $request)
+    {
+        $existing_transaction = Transactions::where('token_register', $request->transnumber)->first();
+
+        $qrcodePath = public_path('qrcode.png');
+        $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
+        file_put_contents($qrcodePath, $qrcodeImage);
+
+        $mpdf = new Mpdf([
+            'orientation' => 'L',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+        ]);
+
+        $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
         $pagecount = $mpdf->SetSourceFile($pdfPath);
         $tplId = $mpdf->ImportPage($pagecount);
-        $mpdf->UseTemplate($tplId, 10, 8, 275);
+        $mpdf->UseTemplate($tplId, 5, 0, null, null, true);
 
-        // Hitung posisi tengah untuk barcode
-        $pageWidth = $mpdf->w;
-        $barcodeWidth = 80;  // Lebar barcode
-        $barcodeHeight = 20; // Tinggi barcode
-        $barcodeX = ($pageWidth - $barcodeWidth) / 2;
-        $barcodeY = 120;
+        $qrWidth = 90;
+        $qrHeight = 90;
+        $qrX = ($mpdf->w - $qrWidth) / 2;
+        $qrY = 160;
 
-        // Tambahkan gambar barcode ke PDF
-        $mpdf->Image($barcodePath, $barcodeX, $barcodeY, $barcodeWidth, $barcodeHeight, 'png', '', true, false);
+        $mpdf->SetFillColor(255, 255, 255);
+        $mpdf->Rect($qrX - 1, $qrY - 1, $qrWidth + 2, $qrHeight + 2, 'F');
+        $mpdf->Image($qrcodePath, $qrX, $qrY, $qrWidth, $qrHeight, 'png', '', true, false);
 
-        // Menambahkan nomor transaksi di bawah barcode
-        $transText = "
-            <div style='position: absolute; top: " . ($barcodeY + $barcodeHeight + 2) . "mm; left: " . $barcodeX . "mm; font-size: 14pt; text-align: center; width: {$barcodeWidth}mm;'>
-            </div>";
-        $mpdf->WriteHTML($transText);
+        $textX = 65;
+        $textY = 165;
 
-        $leftTextX = $barcodeX - 85;
-        $leftTextY = $barcodeY - 20;
-        $leftText = "
-            <div style='position: absolute; top: {$leftTextY}mm; left: {$leftTextX}mm; font-size: 14pt; text-align: center; width: 70mm; font-weight: bold;'>
-                {$existing_transaction->transactionDetail[0]->user->username}
-                <br>
-                {$existing_transaction->number}
-            </div>";
+        $htmlTopLeft = "
+        <div style='position: absolute; top: {$textY}mm; left: {$textX}mm; width: 90mm; font-size: 22pt; text-align: center; line-height: 1.1; color: #000; font-weight: bold;'>
+            {$existing_transaction->transactionDetail[0]->user->username}
+            <br/>
+            {$existing_transaction->number}
+        </div>";
 
-        $mpdf->WriteHTML($leftText);
+        $mpdf->WriteHTML($htmlTopLeft);
+        $mpdf->Output('Ticket.pdf', 'I');
 
-        File::delete($barcodePath);
-
-        // Output PDF ke browser
-        return $mpdf->Output('Ticket.pdf', 'I');
-    }
-    public function generateQrAndBarcode(Request $request)
-    {
-        $data = $request->transnumber ?? NULL;
-        // $encodedData = urlencode($data);
-
-        // ===== QR CODE (PNG format, high quality) =====
-        $qrImage = QrCode::format('png')->size(300)->margin(2)->generate($data);
-        $qrBase64 = base64_encode($qrImage);
-        $qrHtml = "
-            <div style='text-align: center; margin-top: 100px;'>
-                <img src='data:image/png;base64,{$qrBase64}' style='width: 300px; height: 300px;' />
-                <div style='margin-top: 20px; font-size: 18pt;'>$data</div>
-            </div>
-        ";
-
-        // ===== BARCODE (Code 128) =====
-        $generator = new BarcodeGeneratorPNG();
-        $barcodeImage = $generator->getBarcode($data, $generator::TYPE_CODE_128, 3, 100);
-        $barcodeBase64 = base64_encode($barcodeImage);
-        $barcodeHtml = "
-            <div style='text-align: center; margin-top: 100px;'>
-                <img src='data:image/png;base64,{$barcodeBase64}' style='width: 400px; height: 100px;' />
-                <div style='margin-top: 20px; font-size: 18pt;'>$data</div>
-            </div>
-        ";
-
-        // ===== Generate PDF with mPDF =====
-        $mpdf = new Mpdf();
-
-        // Page 1 - QR Code
-        $mpdf->WriteHTML($qrHtml);
-        $mpdf->AddPage();
-
-        // Page 2 - Barcode
-        $mpdf->WriteHTML($barcodeHtml);
-
-        // Output PDF
-        return response($mpdf->Output('qr_barcode.pdf', 'S'))
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'inline; filename="qr_barcode.pdf"');
+        if (file_exists($qrcodePath)) {
+            unlink($qrcodePath);
+        }
     }
 }

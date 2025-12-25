@@ -8,7 +8,8 @@
             <div class="form-group mb-5">
                 <div class="row g-3 d-flex justify-content-end">
                     <div class="col-auto">
-                        <input type="text" class="form-control" name="search_events" id="search_events" placeholder="Search...." value="">
+                        <input type="text" class="form-control" name="search_events" id="search_events"
+                            placeholder="Search...." value="">
                     </div>
                     <div class="col-auto">
                         <select class="form-control" name="filter_events" id="filter_events">

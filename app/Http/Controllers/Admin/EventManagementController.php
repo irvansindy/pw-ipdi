@@ -84,21 +84,23 @@ class EventManagementController extends Controller
                 "image"=> $file_name,
             ];
             $event = Events::create($data);
-            
-            if (count($request->detail_event_name) > 0) {
-                $data_event_detail = [];
-                $list_event_detail = [];
-                for ($i=0; $i < count($request->detail_event_name); $i++) { 
-                    $list_event_detail = [
-                        'event_id' => $event->id,
-                        'name' => $request->detail_event_name[$i],
-                        'price' => $request->detail_event_price[$i],
-                        // 'location' => 'Jakarta'
-                    ];
+            if ($request->detail_event_name != null) {
+                # code...
+                if (count($request->detail_event_name) > 0) {
+                    $data_event_detail = [];
+                    $list_event_detail = [];
+                    for ($i=0; $i < count($request->detail_event_name); $i++) {
+                        $list_event_detail = [
+                            'event_id' => $event->id,
+                            'name' => $request->detail_event_name[$i],
+                            'price' => $request->detail_event_price[$i],
+                            // 'location' => 'Jakarta'
+                        ];
 
-                    array_push($data_event_detail, $list_event_detail);
+                        array_push($data_event_detail, $list_event_detail);
+                    }
+                    $create_event_detail = EventDetail::insert($data_event_detail);
                 }
-                $create_event_detail = EventDetail::insert($data_event_detail);
             }
 
             if($request->hotel != null && $request->harga_hotel != null) {
@@ -151,7 +153,7 @@ class EventManagementController extends Controller
             if ($validator->fails()) {
                 throw new ValidationException($validator);
             }
-            
+
 
             $current_event->update([
                 "name"=> $request->name,
@@ -170,7 +172,7 @@ class EventManagementController extends Controller
                 if ($current_event->image && file_exists(public_path('img/logos/IPDI/event/' . $current_event->image))) {
                     unlink(public_path('img/logos/IPDI/event/' . $current_event->image));
                 }
-            
+
                 // Upload file baru
                 $file = $request->file('image');
                 $file_name = time() . '.' . $file->getClientOriginalExtension();

@@ -29,8 +29,10 @@
                                 @foreach ($event->eventDetail as $event_detail)
                                     <div class="col-md-12 col-sm-12">
                                         <div class="form-check">
-                                            <input class="form-check-input event-detail-radio" type="radio" value="{{ $event_detail->id }}"
-                                                name="event_detail" id="detail_event_{{ $event_detail->id }}" data-price="{{ $event_detail->price }}">
+                                            <input class="form-check-input event-detail-radio" type="radio"
+                                                value="{{ $event_detail->id }}" name="event_detail"
+                                                id="detail_event_{{ $event_detail->id }}"
+                                                data-price="{{ $event_detail->price }}">
                                             <label class="form-check-label text-muted"
                                                 for="detail_event_{{ $event_detail->id }}">({{ $event_detail->name . ' - Rp.' . number_format($event_detail->price, 0, ',', '.') }})
                                             </label>
@@ -44,7 +46,8 @@
                         <li class="list-group-item d-flex justify-content-between lh-condensed">
                             <div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="event_hotel" data-price="{{ $event->hotel->price }}">
+                                    <input class="form-check-input" type="checkbox" value="" id="event_hotel"
+                                        data-price="{{ $event->hotel->price }}">
                                     <label class="form-check-label text-muted" for="event_hotel">
                                         Include Hotel
                                         <br />({{ $event->hotel->name . ' - Rp.' . number_format($event->hotel->price, 0, ',', '.') }})
@@ -52,10 +55,14 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xl-12 col-md-12 col-sm-12 my-1">
-                                        <input type="number" class="form-control" name="create_room_hotel" id="create_room_hotel" placeholder="jumlah kamar" style="width: 50% !important;" required />
+                                        <input type="number" class="form-control" name="create_room_hotel"
+                                            id="create_room_hotel" placeholder="jumlah kamar" style="width: 50% !important;"
+                                            required />
                                     </div>
                                     <div class="col-xl-12 col-md-12 col-sm-12 my-1">
-                                        <input type="number" class="form-control" name="create_total_night" id="create_total_night" placeholder="jumlah Malam" style="width: 50% !important;" required />
+                                        <input type="number" class="form-control" name="create_total_night"
+                                            id="create_total_night" placeholder="jumlah Malam"
+                                            style="width: 50% !important;" required />
                                     </div>
                                 </div>
                             </div>

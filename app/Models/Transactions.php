@@ -19,6 +19,12 @@ class Transactions extends Model
         return $this->belongsTo(Events::class);
     }
 
+
+    public function eventDetail()
+    {
+        return $this->belongsTo(eventDetail::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -27,5 +33,9 @@ class Transactions extends Model
     {
         // return $this->belongsTo(IuranTransactionDetail::class, 'id', 'tr_iuran_id');
         return $this->hasMany(TransactionDetail::class,'transaction_id',  'id');
+    }
+    public function files()
+    {
+        return $this->hasMany(TransactionFile::class, 'transaction_id', 'id');
     }
 }

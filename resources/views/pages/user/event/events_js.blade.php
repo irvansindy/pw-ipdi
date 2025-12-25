@@ -37,14 +37,14 @@
                                 <div class="card shadow">
                                     <div class="card-body pt-2">
                                         <p class="card-title h5 d-block text-darker text-center">Belum ada event yang diselenggarakan tahun ini</p>
-                                    </div>`
-                        )
+                                    </div>`)
                     }
                     $.each(res.data, function(i, card) {
                         var button_regis = '';
 
                         if (card.is_active == 1) {
-                            button_regis = `<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>`;
+                            button_regis =
+                                `<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>`;
                         }
                         $('#list_events').append(`
                             <div class="col-md-4 my-2">
@@ -65,15 +65,15 @@
                                             <br/>
                                             <span class="text-grey"></span>
                                         </p>
-                                        
+
                                     </div>
-                                    
+
                                     <div class="card-footer">
                                         <div class="author d-flex justify-content-between">
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
                                                 <div class="stats">
-                                                    <small>${moment(card.date).format('DD-MM-YYYY')} </small> - 
+                                                    <small>${moment(card.date).format('DD-MM-YYYY')} </small> -
                                                     <small>${moment(card.date_end).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
@@ -113,13 +113,13 @@
                                 <div class="card shadow">
                                     <div class="card-body pt-2">
                                         <p class="card-title h5 d-block text-darker text-center">Belum ada event yang diselenggarakan tahun ini</p>
-                                    </div>`
-                        )
+                                    </div>`)
                     }
                     $.each(res.data, function(i, card) {
                         var button_regis = '';
                         if (card.is_active == 1) {
-                            button_regis = `<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>`;
+                            button_regis =
+                                `<a href="/detail-event/${card.id}/${card.name}" class="btn btn-primary float-right mt-2 event-register" type="button" data-event_id="${card.id}" data-category_event_id="${card.category_event_id}">Register</a>`;
                         }
                         $('#list_events').append(`
                             <div class="col-md-4 my-2">
@@ -140,7 +140,7 @@
                                             <br/>
                                             <span class="text-grey"></span>
                                         </p>
-                                        
+
                                     </div>
 
                                     <div class="card-footer">
@@ -148,7 +148,7 @@
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
                                                 <div class="stats">
-                                                    <small>${moment(card.date).format('DD-MM-YYYY')} </small> - 
+                                                    <small>${moment(card.date).format('DD-MM-YYYY')} </small> -
                                                     <small>${moment(card.date_end).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
@@ -206,14 +206,14 @@
                 let price = $(this).data('price')
                 let hotel_name = $(this).data('hotel_name')
                 var Rupiah = Intl.NumberFormat('en-ID', {
-                        style: 'currency',
-                        currency: 'idr',
-                        maximumSignificantDigits: 3,
-                    });
+                    style: 'currency',
+                    currency: 'idr',
+                    maximumSignificantDigits: 3,
+                });
                 $('#total_room_hotel').empty()
                 $('#total_room_hotel').append(`
-                    ${hotel_name} - ${Rupiah.format(price)} <input type="number" class="form-control" name="create_room_hotel" id="create_room_hotel" data-price_hotel="${price}" placeholder="jumlah kamar" style="width: 50% !important;" required/> 
-                    <input type="number" class="form-control" name="create_total_night" id="create_total_night" data-price_hotel="${price}" placeholder="jumlah Malam" style="width: 50% !important;" required/> 
+                    ${hotel_name} - ${Rupiah.format(price)} <input type="number" class="form-control" name="create_room_hotel" id="create_room_hotel" data-price_hotel="${price}" placeholder="jumlah kamar" style="width: 50% !important;" required/>
+                    <input type="number" class="form-control" name="create_total_night" id="create_total_night" data-price_hotel="${price}" placeholder="jumlah Malam" style="width: 50% !important;" required/>
                 `)
             } else {
                 $('#total_room_hotel').empty()
@@ -228,7 +228,7 @@
         $(document).on('click', '#create_transaction_event', function(e) {
             e.preventDefault()
             let id = $(this).data('event_id')
-            
+
             let event_harga = $(this).data('event_harga')
             let harga_hotel = $('input[name="check_event_hotel"]').data('price')
             let total_kamar_hotel = $('#create_room_hotel').val()
