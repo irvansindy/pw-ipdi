@@ -76,7 +76,7 @@
 
         <h1>Silakan Scan QR Code</h1>
         <p class="text-muted">Data akan tampil otomatis setelah QR terbaca.</p>
-        <p class="text-info"><strong>Sistem Multi-Day Attendance Aktif</strong></p>
+        {{-- <p class="text-info"><strong>Sistem Multi-Day Attendance Aktif</strong></p> --}}
 
         <form action="">
             @csrf
@@ -113,7 +113,7 @@
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                             },
-                            url: '{{ route("check-audience") }}',
+                            url: '{{ route('check-audience') }}',
                             data: {
                                 id: value
                             },
@@ -126,7 +126,8 @@
                                     data.user.dialisis.name : 'Tidak terdaftar';
 
                                 const attendanceInfo = data.attendance_info;
-                                const dayBadge = `<span class="attendance-badge">Hari ke-${attendanceInfo.day_number}</span>`;
+                                const dayBadge =
+                                    `<span class="attendance-badge">Hari ke-${attendanceInfo.day_number}</span>`;
 
                                 $result.addClass('success').html(
                                     `<h4>✓ Absensi Berhasil!</h4>` +
@@ -154,14 +155,16 @@
                                     errorMsg = xhr.responseJSON.message;
 
                                     // Cek jika sudah absen hari ini
-                                    if (xhr.status === 400 && xhr.responseJSON.message.includes('sudah')) {
+                                    if (xhr.status === 400 && xhr.responseJSON.message
+                                        .includes('sudah')) {
                                         $result.addClass('warning').html(
                                             `<h4>⚠ Sudah Absen Hari Ini</h4>` +
                                             `<p>${xhr.responseJSON.message}</p>`
                                         );
 
                                         setTimeout(() => {
-                                            $result.removeClass('warning').text('');
+                                            $result.removeClass('warning').text(
+                                                '');
                                         }, 4000);
 
                                         $qrInput.val('');
