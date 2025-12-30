@@ -13,5 +13,9 @@ class EventHotel extends Model
         'name',
         'price',
     ];
+    protected $casts = [
+    'price' => 'integer', // atau 'float'
+];
     
+
 }

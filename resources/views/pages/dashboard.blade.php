@@ -1,7 +1,7 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100', 'title' => 'Dashboard'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard']);
     <div class="container-fluid py-4">
         <div class="row mt-2">
             <div class="col-lg-4 col-md-4 col-sm-12 mb-lg-0 mb-4">
@@ -14,7 +14,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-4 col-md-4 col-sm-12 mb-lg-0 mb-4">
                 <div class="card mb-3">
                     <div class="card-body p-3">
@@ -209,7 +209,7 @@
                 if (chart_for_jnns) {
                     chart_for_jnns.destroy();
                 }
-                
+
                 // Buat chart_for_jnns baru
                 chart_for_jnns = new Chart(chartJnns, {
                     type: 'doughnut',

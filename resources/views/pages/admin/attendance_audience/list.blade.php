@@ -8,45 +8,32 @@
                 <div class="card mb-4">
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
-                            <h6>List Peserta Hadir</h6>
+                            <h6>List Peserta Hadir (Multi-Day Attendance)</h6>
                         </div>
                     </div>
 
                     <div class="card-body px-3 pt-3 pb-2">
-                        {{-- <div class="row mb-3 px-2">
-                            <div class="col-md-3">
-                                <label for="category" class="form-label">Filter Kategori Event</label>
+                        <div class="row mb-3 px-2">
+                            <div class="col-md-3 mr-3 mb-3">
                                 <select id="category" class="form-select">
                                     <option value="">Semua Kategori</option>
                                     @foreach ($categories as $category)
                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
-                            </div> --}}
-                            <div class="row mb-3 px-2">
-                                <div class="col-md-3 mr-3 mb-3">
-                                    {{-- <label for="category" class="form-label">Filter Kategori Event</label> --}}
-                                    <select id="category" class="form-select">
-                                        <option value="">Semua Kategori</option>
-                                        @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3 mr-3 mb-3">
-                                    {{-- <label for="year" class="form-label">Filter Tahun</label> --}}
-                                    <select id="year" class="form-select year-filter">
-                                        <option value="">Semua Tahun</option>
-                                        @for ($i = 0; $i <= 5; $i++)
-                                            <option value="{{ now()->year - $i }}">{{ now()->year - $i }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                                <div class="col-md-3 d-flex align-items-end">
-                                    <button id="exportExcel" class="btn btn-success">
-                                        Export ke Excel
-                                    </button>
-                                </div>
+                            </div>
+                            <div class="col-md-3 mr-3 mb-3">
+                                <select id="year" class="form-select year-filter">
+                                    <option value="">Semua Tahun</option>
+                                    @for ($i = 0; $i <= 5; $i++)
+                                        <option value="{{ now()->year - $i }}">{{ now()->year - $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button id="exportExcel" class="btn btn-success">
+                                    Export ke Excel
+                                </button>
                             </div>
                         </div>
 
@@ -60,6 +47,8 @@
                                         <th>Nama</th>
                                         <th>Event</th>
                                         <th>Kategori</th>
+                                        <th>Total Kehadiran</th>
+                                        <th>Terakhir Hadir</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -72,20 +61,20 @@
         </div>
     </div>
 @endsection
+
 @push('css')
     <style>
-        /* Tetap batasi dropdown lain */
         .year-filter {
             width: 100px !important;
         }
 
-        /* Khusus untuk dropdown kategori */
         #category.form-select {
             width: 200px !important;
             height: 45px;
             font-size: 1rem;
             padding: 0.5rem 1rem;
         }
+
         .year-filter {
             width: 150px !important;
             height: 45px;
@@ -93,23 +82,47 @@
             padding: 0.5rem 1rem;
         }
 
+        .badge-attendance {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .attendance-1 {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .attendance-2 {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .attendance-3plus {
+            background-color: #007bff;
+            color: #fff;
+        }
     </style>
 @endpush
+
 @push('js')
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <script>
         $(document).ready(function() {
             const table = $('#attendanceTable').DataTable({
                 processing: true,
                 serverSide: false,
                 ajax: {
-                    url: '{{ route('fetch-data-is-attendance') }}', // ganti dengan nama route kamu
+                    url: '{{ route('fetch-data-is-attendance') }}',
                     data: function(d) {
                         d.category = $('#category').val();
                         d.year = $('#year').val();
                     }
                 },
-                columns: [{
+                columns: [
+                    {
                         data: null,
                         name: 'no',
                         render: (data, type, row, meta) => meta.row + 1
@@ -138,9 +151,32 @@
                         data: 'event.category.name',
                         name: 'event.category.name',
                         render: data => data ? data : 'Not set'
+                    },
+                    {
+                        data: 'total_attendance',
+                        name: 'total_attendance',
+                        render: function(data, type, row) {
+                            let badgeClass = 'attendance-1';
+                            if (data >= 3) {
+                                badgeClass = 'attendance-3plus';
+                            } else if (data == 2) {
+                                badgeClass = 'attendance-2';
+                            }
+                            return `<span class="badge-attendance ${badgeClass}">${data} hari</span>`;
+                        }
+                    },
+                    {
+                        data: 'transaction_detail',
+                        name: 'transaction_detail',
+                        render: function(data, type, row) {
+                            if (data && data[0] && data[0].last_attendance_at) {
+                                return moment(data[0].last_attendance_at).format('DD-MM-YYYY HH:mm');
+                            }
+                            return '-';
+                        }
                     }
                 ],
-
+                order: [[7, 'desc']] // Sort by last attendance
             });
 
             $('#category, #year').change(function() {
@@ -157,7 +193,6 @@
 
                 window.location.href = url;
             });
-
         });
     </script>
 @endpush

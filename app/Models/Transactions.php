@@ -18,8 +18,6 @@ class Transactions extends Model
     {
         return $this->belongsTo(Events::class);
     }
-
-
     public function eventDetail()
     {
         return $this->belongsTo(eventDetail::class);
@@ -37,5 +35,30 @@ class Transactions extends Model
     public function files()
     {
         return $this->hasMany(TransactionFile::class, 'transaction_id', 'id');
+    }
+    /**
+     * Relasi ke attendance logs
+     */
+    public function attendanceLogs()
+    {
+        return $this->hasMany(AttendanceLog::class, 'transaction_id', 'id');
+    }
+
+    /**
+     * Get total kehadiran
+     */
+    public function getTotalAttendanceAttribute()
+    {
+        return $this->attendanceLogs()->count();
+    }
+
+    /**
+     * Get kehadiran hari ini
+     */
+    public function hasAttendedToday()
+    {
+        return $this->attendanceLogs()
+            ->whereDate('attendance_date', now()->toDateString())
+            ->exists();
     }
 }
