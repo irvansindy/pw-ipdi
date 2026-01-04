@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // Tambahkan field di table events untuk durasi acara
         Schema::table('events', function (Blueprint $table) {
-            // Tambah field untuk total days dan max attendance
-            $table->tinyInteger('total_days')->default(1)->after('date_end')
-                ->comment('Total hari event berlangsung (auto calculated dari date sampai date_end)');
-
+            $table->date('start_date')->nullable()->after('date');
+            $table->date('end_date')->nullable()->after('start_date');
+            $table->tinyInteger('total_days')->default(1)->after('end_date')
+                ->comment('Total hari event berlangsung (auto calculated)');
             $table->tinyInteger('max_attendance')->nullable()->after('total_days')
                 ->comment('Maksimal absensi yang diizinkan (optional, default = total_days)');
         });
@@ -27,7 +28,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->dropColumn(['total_days', 'max_attendance']);
+            $table->dropColumn(['start_date', 'end_date', 'total_days', 'max_attendance']);
         });
     }
 };

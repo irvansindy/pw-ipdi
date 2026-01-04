@@ -28,13 +28,15 @@ class ScreeningQrCodeAudience extends Controller
     public function getDataAudienceById(Request $request)
     {
         try {
-            $id = $request->input('id');
-
+            $id = trim($request->id);
             $data = Transactions::with(['event', 'user.dialisis', 'transactionDetail'])
-                ->where('number', $id)
-                ->orWhere('token_register', $id)
+                ->where(function ($q) use ($id) {
+                    $q->where('number', $id)
+                    ->orWhere('token_register', $id);
+                })
                 ->first();
 
+            // dd($data);
             if (!$data) {
                 return FormatResponseJson::error(null, 'Data transaksi tidak ditemukan', 404);
             }
@@ -46,19 +48,17 @@ class ScreeningQrCodeAudience extends Controller
                 return FormatResponseJson::error(null, 'Detail transaksi tidak ditemukan', 404);
             }
 
-            // Validasi: Cek apakah event memiliki date
-            if (!$event->date) {
+            // Validasi: Cek apakah event memiliki start_date dan end_date
+            if (!$event->start_date || !$event->end_date) {
                 return FormatResponseJson::error([
-                    'message' => 'Event ini belum dikonfigurasi dengan tanggal'
+                    'message' => 'Event ini belum dikonfigurasi dengan tanggal mulai dan selesai'
                 ], 'Konfigurasi event tidak lengkap', 400);
             }
 
             $userId = $data->user_id;
             $today = Carbon::now()->toDateString();
-            $eventStart = Carbon::parse($event->date)->toDateString();
-            $eventEnd = $event->date_end
-                ? Carbon::parse($event->date_end)->toDateString()
-                : $eventStart; // Jika date_end null, berarti event 1 hari
+            $eventStart = Carbon::parse($event->start_date)->toDateString();
+            $eventEnd = Carbon::parse($event->end_date)->toDateString();
 
             // VALIDASI 1: Cek apakah hari ini dalam rentang event
             if ($today < $eventStart) {
@@ -96,7 +96,7 @@ class ScreeningQrCodeAudience extends Controller
 
             // VALIDASI 3: Cek apakah sudah mencapai batas maksimal
             $currentCount = AttendanceLog::getAttendanceCount($data->id, $userId);
-            $maxAttendance = $event->max_attendance ?? $event->total_days ?? 1;
+            $maxAttendance = $event->max_attendance ?? $event->total_days;
 
             if ($currentCount >= $maxAttendance) {
                 return FormatResponseJson::error([
@@ -137,8 +137,8 @@ class ScreeningQrCodeAudience extends Controller
 
             // Tambahkan info kehadiran ke response
             $data->attendance_info = [
-                'user_attendance_number' => $userAttendanceNumber,
-                'event_day_number' => $eventDayNumber,
+                'user_attendance_number' => $userAttendanceNumber, // Absensi user ke-berapa
+                'event_day_number' => $eventDayNumber, // Hari event ke-berapa
                 'total_attendance' => $newCount,
                 'max_attendance' => $maxAttendance,
                 'remaining_attendance' => max(0, $maxAttendance - $newCount),
@@ -146,11 +146,9 @@ class ScreeningQrCodeAudience extends Controller
                 'attendance_time' => Carbon::now()->format('H:i:s'),
                 'is_completed' => $attendanceCompleted,
                 'event_info' => [
-                    'total_days' => $event->total_days ?? 1,
-                    'start_date' => Carbon::parse($event->date)->format('d-m-Y'),
-                    'end_date' => $event->date_end
-                        ? Carbon::parse($event->date_end)->format('d-m-Y')
-                        : Carbon::parse($event->date)->format('d-m-Y'),
+                    'total_days' => $event->total_days,
+                    'start_date' => $event->start_date->format('d-m-Y'),
+                    'end_date' => $event->end_date->format('d-m-Y'),
                 ]
             ];
 
@@ -201,7 +199,7 @@ class ScreeningQrCodeAudience extends Controller
                 $detail = $item->transactionDetail[0] ?? null;
                 $item->total_attendance = $item->attendanceLogs->count();
                 $item->attendance_completed = $detail ? $detail->attendance_completed : false;
-                $item->max_attendance = $item->event->max_attendance ?? $item->event->total_days ?? 1;
+                $item->max_attendance = $item->event->max_attendance ?? $item->event->total_days;
                 $item->attendance_dates = $item->attendanceLogs->pluck('attendance_date')->map(function($date) {
                     return Carbon::parse($date)->format('d-m-Y');
                 })->toArray();
@@ -269,12 +267,10 @@ class ScreeningQrCodeAudience extends Controller
             $statistics = [
                 'event_info' => [
                     'title' => $event->title,
-                    'total_days' => $event->total_days ?? 1,
-                    'max_attendance' => $event->max_attendance ?? $event->total_days ?? 1,
-                    'start_date' => $event->date ? Carbon::parse($event->date)->format('d-m-Y') : '-',
-                    'end_date' => $event->date_end
-                        ? Carbon::parse($event->date_end)->format('d-m-Y')
-                        : ($event->date ? Carbon::parse($event->date)->format('d-m-Y') : '-'),
+                    'total_days' => $event->total_days,
+                    'max_attendance' => $event->max_attendance,
+                    'start_date' => $event->start_date->format('d-m-Y'),
+                    'end_date' => $event->end_date->format('d-m-Y'),
                     'is_ongoing' => $event->isOngoing(),
                 ],
                 'participants' => [
