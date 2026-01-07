@@ -56,7 +56,8 @@
                                     </div>
                                     <div class="card-body pt-2">
                                         <span
-                                            class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">${card.category.name}</span>
+                                            class="text-gradient text-primary text-uppercase text-xs font-weight-bold my-2">${card.category ? card.category.name : '-'}
+</span>
                                         <a href="javascript:;" class="card-title h5 d-block text-darker">
                                             ${card.title}
                                         </a>

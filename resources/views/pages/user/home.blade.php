@@ -83,17 +83,21 @@
                             <a href="javascript:;">
                                 <div class="blur-shadow-image">
                                     <img class="img border-radius-lg move-on-hover img-fluid"
-                                        src="{{ asset('img/carousel/2.png') }}"
-                                        style="height: 30% !important;" loading="lazy">
+                                        src="{{ asset('img/carousel/2.png') }}" style="height: 30% !important;"
+                                        loading="lazy">
                                 </div>
                             </a>
                         </div>
                         <div class="card-body px-0">
                             <h5>
-                                <a href="javascript:;" class="text-dark font-weight-bold">Pelantikan PW IPDI DKI Jakarta Periode 2023-2028</a>
+                                <a href="javascript:;" class="text-dark font-weight-bold">Pelantikan PW IPDI DKI Jakarta
+                                    Periode 2023-2028</a>
                             </h5>
                             <p align="justify">
-                                Pada tanggal 03 September 2023 acara Pembacaan dan Penandatanganan Naskah Pelantikan PW IPDI DKI Jakarta Periode 2023-2028 di Hotel Ciputra Jakarta, dan dihadiri oleh Ketua DPW PPNI DKI Jakarta (Jajang Rahmat Solihin), Ketua IPDI (Syamsul Bakhri), Wakil Ketua Organisasi dan Kaderisasi (Yudi Hadiansyah), Ketua PW IPDI DKI (Agus Suwoko).
+                                Pada tanggal 03 September 2023 acara Pembacaan dan Penandatanganan Naskah Pelantikan PW IPDI
+                                DKI Jakarta Periode 2023-2028 di Hotel Ciputra Jakarta, dan dihadiri oleh Ketua DPW PPNI DKI
+                                Jakarta (Jajang Rahmat Solihin), Ketua IPDI (Syamsul Bakhri), Wakil Ketua Organisasi dan
+                                Kaderisasi (Yudi Hadiansyah), Ketua PW IPDI DKI (Agus Suwoko).
                             </p>
                         </div>
                     </div>
@@ -103,12 +107,14 @@
                     <div class="row">
                         <a href="javascript:;">
                             <div class="card move-on-hover mb-4">
-                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/4.png') }}" style="height: 10% !important;" loading="lazy">
+                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid"
+                                    src="{{ asset('img/carousel/4.png') }}" style="height: 10% !important;" loading="lazy">
                             </div>
                         </a>
                         <a href="javascript:;">
                             <div class="card move-on-hover mb-4">
-                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid" src="{{ asset('img/carousel/5.png') }}" style="height: 10% !important;" loading="lazy">
+                                <img class="img img-fluid border-radius-lg move-on-hover img-fluid"
+                                    src="{{ asset('img/carousel/5.png') }}" style="height: 10% !important;" loading="lazy">
                             </div>
                         </a>
 
