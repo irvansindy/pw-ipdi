@@ -145,53 +145,53 @@ class UserContentController extends Controller
         }
     }
     public function fetchAllEvent(Request $request)
-{
-    try {
-        $search = $request->input('search');
-        $filter = $request->input('filter');
-        $today  = now()->startOfDay();
+    {
+        try {
+            $search = $request->input('search');
+            $filter = $request->input('filter');
+            $today  = now()->startOfDay();
 
-        $events = Events::query()
-            ->with([
-                'category:id,name',
-                'EventDetail',
-                'hotel:id,name'
-            ])
+            $events = Events::query()
+                ->with([
+                    'category:id,name',
+                    'EventDetail',
+                    'hotel:id,name'
+                ])
 
-            // HANYA EVENT YANG BELUM TERLEWATI
-            ->where('events.date', '>=', $today)
+                // HANYA EVENT YANG BELUM TERLEWATI
+                ->where('events.date', '>=', $today)
 
-            // FILTER BY CATEGORY
-            ->when($filter, function ($q) use ($filter) {
-                $q->whereHas('category', function ($cat) use ($filter) {
-                    $cat->where('name', $filter);
-                });
-            })
+                // FILTER BY CATEGORY
+                ->when($filter, function ($q) use ($filter) {
+                    $q->whereHas('category', function ($cat) use ($filter) {
+                        $cat->where('name', $filter);
+                    });
+                })
 
-            // SEARCH
-            ->when($search, function ($q) use ($search) {
-                $q->where(function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('title', 'like', "%{$search}%")
-                        ->orWhere('price', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%")
-                        ->orWhere('quota', 'like', "%{$search}%")
-                        ->orWhereHas('category', function ($cat) use ($search) {
-                            $cat->where('name', 'like', "%{$search}%");
-                        });
-                });
-            })
+                // SEARCH
+                ->when($search, function ($q) use ($search) {
+                    $q->where(function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('title', 'like', "%{$search}%")
+                            ->orWhere('price', 'like', "%{$search}%")
+                            ->orWhere('description', 'like', "%{$search}%")
+                            ->orWhere('quota', 'like', "%{$search}%")
+                            ->orWhereHas('category', function ($cat) use ($search) {
+                                $cat->where('name', 'like', "%{$search}%");
+                            });
+                    });
+                })
 
-            ->orderBy('date', 'asc') // event terdekat di atas
-            ->limit(50)
-            ->get();
+                ->orderBy('date', 'asc') // event terdekat di atas
+                ->limit(50)
+                ->get();
 
-        return FormatResponseJson::success($events, 'Event fetched successfully');
+            return FormatResponseJson::success($events, 'Event fetched successfully');
 
-    } catch (\Throwable $e) {
-        return FormatResponseJson::error(null, $e->getMessage(), 400);
+        } catch (\Throwable $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 400);
+        }
     }
-}
 
     public function history() {
         try {

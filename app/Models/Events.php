@@ -43,6 +43,16 @@ class Events extends Model
         return $this->belongsTo(CategoriesEvent::class, 'category_id');
     }
 
+    public function EventDetail()
+    {
+        return $this->hasMany(EventDetail::class, 'event_id', 'id');
+    }
+
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class, 'hotel_id', 'id');
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transactions::class, 'event_id');
