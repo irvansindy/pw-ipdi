@@ -50,7 +50,7 @@ class Events extends Model
 
     public function hotel()
     {
-        return $this->belongsTo(Hotel::class, 'hotel_id', 'id');
+        return $this->hasOne(EventHotel::class, 'event_id', 'id');
     }
 
     public function transactions()

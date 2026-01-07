@@ -90,6 +90,7 @@ class UserContentController extends Controller
         ->where('name','like','%'.$name.'%')
         ->first();
         $fetch_bank = Bank::first();
+        // dd($existing_event);
         return view('pages.user.event.detail_event', ['event' => $existing_event, 'bank' => $fetch_bank]);
     }
     public function fetchCategoriesEvent()
