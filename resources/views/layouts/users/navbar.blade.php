@@ -42,6 +42,18 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item mx-md-4 dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        LMS
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="https://lms.kemkes.go.id/" target="_blank">LMS Kemkes</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="https://satusehat.kemkes.go.id/sdmk" target="_blank">Satu Sehat SDMK</a>
+                        </li>
+                    </ul>
                 <li class="nav-item mx-md-4">
                     <a class="nav-link {{ Route::currentRouteName() == 'events' ? 'active' : '' }}" aria-current="page" href="{{ route('events') }}">Acara</a>
                 </li>

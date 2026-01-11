@@ -9,7 +9,8 @@
                     <h5 class="modal-title text-white">
                         <i class="fas fa-cloud-upload-alt me-2"></i>Upload Bukti Transaksi
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body" style="max-height: 70vh; overflow-y: auto; background-color: #f8f9fe;">
@@ -20,7 +21,8 @@
                         <div class="d-flex align-items-center">
                             <i class="fas fa-lightbulb fs-4 me-3 text-info"></i>
                             <div>
-                                <strong>Tips Upload:</strong> Anda dapat mengupload hingga <strong>5 file</strong> sekaligus
+                                <strong>Tips Upload:</strong> Anda dapat mengupload hingga <strong>5 file</strong>
+                                sekaligus
                                 <br>
                                 <small class="text-muted">Format: PNG, JPG, JPEG, PDF | Max: 2MB per file</small>
                             </div>
@@ -126,6 +128,7 @@
             opacity: 0;
             transform: translateX(-10px);
         }
+
         to {
             opacity: 1;
             transform: translateX(0);
@@ -141,6 +144,7 @@
             opacity: 0;
             transform: translateY(-20px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -156,6 +160,7 @@
             opacity: 1;
             transform: scale(1);
         }
+
         to {
             opacity: 0;
             transform: scale(0.95);
@@ -210,7 +215,14 @@
     }
 
     @keyframes pulse {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.1); }
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
     }
 </style>

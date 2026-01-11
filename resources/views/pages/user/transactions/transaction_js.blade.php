@@ -123,7 +123,7 @@
                             <div class="col-12">
                                 <label class="form-label fw-bold">
                                     <i class="fas fa-edit text-primary me-2"></i>Keterangan File
-                                    <span class="text-muted">(Opsional)</span>
+                                    <span class="text-muted">(Nama Vendor)</span>
                                 </label>
                                 <textarea class="form-control description-textarea" name="descriptions[]" rows="3"
                                           placeholder="Contoh: Bukti transfer BCA tanggal 20 Desember 2024"></textarea>

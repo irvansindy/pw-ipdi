@@ -113,7 +113,7 @@ class TransactionController extends Controller
                     return FormatResponseJson::error(null, 'Detail event tidak ditemukan', 404);
                 }
             }
-
+            // dd($existing_event_detail->name);
             // Hitung harga event
             $final_event_price = $existing_event_detail != null
                 ? intval($existing_event_detail->price)
@@ -157,11 +157,11 @@ class TransactionController extends Controller
                 DB::rollBack();
                 return FormatResponseJson::error(null, 'Maaf, kuota event sudah penuh', 400);
             }
-
             // Generate transaction code
             $code_trans = '';
-            $category_name = $existing_event->category->name;
-
+            // $category_name = $existing_event_detail->name;
+            $category_name = Events::with('category')->find($event_id)->category->name;
+            // dd($event_category_name);
             switch ($category_name) {
                 case 'JNNS':
                     if ($existing_event_detail) {
@@ -194,6 +194,7 @@ class TransactionController extends Controller
                     $code_trans = 'EVT';
                     break;
             }
+            // dd($request->all());
 
             $date_trans = now()->format('y/m/d');
             $numbering = $check_total_current_transaction + 1;
