@@ -456,7 +456,7 @@ class TransactionController extends Controller
     public function generateTicketQrCode(Request $request)
     {
         $existing_transaction = Transactions::where('token_register', $request->transnumber)->first();
-        dd($existing_transaction);
+        // dd($existing_transaction);
         $qrcodePath = public_path('qrcode.png');
         $qrcodeImage = QrCode::format('png')->size(300)->generate($request->transnumber);
         file_put_contents($qrcodePath, $qrcodeImage);

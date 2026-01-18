@@ -226,9 +226,9 @@
                     return;
                 }
 
-                const fileSize = fileSizeMB > 1
-                    ? fileSizeMB.toFixed(2) + ' MB'
-                    : fileSizeKB.toFixed(2) + ' KB';
+                const fileSize = fileSizeMB > 1 ?
+                    fileSizeMB.toFixed(2) + ' MB' :
+                    fileSizeKB.toFixed(2) + ' KB';
 
                 previewFilename.text(`${file.name} (${fileSize})`);
                 preview.fadeIn();
@@ -412,7 +412,8 @@
                             Swal.fire({
                                 icon: 'success',
                                 title: 'Terhapus!',
-                                text: res.meta.message || 'Transaksi berhasil dihapus',
+                                text: res.meta.message ||
+                                    'Transaksi berhasil dihapus',
                                 timer: 2000,
                                 showConfirmButton: false
                             });
@@ -423,7 +424,8 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: 'Gagal!',
-                                text: response_error.meta?.message || 'Gagal menghapus transaksi',
+                                text: response_error.meta?.message ||
+                                    'Gagal menghapus transaksi',
                             });
                         }
                     });
@@ -455,7 +457,9 @@
 
                     let detail_event = res.data.event.event_detail;
                     if (detail_event != null) {
-                        $('#detail_date').html(moment(res.data.event.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event.event_detail.end_date).format('lll'));
+                        $('#detail_date').html(moment(res.data.event.event_detail
+                            .start_date).format('lll') + ' - ' + moment(res.data
+                            .event.event_detail.end_date).format('lll'));
                     } else {
                         $('#detail_date').html(moment(res.data.event.date).format('lll'));
                     }
@@ -483,7 +487,8 @@
 
                     $('.is_payment').empty();
                     if (res.data.proof_of_payment != null) {
-                        let link_proof_of_payment = '/uploads/bukti_transaksi/' + res.data.proof_of_payment;
+                        let link_proof_of_payment = '/uploads/bukti_transaksi/' + res.data
+                            .proof_of_payment;
                         $('.is_payment').append(`
                             <div class="col-sm-6 col-sm-6 col-6">
                                 <span style="font-weight: 700 !important;">Link bukti pembayaran</span>

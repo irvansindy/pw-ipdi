@@ -65,8 +65,9 @@
         // Tambahkan dropdown filter tahun di setiap tabel dan ambil data awal
         tableIds.forEach(tableId => {
             let tabName = tableId.replace('transaction_', '').replace('_management', '');
-            let $filterContainer = $('#' + tabName + '_management_filter_container'); 
-            let $yearFilter = $('<select class="form-select year-filter" id="'+tableId+'_year_filter" style="width: 100%"></select>');
+            let $filterContainer = $('#' + tabName + '_management_filter_container');
+            let $yearFilter = $('<select class="form-select year-filter" id="' + tableId +
+                '_year_filter" style="width: 100%"></select>');
 
             for (let year = currentYear; year >= currentYear - 10; year--) {
                 $yearFilter.append(`<option value="${year}">${year}</option>`);
@@ -77,7 +78,7 @@
             // Panggil fetch pertama kali dengan tahun sekarang
             fetchTransactions(tableId, currentYear);
 
-            $(document).on("change", ".year-filter", function () {
+            $(document).on("change", ".year-filter", function() {
                 let selectedYear = $(this).val();
                 fetchTransactions(tableId, selectedYear);
             });
@@ -86,22 +87,23 @@
         });
 
         // Event listener untuk tombol Refresh
-        $('.refresh-data').click(function () {
+        $('.refresh-data').click(function() {
             let tabName = $(this).data('table');
             let selectedYear = $('#transaction_' + tabName + '_management_year_filter').val();
             fetchTransactions('transaction_' + tabName + '_management', selectedYear);
         });
 
         // Event listener untuk tombol Export Excel
-        $('.export-excel').click(function (e) {
+        $('.export-excel').click(function(e) {
             e.preventDefault();
             let tabName = $(this).data('table');
-            
+
             // Ambil nilai dari <select> berdasarkan ID tab yang sesuai
             let selectedYear = $(this).closest('.tab-pane').find('.year-filter').val();
 
             // Redirect ke route export dengan parameter tahun dan tab aktif
-            let exportUrl = "{{ route('transaction-export-excel') }}?year=" + selectedYear + "&category=" + tabName;
+            let exportUrl = "{{ route('transaction-export-excel') }}?year=" + selectedYear +
+                "&category=" + tabName;
             window.location.href = exportUrl;
         });
 
@@ -278,13 +280,13 @@
                 }
             })
         })
-        
+
         $(document).on('click', '.delete_transaction', function(e) {
             e.preventDefault()
             let transaction_id = $(this).data('transaction_id')
             let transaction_number = $(this).data('transaction_number')
             let table_id = $(this).data('table_id')
-            
+
             $('#delete_transaction_id').val(transaction_id)
             $('#delete_transaction_number').html(transaction_number)
             $('#confirm_delete_transaction').attr('data-transaction_id', transaction_id)
@@ -295,7 +297,7 @@
             e.preventDefault()
             let transaction_id = $(this).data('transaction_id')
             let transaction_number = $(this).data('transaction_number')
-            
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -314,7 +316,8 @@
                         title: 'Success!',
                         text: res.meta.message,
                     })
-                    fetchTransactions('transaction_' + res.data.category + '_management', currentYear);
+                    fetchTransactions('transaction_' + res.data.category + '_management',
+                        currentYear);
                 },
                 error: function(xhr) {
                     let response_error = JSON.parse(xhr.responseText)
@@ -326,7 +329,7 @@
                 }
             })
         })
-    
+
     })
     $('.form-select, .year-filter').select2()
 </script>
