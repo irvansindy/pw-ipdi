@@ -180,23 +180,23 @@ class EventManagementController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 "id" => "required|integer|exists:events,id",
-                "update_event_name" => "required|string|max:255",
-                "update_event_title" => "required|string|max:255",
-                "update_event_category" => "required|integer|exists:categories_events,id",
-                "update_event_price" => "nullable|min:0",
-                "update_event_description" => "required|string",
-                "update_event_quota" => "required|integer|min:1",
-                "update_event_date" => "required|date",
-                "update_event_start_date" => "required|date",
-                "update_event_end_date" => "required|date|after_or_equal:start_date",
-                "update_event_date_last_register" => "required|date|before_or_equal:start_date",
-                "update_event_max_attendance" => "nullable|integer|min:1",
-                "update_event_image" => "nullable|image|mimes:png,jpg,jpeg|max:2048",
-                "update_event_is_active" => "nullable|boolean",
-                "update_event_update_event_detail_name" => "nullable|array",
-                "update_event_update_event_detail_price" => "nullable|array",
-                "update_event_update_event_hotel" => "nullable|string|max:255",
-                "update_event_update_event_harga_hotel" => "nullable|numeric|min:0",
+                "name" => "required|string|max:255",
+                "title" => "required|string|max:255",
+                "category" => "required|integer|exists:categories_events,id",
+                "price" => "nullable|min:0",
+                "description" => "required|string",
+                "quota" => "required|integer|min:1",
+                "date" => "required|date",
+                "start_date" => "required|date",
+                "end_date" => "required|date|after_or_equal:start_date",
+                "last_register" => "required|date|before_or_equal:start_date",
+                "max_attendance" => "nullable|integer|min:1",
+                "image" => "nullable|image|mimes:png,jpg,jpeg|max:2048",
+                "is_active" => "nullable|boolean",
+                "detail_name" => "nullable|array",
+                "detail_price" => "nullable|array",
+                "update_event_hotel" => "nullable|string|max:255",
+                "update_event_harga_hotel" => "nullable|numeric|min:0",
             ]);
 
             if ($validator->fails()) {
@@ -220,77 +220,89 @@ class EventManagementController extends Controller
 
             // Update event data
             $event->update([
-                "name" => $request->update_event_name,
-                "title" => $request->update_event_title,
-                "category_event_id" => $request->update_event_category,
-                "price" => $request->update_event_price ?? 0,
-                "description" => $request->update_event_description,
-                "quota" => $request->update_event_quota,
-                "date" => $request->update_event_date,
-                "start_date" => $request->update_event_start_date,
-                "end_date" => $request->update_event_end_date,
-                "max_attendance" => $request->update_event_max_attendance,
-                "last_register" => $request->update_event_date_last_register,
+                "name" => $request->name,
+                "title" => $request->title,
+                "category_event_id" => $request->category,
+                "price" => $request->price ?? 0,
+                "description" => $request->description,
+                "quota" => $request->quota,
+                "date" => $request->date,
+                "start_date" => $request->start_date,
+                "end_date" => $request->end_date,
+                "max_attendance" => $request->max_attendance,
+                "last_register" => $request->last_register,
                 "is_active" => $request->is_active ? 1 : 0,
                 "image" => $event->image,
             ]);
 
             // Update event details
-            $detailNames = $request->input('update_event_detail_name', []);
-            $detailPrices = $request->input('update_event_detail_price', []);
+$detailNames  = $request->input('update_event_detail_name', []);
+$detailPrices = $request->input('update_event_detail_price', []);
 
-            if (is_array($detailNames) && !empty($detailNames)) {
-                // Get existing details keyed by name
-                $existingDetails = EventDetail::where('event_id', $event->id)
-                    ->get()
-                    ->keyBy('name')
-                    ->toArray();
+if (is_array($detailNames) && !empty($detailNames)) {
 
-                $usedNames = [];
+    // Get existing details keyed by name
+    $existingDetails = EventDetail::where('event_id', $event->id)
+        ->get()
+        ->keyBy('name')
+        ->toArray();
 
-                foreach ($detailNames as $index => $name) {
-                    if (empty($name)) continue;
+    $usedNames = [];
 
-                    $price = $detailPrices[$index] ?? 0;
-                    $usedNames[] = $name;
+    foreach ($detailNames as $index => $name) {
+        if (empty($name)) continue;
 
-                    if (isset($existingDetails[$name])) {
-                        // Update existing detail
-                        EventDetail::where('event_id', $event->id)
-                            ->where('name', $name)
-                            ->update(['price' => $price]);
-                    } else {
-                        // Create new detail
-                        EventDetail::create([
-                            'event_id' => $event->id,
-                            'name' => $name,
-                            'price' => $price,
-                        ]);
-                    }
-                }
+        // =========================
+        // NORMALISASI PRICE
+        // =========================
+        $rawPrice = $detailPrices[$index] ?? 0;
 
-                // Delete details that are not in the request
-                EventDetail::where('event_id', $event->id)
-                    ->whereNotIn('name', $usedNames)
-                    ->delete();
-            } else {
-                // If no details provided, delete all
-                EventDetail::where('event_id', $event->id)->delete();
-            }
+        // Hapus koma, spasi, simbol lain
+        $price = (int) preg_replace('/[^0-9]/', '', $rawPrice);
+
+        $usedNames[] = $name;
+
+        if (isset($existingDetails[$name])) {
+            // Update existing detail
+            EventDetail::where('event_id', $event->id)
+                ->where('name', $name)
+                ->update([
+                    'price' => $price
+                ]);
+        } else {
+            // Create new detail
+            EventDetail::create([
+                'event_id' => $event->id,
+                'name'     => $name,
+                'price'    => $price,
+            ]);
+        }
+    }
+
+    // Delete details that are not in the request
+    EventDetail::where('event_id', $event->id)
+        ->whereNotIn('name', $usedNames)
+        ->delete();
+
+} else {
+    // If no details provided, delete all
+    EventDetail::where('event_id', $event->id)->delete();
+}
+
 
             // Update or delete hotel
-            if ($request->filled('update_event_hotel') && $request->filled('update_event_harga_hotel')) {
+            if ($request->filled('hotel') && $request->filled('harga_hotel')) {
                 $hotel = EventHotel::where('event_id', $event->id)->first();
                 if ($hotel) {
                     $hotel->update([
-                        'name' => $request->update_event_hotel,
-                        'price' => $request->update_event_harga_hotel,
+                        'name' => $request->hotel,
+                        'price' => $request->harga_hotel,
                     ]);
                 } else {
                     EventHotel::create([
                         'event_id' => $event->id,
-                        'name' => $request->update_event_hotel,
-                        'price' => $request->update_event_harga_hotel,
+                        'name' => $request->hotel,
+                        'price' => $request->harga_hotel,
                     ]);
                 }
             } else {
