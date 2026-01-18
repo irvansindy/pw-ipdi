@@ -189,7 +189,7 @@
 
             <form action="">
                 @csrf
-                <input type="text" id="qr-input" autofocus style="position: absolute; left: -9999px;">
+                <input type="text" id="qr-input" autofocus style="">
                 {{-- <input type="text" id="qr-input" autofocus style="position: absolute;"> --}}
                 <div id="result" class="scan-info">
                     <div style="color: #999;">
@@ -206,6 +206,17 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
         $(document).ready(function() {
+            $('#qr-input').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault()
+                    return false
+                }
+            })
+
+            $('form').on('submit', function (e) {
+                e.preventDefault()
+            })
+
             const $qrInput = $('#qr-input');
             const $result = $('#result');
 
