@@ -43,7 +43,7 @@ class Events extends Model
         return $this->belongsTo(CategoriesEvent::class, 'category_event_id', 'id');
     }
 
-    public function EventDetail()
+    public function eventDetail()
     {
         return $this->hasMany(EventDetail::class, 'event_id', 'id');
     }

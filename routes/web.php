@@ -108,7 +108,7 @@ Route::get('/reset-password', [ResetPassword::class, 'show'])->middleware('guest
 Route::post('/reset-password', [ResetPassword::class, 'send'])->middleware('guest')->name('reset.perform');
 Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
-Route::get('/ticket-qrcode', [TransactionController::class,'ticketQrCode'])->name('ticket-qrcode')->middleware('auth');
+Route::get('/ticket-qrcode', [TransactionController::class,'generateTicketQrCode'])->name('ticket-qrcode')->middleware('auth');
 Route::get('/generate-ticket-qrcode', [TransactionController::class,'generateTicketQrCode'])->name('generate-ticket-qrcode')->middleware('auth');
 Route::get('/generate-ticket-barcode', [TransactionController::class,'generateTicketBarcode'])->name('generate-ticket-barcode')->middleware('auth');
 Route::get('/generate-ticket-dummy', [TransactionController::class,'generateQrAndBarcode'])->name('generate-ticket-dummy')->middleware('auth');

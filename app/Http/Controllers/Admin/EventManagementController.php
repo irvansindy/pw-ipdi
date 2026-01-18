@@ -51,60 +51,80 @@ class EventManagementController extends Controller
     }
     public function store(Request $request)
     {
+        DB::beginTransaction();
+
         try {
-            // dd($request->price);
-            DB::beginTransaction();
             $validator = Validator::make($request->all(), [
-                "name"=> "required|string",
-                "title"=> "required|string",
-                "category"=> "required|string",
-                "price"=> "required|string",
-                "description"=> "required|string",
-                "quota"=> "required|integer",
-                "date"=> "required|string",
-                "image"=> "mimes:png,jpg",
+                "name" => "required|string|max:255",
+                "title" => "required|string|max:255",
+                "category" => "required|integer|exists:categories_events,id",
+                "price" => "nullable|numeric|min:0",
+                "description" => "required|string",
+                "quota" => "required|integer|min:1",
+                "date" => "required|date",
+                "start_date" => "required|date",
+                "end_date" => "required|date|after_or_equal:start_date",
+                "last_register" => "required|date|before_or_equal:start_date",
+                "max_attendance" => "nullable|integer|min:1",
+                "image" => "nullable|image|mimes:png,jpg,jpeg|max:2048",
+                "detail_event_name" => "nullable|array",
+                "detail_event_price" => "nullable|array",
+                "hotel" => "nullable|string|max:255",
+                "harga_hotel" => "nullable|numeric|min:0",
             ]);
+
             if ($validator->fails()) {
                 throw new ValidationException($validator);
             }
-            $file = $request->file('image');
-            $file_name = time().'.'.$file->getClientOriginalExtension();
-            $file->move(public_path('img/logos/IPDI/event/'), $file_name);
-            $date  = date("Y-m-d ", strtotime($request->last_register));
-            $data = [
-                "name"=> $request->name,
-                "title"=> $request->title,
-                "category_event_id"=> $request->category,
-                "price"=> $request->price == 'undefined' ? 0 : $request->price,
-                "last_register"=> $date,
-                "description"=> $request->description,
-                "quota"=> $request->quota,
-                "date"=> $request->date,
-                "date_end"=> $request->date,
-                "image"=> $file_name,
-            ];
-            $event = Events::create($data);
-            if ($request->detail_event_name != null) {
-                # code...
-                if (count($request->detail_event_name) > 0) {
-                    $data_event_detail = [];
-                    $list_event_detail = [];
-                    for ($i=0; $i < count($request->detail_event_name); $i++) {
-                        $list_event_detail = [
-                            'event_id' => $event->id,
-                            'name' => $request->detail_event_name[$i],
-                            'price' => $request->detail_event_price[$i],
-                            // 'location' => 'Jakarta'
-                        ];
 
-                        array_push($data_event_detail, $list_event_detail);
+            // Handle image upload
+            $filename = null;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('img/logos/IPDI/event/'), $filename);
+            }
+
+            $eventData = [
+                "name" => $request->name,
+                "title" => $request->title,
+                "category_event_id" => $request->category,
+                "price" => $request->price ?? 0,
+                "last_register" => $request->last_register,
+                "description" => $request->description,
+                "quota" => $request->quota,
+                "date" => $request->date,
+                "start_date" => $request->start_date,
+                "end_date" => $request->end_date,
+                "max_attendance" => $request->max_attendance,
+                "image" => $filename,
+                "is_active" => 1,
+            ];
+
+            $event = Events::create($eventData);
+
+            // Create event details if provided
+            if ($request->has('detail_event_name') && is_array($request->detail_event_name)) {
+                $eventDetails = [];
+                foreach ($request->detail_event_name as $index => $name) {
+                    if (!empty($name) && isset($request->detail_event_price[$index])) {
+                        $eventDetails[] = [
+                            'event_id' => $event->id,
+                            'name' => $name,
+                            'price' => $request->detail_event_price[$index],
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
                     }
-                    $create_event_detail = EventDetail::insert($data_event_detail);
+                }
+                if (!empty($eventDetails)) {
+                    EventDetail::insert($eventDetails);
                 }
             }
 
-            if($request->hotel != null && $request->harga_hotel != null) {
-                $event_hotel = EventHotel::create([
+            // Create event hotel if provided
+            if ($request->filled('hotel') && $request->filled('harga_hotel')) {
+                EventHotel::create([
                     'event_id' => $event->id,
                     'name' => $request->hotel,
                     'price' => $request->harga_hotel,
@@ -124,166 +144,161 @@ class EventManagementController extends Controller
     public function detail(Request $request)
     {
         try {
-            $event_id = $request->id;
-            $event = Events::with(['eventDetail', 'category', 'hotel'])->findOrFail($event_id);
+            $validator = Validator::make($request->all(), [
+                'id' => 'required|integer|exists:events,id'
+            ]);
+
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+
+            $event = Events::with(['eventDetail', 'category', 'hotel'])
+                ->findOrFail($request->id);
             $categories = CategoriesEvent::all();
-            $data = [
-                $event,
-                $categories,
-            ];
-            return FormatResponseJson::success($data,'Event fetched successfully');
+
+            return FormatResponseJson::success([
+                'event' => $event,
+                'categories' => $categories,
+            ], 'Event fetched successfully');
+        } catch (ValidationException $e) {
+            return FormatResponseJson::error(null, $e->errors(), 422);
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 404);
         }
     }
     public function updateOld(Request $request)
     {
-        try {
-            $current_event = Events::find($request->id);
-            $validator = Validator::make($request->all(), [
-                "name"=> "required|string",
-                "title"=> "required|string",
-                "category"=> "required|string",
-                "price"=> "required|string",
-                "description"=> "required|string",
-                "quota"=> "required|integer",
-                "date"=> "required|string",
-                "last_register"=> "required|string",
-            ]);
-            if ($validator->fails()) {
-                throw new ValidationException($validator);
-            }
-
-
-            $current_event->update([
-                "name"=> $request->name,
-                "title"=> $request->title,
-                "category_event_id"=> $request->category,
-                "price"=> $request->price,
-                "description"=> $request->description,
-                "quota"=> $request->quota,
-                "date"=> $request->date,
-                "last_register"=> $request->last_register,
-                "is_active" => $request->is_active,
-            ]);
-
-            if ($request->file('image') != null) {
-                // Hapus file lama dulu
-                if ($current_event->image && file_exists(public_path('img/logos/IPDI/event/' . $current_event->image))) {
-                    unlink(public_path('img/logos/IPDI/event/' . $current_event->image));
-                }
-
-                // Upload file baru
-                $file = $request->file('image');
-                $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('img/logos/IPDI/event/'), $file_name);
-                $current_event->update([
-                    'image' => $file_name,
-                ]);
-            } else {
-                $file_name = $current_event->image;
-            }
-            return FormatResponseJson::success($current_event,'Event updated successfully');
-        }  catch (ValidationException $e) {
-            DB::rollback();
-            return FormatResponseJson::error(null, $e->errors(), 422);
-        } catch (\Exception $e) {
-            DB::rollback();
-            return FormatResponseJson::error(null, $e->getMessage(), 500);
-        }
+        // DEPRECATED: Use update() method instead
+        return FormatResponseJson::error(null, 'This endpoint is deprecated', 410);
     }
+
     public function update(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            $current_event = Events::find($request->id);
-
             $validator = Validator::make($request->all(), [
-                "name" => "required|string",
-                "title" => "required|string",
-                "category" => "required|string",
-                "price" => "required|string",
+                "id" => "required|integer|exists:events,id",
+                "name" => "required|string|max:255",
+                "title" => "required|string|max:255",
+                "category" => "required|integer|exists:categories_events,id",
+                "price" => "nullable|min:0",
                 "description" => "required|string",
-                "quota" => "required|integer",
-                "date" => "required|string",
-                "last_register" => "required|string",
+                "quota" => "required|integer|min:1",
+                "date" => "required|date",
+                "start_date" => "required|date",
+                "end_date" => "required|date|after_or_equal:start_date",
+                "last_register" => "required|date|before_or_equal:start_date",
+                "max_attendance" => "nullable|integer|min:1",
+                "image" => "nullable|image|mimes:png,jpg,jpeg|max:2048",
+                "is_active" => "nullable|boolean",
+                "update_event_detail_name" => "nullable|array",
+                "update_event_detail_price" => "nullable|array",
+                "update_event_hotel" => "nullable|string|max:255",
+                "update_event_harga_hotel" => "nullable|numeric|min:0",
             ]);
 
             if ($validator->fails()) {
                 throw new ValidationException($validator);
             }
-            $current_event = Events::find($request->id);
-            if (!$current_event) {
-                return FormatResponseJson::error(null, 'Event not found', 404);
-            }
-            $current_event->update([
-                "name" => $request->name,
-                "title" => $request->title,
-                "category_event_id" => $request->category,
-                "price" => $request->price,
-                "description" => $request->description,
-                "quota" => $request->quota,
-                "date" => $request->date,
-                "last_register" => $request->last_register,
-                "is_active" => $request->is_active,
-            ]);
 
-            // Handle gambar jika dikirim
-            if ($request->file('image') != null) {
-                if ($current_event->image && file_exists(public_path('img/logos/IPDI/event/' . $current_event->image))) {
-                    unlink(public_path('img/logos/IPDI/event/' . $current_event->image));
+            $event = Events::findOrFail($request->id);
+
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                // Delete old image
+                if ($event->image && file_exists(public_path('img/logos/IPDI/event/' . $event->image))) {
+                    unlink(public_path('img/logos/IPDI/event/' . $event->image));
                 }
 
                 $file = $request->file('image');
-                $file_name = time() . '.' . $file->getClientOriginalExtension();
-                $file->move(public_path('img/logos/IPDI/event/'), $file_name);
-
-                $current_event->update([
-                    'image' => $file_name,
-                ]);
+                $filename = time() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('img/logos/IPDI/event/'), $filename);
+                $event->image = $filename;
             }
 
-            /**
-             * Handle EventDetail update/create/delete
-             */
-            $names = $request->input('update_event_detail_name');
-            $prices = $request->input('update_event_detail_price');
+            // Update event data
+            $event->update([
+                "name" => $request->name,
+                "title" => $request->title,
+                "category_event_id" => $request->category,
+                "price" => $request->price ?? 0,
+                "description" => $request->description,
+                "quota" => $request->quota,
+                "date" => $request->date,
+                "start_date" => $request->start_date,
+                "end_date" => $request->end_date,
+                "max_attendance" => $request->max_attendance,
+                "last_register" => $request->last_register,
+                "is_active" => $request->is_active ? 1 : 0,
+                "image" => $event->image,
+            ]);
 
-            if (is_array($names) && is_array($prices)) {
-                // Ambil semua detail lama
-                $existingDetails = EventDetail::where('event_id', $current_event->id)->get()->keyBy('name');
+            // Update event details
+            $detailNames = $request->input('update_event_detail_name', []);
+            $detailPrices = $request->input('update_event_detail_price', []);
 
-                $namesUsed = [];
+            if (is_array($detailNames) && !empty($detailNames)) {
+                // Get existing details keyed by name
+                $existingDetails = EventDetail::where('event_id', $event->id)
+                    ->get()
+                    ->keyBy('name')
+                    ->toArray();
 
-                foreach ($names as $index => $name) {
-                    $price = $prices[$index];
-                    $namesUsed[] = $name;
+                $usedNames = [];
 
-                    if ($existingDetails->has($name)) {
-                        // Update jika ada
-                        $existingDetails[$name]->update([
-                            'price' => $price,
-                        ]);
+                foreach ($detailNames as $index => $name) {
+                    if (empty($name)) continue;
+
+                    $price = $detailPrices[$index] ?? 0;
+                    $usedNames[] = $name;
+
+                    if (isset($existingDetails[$name])) {
+                        // Update existing detail
+                        EventDetail::where('event_id', $event->id)
+                            ->where('name', $name)
+                            ->update(['price' => $price]);
                     } else {
-                        // Insert baru jika tidak ada
+                        // Create new detail
                         EventDetail::create([
-                            'event_id' => $current_event->id,
+                            'event_id' => $event->id,
                             'name' => $name,
                             'price' => $price,
                         ]);
                     }
                 }
 
-                // Hapus event_detail yang tidak ada dalam input
-                EventDetail::where('event_id', $current_event->id)
-                    ->whereNotIn('name', $namesUsed)
+                // Delete details that are not in the request
+                EventDetail::where('event_id', $event->id)
+                    ->whereNotIn('name', $usedNames)
                     ->delete();
+            } else {
+                // If no details provided, delete all
+                EventDetail::where('event_id', $event->id)->delete();
+            }
+
+            // Update or delete hotel
+            if ($request->filled('update_event_hotel') && $request->filled('update_event_harga_hotel')) {
+                $hotel = EventHotel::where('event_id', $event->id)->first();
+                if ($hotel) {
+                    $hotel->update([
+                        'name' => $request->update_event_hotel,
+                        'price' => $request->update_event_harga_hotel,
+                    ]);
+                } else {
+                    EventHotel::create([
+                        'event_id' => $event->id,
+                        'name' => $request->update_event_hotel,
+                        'price' => $request->update_event_harga_hotel,
+                    ]);
+                }
+            } else {
+                // Delete hotel if no data provided
+                EventHotel::where('event_id', $event->id)->delete();
             }
 
             DB::commit();
-
-            return FormatResponseJson::success($current_event, 'Event updated successfully');
+            return FormatResponseJson::success($event, 'Event updated successfully');
         } catch (ValidationException $e) {
             DB::rollback();
             return FormatResponseJson::error(null, $e->errors(), 422);

@@ -1,14 +1,25 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js"
+    integrity="sha512-4F1cxYdMiAW98oomSLaygEwmCnIP38pb4Kx70yQYqRwLVCs3DbRumfBq82T08g/4LJ/smbFGFpmeFlQgoDccgg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $(document).ready(function() {
-        // alert('hahahahah')
+        // Initialize DataTable
+        initDataTable();
+        initSelect2();
+        setupEventListeners();
+    });
+
+    /**
+     * Initialize DataTable
+     */
+    function initDataTable() {
         $('#event_management').DataTable({
             processing: true,
             ajax: {
-                url: '{{ route("event-fetch") }}',
+                url: '{{ route('event-fetch') }}',
                 type: 'GET',
             },
-            columns: [
-                {
+            columns: [{
                     "data": null,
                     "render": function(data, type, row, meta) {
                         return meta.row + 1;
@@ -24,603 +35,683 @@
                 },
                 {
                     "data": "date",
-                    "defaultContent": "<i>Not set</i>"
+                    "defaultContent": "<i>Not set</i>",
+                    "render": function(data) {
+                        return data ? moment(data).format('DD/MM/YYYY HH:mm') : '<i>Not set</i>';
+                    }
                 },
                 {
                     'data': null,
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        return '<button type="button" data-event_id="' +item.id +'" class="btn btn-outline-info btn-sm mt-2 detail_event_data" data-bs-toggle="modal" data-bs-target="#formUpdateEvent">View</button> <a href="/ticket-qrcode?transnumber=' + item.id + '" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>'
+                        return '<button type="button" data-event_id="' + item.id +
+                            '" class="btn btn-outline-info btn-sm mt-2 detail_event_data" data-bs-toggle="modal" data-bs-target="#formUpdateEvent">View</button> <a href="/ticket-qrcode?transnumber=' +
+                            item.id + '" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>'
                     }
                 },
             ]
         })
+    }
 
+    /**
+     * Initialize Select2
+     */
+    function initSelect2() {
         $('#create_event_category').select2({
             dropParent: '#formCreateEvent'
-        })
-        
+        });
+
         $('#create_event_hotel').select2({
             dropParent: '#formCreateEvent',
             allowClear: true,
             width: '100%'
-        })
-        
+        });
+
         $('#update_event_category').select2({
             dropParent: '#formUpdateEvent'
-        })
+        });
+    }
 
-        $(document).on('click', '#for_create_event_data', function(e) {
-            e.preventDefault()
-            $('#form_create_event')[0].reset()
-            $.ajax({
-                url: '{{ route('event-category') }}',
-                type: 'GET',
-                dataType: 'json',
-                success: function(res) {
-                    $('#select_event_hotel').empty()
-                    $('#create_event_category').empty()
-                    $('#create_event_category').append('<option value="">Pilih Satu</option>')
-                    $.each(res.data, function (i, data) {
-                        $('#create_event_category').append('<option value="'+ data.id + '" data-event_category="'+data.name+'">'+ data.name + '</option>')
-                    })
-                }
-            })
-        })
+    /**
+     * Setup all event listeners
+     */
+    function setupEventListeners() {
+        $(document).on('click', '#for_create_event_data', handleCreateEventModal);
+        $(document).on('change', '#create_event_category', handleCategoryChange);
+        $(document).on('change', '#check_event_hotel', handleHotelCheckbox);
+        $(document).on('click', '#create_event', handleCreateEvent);
+        $(document).on('click', '.detail_event_data', handleDetailEvent);
+        $(document).on('click', '#update_event', handleUpdateEvent);
+        $(document).on('keyup', '.price', formatPriceInput);
+    }
 
-        $(document).on('change', '#create_event_category', function(e) {
-            e.preventDefault()
-            var value_category = $("#create_event_category option:selected").val();
-            let selectedValue = $('#create_event_category option:selected').data('event_category');
+    /**
+     * Handle Create Event Modal
+     */
+    function handleCreateEventModal(e) {
+        e.preventDefault();
+        $('#form_create_event')[0].reset();
 
-            // if (selectedValue.toLowerCase() === 'jnns') {
-            //     alert(selectedValue);
-            // } else {
-            //     alert('Lainnya');
-            // }
-            if (selectedValue.toLowerCase() === 'jnns') {
-                $('.detail_event').empty()
-                $('#master_event_price').empty()
-                $('.detail_event').append(`
-                    <div class="row g-3 align-items-center form-group">
-                        <div class="col-md-4">
-                            <label for="create_event_detail_name_simposium">Harga Simposium</label>
-                            <input type="hidden" name="create_event_detail_name[]" id="create_event_detail_name_simposium" class="form-control" value="simposium">
-                            <input type="text" name="create_event_detail_price[]" id="create_event_detail_price_simposium" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="create_event_detail_name_simposium">Harga Workshop</label>
-                            <input type="hidden" name="create_event_detail_name[]" id="create_event_detail_name_simposium" class="form-control" value="workshop">
-                            <input type="text" name="create_event_detail_price[]" id="create_event_detail_price_simposium" class="form-control">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="create_event_detail_name_simposium">Harga Paket</label>
-                            <input type="hidden" name="create_event_detail_name[]" id="create_event_detail_name_simposium" class="form-control" value="paket">
-                            <input type="text" name="create_event_detail_price[]" id="create_event_detail_price_simposium" class="form-control">
-                        </div>
-                    </div>
-                `)
-            } else {
-                $('.detail_event').empty()
-                $('#master_event_price').append(`
-                <div class="form-group">
-                    <label for="create_event_price">Price</label>
-                    <input type="text" class="form-control price" name="create_event_price" id="create_event_price" placeholder="Event Price" value="">
-                </div>
-                `)
+        $.ajax({
+            url: '{{ route('event-category') }}',
+            type: 'GET',
+            dataType: 'json',
+            success: function(res) {
+                $('#select_event_hotel').empty();
+                $('#create_event_category').empty().append('<option value="">Pilih Satu</option>');
+
+                $.each(res.data, function(i, data) {
+                    $('#create_event_category').append(
+                        '<option value="' + data.id + '" data-event_category="' + data.name +
+                        '">' + data.name + '</option>'
+                    );
+                });
+            },
+            error: function() {
+                Swal.fire({
+                    icon: "error",
+                    title: 'Error',
+                    text: 'Failed to load categories',
+                });
             }
-        })
+        });
+    }
 
-        $(document).on('change', '#check_event_hotel', function() {
-            if ($('#check_event_hotel').prop('checked')) {
-                $('#select_event_hotel').empty()
-                $('#select_event_hotel').append(`
+    /**
+     * Handle Category Change
+     */
+    function handleCategoryChange(e) {
+        e.preventDefault();
+
+        let selectedCategory = $('#create_event_category option:selected').data('event_category');
+
+        if (selectedCategory && selectedCategory.toLowerCase() === 'jnns') {
+            renderJnnsDetail();
+        } else {
+            renderDefaultPrice();
+        }
+    }
+
+    /**
+     * Render JNNS Detail (Symposium, Workshop, Paket)
+     */
+    function renderJnnsDetail() {
+        $('.detail_event').empty();
+        $('#master_event_price').empty();
+
+        $('.detail_event').append(`
+            <div class="row g-3 align-items-center form-group">
+                <div class="col-md-4">
+                    <label for="create_event_detail_price_simposium">Harga Simposium</label>
+                    <input type="hidden" name="create_event_detail_name[]" class="form-control" value="simposium">
+                    <input type="text" name="create_event_detail_price[]" class="form-control price" placeholder="0">
+                </div>
+                <div class="col-md-4">
+                    <label for="create_event_detail_price_workshop">Harga Workshop</label>
+                    <input type="hidden" name="create_event_detail_name[]" class="form-control" value="workshop">
+                    <input type="text" name="create_event_detail_price[]" class="form-control price" placeholder="0">
+                </div>
+                <div class="col-md-4">
+                    <label for="create_event_detail_price_paket">Harga Paket</label>
+                    <input type="hidden" name="create_event_detail_name[]" class="form-control" value="paket">
+                    <input type="text" name="create_event_detail_price[]" class="form-control price" placeholder="0">
+                </div>
+            </div>
+        `);
+    }
+
+    /**
+     * Render Default Price Field
+     */
+    function renderDefaultPrice() {
+        $('.detail_event').empty();
+        $('#master_event_price').empty().append(`
+            <div class="form-group">
+                <label for="create_event_price">Price</label>
+                <input type="text" class="form-control price" name="create_event_price" id="create_event_price" placeholder="0">
+            </div>
+        `);
+    }
+
+    /**
+     * Handle Hotel Checkbox
+     */
+    function handleHotelCheckbox() {
+        if ($('#check_event_hotel').prop('checked')) {
+            $('#select_event_hotel').empty().append(`
                 <div class="row g-2 align-items-center form-group">
                     <div class="col-md-6">
                         <label for="create_event_hotel">Nama Hotel</label>
                         <input type="text" name="create_event_hotel" id="create_event_hotel" class="form-control">
                     </div>
                     <div class="col-md-6">
-                        <label for="create_event_detail_name_simposium">Harga Hotel</label>
-                        <input type="text" name="create_event_harga_hotel" id="create_event_harga_hotel" class="form-control">
+                        <label for="create_event_harga_hotel">Harga Hotel</label>
+                        <input type="text" name="create_event_harga_hotel" id="create_event_harga_hotel" class="form-control price">
                     </div>
                 </div>
-                `)
-            } else {
-                $('#select_event_hotel').empty()
-            }
-        })
+            `);
+        } else {
+            $('#select_event_hotel').empty();
+        }
+    }
 
-        $(document).on('click', '#create_event', function(e) {
-            e.preventDefault()
+    /**
+     * Handle Create Event
+     */
+    function handleCreateEvent(e) {
+        e.preventDefault();
 
-            let create_event_name = $('#create_event_name').val()
-            let create_event_title = $('#create_event_title').val()
-            let create_event_category = $('#create_event_category').val()
-            let create_event_price = $('#create_event_price').val()
-            let create_event_description = $('#create_event_description').val()
-            let create_event_quota = $('#create_event_quota').val()
-            let create_event_date = $('#create_event_date').val()
-            let create_event_hotel = $('#create_event_hotel').val()
-            let create_event_harga_hotel = $('#create_event_harga_hotel').val()
-            var value_detail_name = [];
-            $("input[name='create_event_detail_name[]']").each(function() {
-                var value = $(this).val();
-                value_detail_name.push(value);
+        let form = $('#form_create_event')[0];
+        let formData = new FormData(form);
+
+        // Collect detail names and prices
+        let detailNames = [];
+        let detailPrices = [];
+
+        $("input[name='create_event_detail_name[]']").each(function() {
+            let value = $(this).val();
+            if (value) detailNames.push(value);
+        });
+
+        $("input[name='create_event_detail_price[]']").each(function() {
+            let value = $(this).val();
+            if (value) detailPrices.push(value);
+        });
+
+        // Add arrays to FormData
+        detailNames.forEach(name => {
+            formData.append('detail_event_name[]', name);
+        });
+
+        detailPrices.forEach(price => {
+            formData.append('detail_event_price[]', price);
+        });
+
+        // Basic validation
+        let eventName = $('#create_event_name').val();
+        let eventTitle = $('#create_event_title').val();
+        let eventCategory = $('#create_event_category').val();
+        let eventDescription = $('#create_event_description').val();
+        let eventQuota = $('#create_event_quota').val();
+        let eventDate = $('#create_event_date').val();
+        let eventStartDate = $('#create_event_start_date').val();
+        let eventEndDate = $('#create_event_end_date').val();
+        let eventLastRegister = $('#create_event_date_last_register').val();
+        let eventMaxAttendance = $('#create_event_max_attendance').val();
+
+        if (!eventName) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event name is required'
             });
-            // Anda sekarang memiliki semua nilai dalam value_detail_name
-            console.log(value_detail_name);
-            var value_detail_price = [];
-            $("input[name='create_event_detail_price[]']").each(function() {
-                var value = $(this).val();
-                value_detail_price.push(value);
+        }
+        if (!eventTitle) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event title is required'
             });
+        }
+        if (!eventCategory) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event category is required'
+            });
+        }
+        if (!eventDescription) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event description is required'
+            });
+        }
+        if (!eventQuota) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event quota is required'
+            });
+        }
+        if (!eventDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event date is required'
+            });
+        }
+        if (!eventStartDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event start date is required'
+            });
+        }
+        if (!eventEndDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event end date is required'
+            });
+        }
+        if (!eventLastRegister) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event last register date is required'
+            });
+        }
 
-            // Anda sekarang memiliki semua nilai dalam value_detail_price
-            console.log(value_detail_price);
+        // Validate date relationships
+        if (eventEndDate < eventStartDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'End date must be after or equal to start date'
+            });
+        }
+        if (eventLastRegister > eventStartDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Last register date must be before or equal to start date'
+            });
+        }
 
-            let allow_image_extensions = ['jpeg', 'jpg', 'png']
-            
-            let data = {
-                'name': create_event_name,
-                'title': create_event_title,
-                'category': create_event_category,
-                'price': create_event_price,
-                'description': create_event_description,
-                'quota': create_event_quota,
-                'date': create_event_date,
-                'hotel': create_event_hotel,
-                'detail_event': value_detail_price,
-                'image': $('input[name="create_event_image"]')[0].files[0]
-            }
-
-            let form_data = new FormData();
-            form_data.append('name', create_event_name);
-            form_data.append('title', create_event_title);
-            form_data.append('category', create_event_category);
-            form_data.append('price', create_event_price);
-            form_data.append('description', create_event_description);
-            form_data.append('quota', create_event_quota);
-            form_data.append('date', create_event_date);
-            form_data.append('hotel', create_event_hotel);
-            form_data.append('harga_hotel', create_event_harga_hotel);
-            form_data.append('last_register', create_event_date_last_register);
-
-            for (let i = 0; i < value_detail_name.length; i++) {
-                form_data.append('detail_event_name[]', value_detail_name[i]);
-            }
-            for (let i = 0; i < value_detail_price.length; i++) {
-                form_data.append('detail_event_price[]', value_detail_price[i]);
-            }
-
-            form_data.append('image', $('input[name="create_event_image"]')[0].files[0]);
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('event-store') }}',
-                type: 'post',
-                data: form_data,
-                // dataType: 'json',
-                cache : false,
-                processData: false,
-                contentType: false,
-                enctype: 'multipart/form-data',
-                success: function(res) {
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: '{{ route('event-store') }}',
+            type: 'POST',
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                Swal.fire({
+                    icon: "success",
+                    title: res.meta.message,
+                });
+                $('#formCreateEvent').modal('toggle');
+                $('#event_management').DataTable().ajax.reload();
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    let response = xhr.responseJSON;
+                    let firstError = Object.values(response.data)[0][0];
                     Swal.fire({
-                        icon: "success",
-                        title: res.meta.message,
+                        icon: "error",
+                        title: 'Validation Error',
+                        text: firstError,
                     });
-                    $('#formCreateEvent').modal('toggle');
-                    $('.data_tables').DataTable().ajax.reload();
-                    // location.reload()
-                },
-                error: function(xhr) {
-                    // console.log(xhr.responseText);
-                    let response_error = JSON.parse(xhr.responseText)
+                } else {
                     Swal.fire({
                         icon: "error",
                         title: 'Error!',
-                        text: 'Form field tidak boleh kosong.',
-                    })
-                }
-            })
-        })
-
-        $(document).on('click', '.detail_event_data', function(e) {
-            let event_id = $(this).data('event_id')
-            $.ajax({
-                url: '{{ route('event-detail') }}',
-                type: 'GET',
-                data: {
-                    id: event_id
-                },
-                dataType: 'json',
-                async: true,
-                success: function(res) {
-                    $('#form_update_event')[0].reset()
-                    // alert(res.data.name)
-                    $('#update_event_id').val(res.data[0].id)
-                    $('#update_event_is_active').val(res.data[0].is_active)
-
-                    let is_active = res.data[0].is_active
-                    const checkbox = document.getElementById("update_event_is_active");
-                    const label = document.getElementById("update_event_label");
-                    checkbox.checked = is_active === 1;
-                    label.textContent = is_active === 1 ? "Active" : "Non-Active";
-
-                    checkbox.addEventListener("change", function () {
-                        label.textContent = this.checked ? "Active" : "Non-Active";
+                        text: 'Failed to create event',
                     });
+                }
+            }
+        });
+    }
 
-                    $('#update_event_name').val(res.data[0].name)
-                    $('#update_event_title').val(res.data[0].title)
-                    
+    /**
+     * Handle Detail Event (View/Edit)
+     */
+    function handleDetailEvent(e) {
+        let eventId = $(this).data('event_id');
 
-                    $('#update_event_category_value').val(res.data[0].category.id)
-                    $('#update_event_category').empty()
-                    $('#update_event_category').append('<option value="' + res.data[0].category.id + '">' + res.data[0].category.name + '</option>')
-                    $.each(res.data[1], function(i, data) {
-                        $('#update_event_category').append('<option value="' + data.id + '">' + data.name + '</option>')
-                    })
+        $.ajax({
+            url: '{{ route('event-detail') }}',
+            type: 'GET',
+            data: {
+                id: eventId
+            },
+            dataType: 'json',
+            success: function(res) {
+                $('#form_update_event')[0].reset();
 
-                    if (res.data[0].category.name.toLowerCase() === 'jnns') {
-                        $('.detail_event_update').empty();
-                        $('.update_event_price').empty();
+                let event = res.data.event;
+                let categories = res.data.categories;
 
-                        const details = res.data[0].event_detail;
+                // Set basic fields
+                $('#update_event_id').val(event.id);
+                $('#update_event_name').val(event.name);
+                $('#update_event_title').val(event.title);
+                $('#update_event_description').val(event.description);
+                $('#update_event_quota').val(event.quota);
 
-                        if (Array.isArray(details) && details.length > 0) {
-                            let html = '<div class="row g-3 align-items-center form-group">';
+                // Format datetime-local field
+                if (event.date) {
+                    $('#update_event_date').val(moment(event.date).format('YYYY-MM-DDTHH:mm'));
+                }
 
-                            details.forEach((detail, index) => {
-                                html += `
-                                    <div class="col-md-4">
-                                        <label for="update_event_detail_price_${index}">Harga ${detail.name.charAt(0).toUpperCase() + detail.name.slice(1)}</label>
-                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="${detail.name}">
-                                        <input type="text" name="update_event_detail_price[]" class="form-control" id="update_event_detail_price_${index}" value="${detail.price}">
-                                    </div>
-                                `;
-                            });
+                // Format date fields
+                if (event.start_date) {
+                    $('#update_event_start_date').val(moment(event.start_date).format('YYYY-MM-DD'));
+                }
+                if (event.end_date) {
+                    $('#update_event_end_date').val(moment(event.end_date).format('YYYY-MM-DD'));
+                }
+                if (event.last_register) {
+                    $('#update_event_date_last_register').val(moment(event.last_register).format(
+                        'YYYY-MM-DD'));
+                }
 
-                            html += '</div>';
-                            $('.detail_event_update').append(html);
+                $('#update_event_max_attendance').val(event.max_attendance);
+                $('#update_event_price').val(event.price);
 
-                        } else {
-                            // Jika event_detail kosong, tampilkan 3 input kosong default
-                            $('.detail_event_update').append(`
-                                <div class="row g-3 align-items-center form-group">
-                                    <div class="col-md-4">
-                                        <label>Harga Simposium</label>
-                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="simposium">
-                                        <input type="text" name="update_event_detail_price[]" class="form-control">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Harga Workshop</label>
-                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="workshop">
-                                        <input type="text" name="update_event_detail_price[]" class="form-control">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label>Harga Paket</label>
-                                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="paket">
-                                        <input type="text" name="update_event_detail_price[]" class="form-control">
-                                    </div>
-                                </div>
-                            `);
-                        }
+                // Set active checkbox
+                let isActive = event.is_active === 1;
+                $('#update_event_is_active').prop('checked', isActive);
+                $('#update_event_label').text(isActive ? 'Active' : 'Non-Active');
 
-                    } else {
-                        $('.detail_event_update').empty();
-                        $('.update_event_price').empty().append(`
-                            <div class="form-group">
-                                <label for="update_event_price">Price</label>
-                                <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
-                            </div>
-                        `);
-                    }
+                // Set category
+                $('#update_event_category_value').val(event.category.id);
+                $('#update_event_category').empty()
+                    .append('<option value="' + event.category.id + '">' + event.category.name +
+                        '</option>');
 
+                $.each(categories, function(i, data) {
+                    $('#update_event_category').append(
+                        '<option value="' + data.id + '">' + data.name + '</option>'
+                    );
+                });
 
-                    // if (res.data[0].category.name.toLowerCase() === 'jnns') {
-                    //     $('.detail_event_update').empty()
-                    //     $('.update_event_price').empty()
-                    //     $('.detail_event_update').append(`
-                    //         <div class="row g-3 align-items-center form-group">
-                    //             <div class="col-md-4">
-                    //                 <label for="update_event_detail_name_simposium">Harga Simposium</label>
-                    //                 <input type="hidden" name="update_event_detail_name[]" id="update_event_detail_name_simposium" class="form-control" value="simposium">
-                    //                 <input type="text" name="update_event_detail_price[]" id="update_event_detail_price_simposium" class="form-control">
-                    //             </div>
-                    //             <div class="col-md-4">
-                    //                 <label for="update_event_detail_name_simposium">Harga Workshop</label>
-                    //                 <input type="hidden" name="update_event_detail_name[]" id="update_event_detail_name_simposium" class="form-control" value="workshop">
-                    //                 <input type="text" name="update_event_detail_price[]" id="update_event_detail_price_simposium" class="form-control">
-                    //             </div>
-                    //             <div class="col-md-4">
-                    //                 <label for="update_event_detail_name_simposium">Harga Paket</label>
-                    //                 <input type="hidden" name="update_event_detail_name[]" id="update_event_detail_name_simposium" class="form-control" value="paket">
-                    //                 <input type="text" name="update_event_detail_price[]" id="update_event_detail_price_simposium" class="form-control">
-                    //             </div>
-                    //         </div>
-                    //     `)
-                    // } else {
-                    //     $('.detail_event_update').empty()
-                    //     $('.update_event_price').append(`
-                    //         <div class="form-group">
-                    //             <label for="update_event_price">Price</label>
-                    //             <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="Event Price" value="">
-                    //         </div>
-                    //     `)
-                    // }
-                    
-                    $('#update_event_price').val(res.data[0].price)
-                    if(res.data[0].hotel != null) {
-                        $('#update_check_event_hotel').prop('checked', true) 
-                        $('#update_select_event_hotel').empty()
-                        $('#update_select_event_hotel').append(`
+                // Render details based on category
+                if (event.category.name.toLowerCase() === 'jnns') {
+                    renderUpdateJnnsDetail(event.event_detail);
+                    $('.update_event_price').empty();
+                } else {
+                    renderUpdateDefaultPrice(event.price);
+                    $('.detail_event_update').empty();
+                }
+
+                // Handle hotel
+                if (event.hotel) {
+                    $('#update_check_event_hotel').prop('checked', true);
+                    $('#update_select_event_hotel').empty().append(`
                         <div class="row g-2 align-items-center form-group">
                             <div class="col-md-6">
                                 <label for="update_event_hotel">Nama Hotel</label>
-                                <input type="text" name="update_event_hotel" id="update_event_hotel" class="form-control" value="${res.data[0].hotel.name}">
+                                <input type="text" name="update_event_hotel" id="update_event_hotel" class="form-control" value="${event.hotel.name}">
                             </div>
                             <div class="col-md-6">
                                 <label for="update_event_harga_hotel">Harga Hotel</label>
-                                <input type="text" name="update_event_harga_hotel" id="update_event_harga_hotel" class="form-control" value="${res.data[0].hotel.price}">
+                                <input type="text" name="update_event_harga_hotel" id="update_event_harga_hotel" class="form-control price" value="${event.hotel.price || 0}">
                             </div>
                         </div>
-                        `);
-                    } else {
-                        $('#update_select_event_hotel').empty()
-                        $('#update_check_event_hotel').prop('checked', false)
-                    }
-                    
-                    $('#update_event_description').val(res.data[0].description)
-                    $('#update_event_quota').val(res.data[0].quota)
-                    $('#update_event_date').val(res.data[0].date)
-                    $('#update_event_date_last_register').val(res.data[0].last_register)
-                },
-                error: function(xhr, status, error) {
-                    $('#formUpdateEvent').modal('toggle');
-                    var errorMessage = JSON.parse(xhr.responseText);
+                    `);
+                } else {
+                    $('#update_check_event_hotel').prop('checked', false);
+                    $('#update_select_event_hotel').empty();
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Failed to load event details",
+                });
+            }
+        });
+    }
+
+    /**
+     * Render Update JNNS Detail
+     */
+    function renderUpdateJnnsDetail(details) {
+        $('.detail_event_update').empty();
+
+        let html = '<div class="row g-3 align-items-center form-group">';
+
+        if (Array.isArray(details) && details.length > 0) {
+            details.forEach((detail, index) => {
+                html += `
+                    <div class="col-md-4">
+                        <label for="update_event_detail_price_${index}">Harga ${detail.name.charAt(0).toUpperCase() + detail.name.slice(1)}</label>
+                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="${detail.name}">
+                        <input type="text" name="update_event_detail_price[]" class="form-control price" id="update_event_detail_price_${index}" value="${detail.price}">
+                    </div>
+                `;
+            });
+        } else {
+            // Default JNNS types if empty
+            const defaultTypes = ['simposium', 'workshop', 'paket'];
+            defaultTypes.forEach((type, index) => {
+                html += `
+                    <div class="col-md-4">
+                        <label>Harga ${type.charAt(0).toUpperCase() + type.slice(1)}</label>
+                        <input type="hidden" name="update_event_detail_name[]" class="form-control" value="${type}">
+                        <input type="text" name="update_event_detail_price[]" class="form-control price">
+                    </div>
+                `;
+            });
+        }
+
+        html += '</div>';
+        $('.detail_event_update').append(html);
+    }
+
+    /**
+     * Render Update Default Price
+     */
+    function renderUpdateDefaultPrice(price) {
+        $('.update_event_price').empty().append(`
+            <div class="form-group">
+                <label for="update_event_price">Price</label>
+                <input type="text" class="form-control price" name="update_event_price" id="update_event_price" placeholder="0" value="${price || 0}">
+            </div>
+        `);
+    }
+
+    /**
+     * Handle Update Event
+     */
+    function handleUpdateEvent(e) {
+        e.preventDefault();
+
+        let eventId = $('#update_event_id').val();
+        let eventName = $('#update_event_name').val();
+        let eventTitle = $('#update_event_title').val();
+        let eventCategory = $('#update_event_category').val();
+        let eventPrice = $('#update_event_price').val();
+        let eventDescription = $('#update_event_description').val();
+        let eventQuota = $('#update_event_quota').val();
+        let eventDate = $('#update_event_date').val();
+        let eventStartDate = $('#update_event_start_date').val();
+        let eventEndDate = $('#update_event_end_date').val();
+        let eventLastRegister = $('#update_event_date_last_register').val();
+        let eventMaxAttendance = $('#update_event_max_attendance').val();
+        let isActive = $('#update_event_is_active').is(':checked') ? 1 : 0;
+
+        // Validation
+        if (!eventName) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event name is required'
+            });
+        }
+        if (!eventTitle) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event title is required'
+            });
+        }
+        if (!eventCategory) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event category is required'
+            });
+        }
+        if (!eventDescription) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event description is required'
+            });
+        }
+        if (!eventQuota) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event quota is required'
+            });
+        }
+        if (!eventDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event date is required'
+            });
+        }
+        if (!eventStartDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event start date is required'
+            });
+        }
+        if (!eventEndDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event end date is required'
+            });
+        }
+        if (!eventLastRegister) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Event last register date is required'
+            });
+        }
+
+        // Validate date relationships
+        if (eventEndDate < eventStartDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'End date must be after or equal to start date'
+            });
+        }
+        if (eventLastRegister > eventStartDate) {
+            return Swal.fire({
+                icon: "error",
+                title: 'Oops...',
+                text: 'Last register date must be before or equal to start date'
+            });
+        }
+
+        let formData = new FormData();
+        formData.append('id', eventId);
+        formData.append('name', eventName);
+        formData.append('title', eventTitle);
+        formData.append('category', eventCategory);
+        formData.append('price', eventPrice);
+        formData.append('description', eventDescription);
+        formData.append('quota', eventQuota);
+        formData.append('date', eventDate);
+        formData.append('start_date', eventStartDate);
+        formData.append('end_date', eventEndDate);
+        formData.append('last_register', eventLastRegister);
+        formData.append('max_attendance', eventMaxAttendance);
+        formData.append('is_active', isActive);
+
+        // Hotel data
+        if ($('#update_check_event_hotel').prop('checked')) {
+            let hotelName = $('#update_event_hotel').val();
+            let hotelPrice = $('#update_event_harga_hotel').val();
+            formData.append('update_event_hotel', hotelName);
+            formData.append('update_event_harga_hotel', hotelPrice);
+        }
+
+        // Event details
+        $('input[name="update_event_detail_name[]"]').each(function() {
+            formData.append('update_event_detail_name[]', $(this).val());
+        });
+
+        $('input[name="update_event_detail_price[]"]').each(function() {
+            formData.append('update_event_detail_price[]', $(this).val());
+        });
+
+        // Image if exists
+        const imageFile = $('input[name="update_event_image"]')[0].files[0];
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: '{{ route('event-update') }}',
+            type: 'POST',
+            data: formData,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                Swal.fire({
+                    icon: "success",
+                    title: res.meta.message,
+                });
+                $('#formUpdateEvent').modal('toggle');
+                $('#event_management').DataTable().ajax.reload();
+            },
+            error: function(xhr) {
+                if (xhr.status === 422) {
+                    let response = xhr.responseJSON;
+                    let firstError = Object.values(response.data)[0][0];
                     Swal.fire({
                         icon: "error",
-                        title: "Oops....",
-                        text: "Data tidak ditemukan!",
-                    })
-                }
-            })
-        })
-
-        // $(document).on('click', '#update_event', function(e) {
-        //     e.preventDefault()
-
-        //     let update_event_id = $('#update_event_id').val()
-        //     let update_event_name = $('#update_event_name').val()
-        //     let update_event_title = $('#update_event_title').val()
-        //     let update_event_category = $('#update_event_category').val()
-        //     let update_event_price = $('#update_event_price').val()
-        //     let update_event_description = $('#update_event_description').val()
-        //     let update_event_quota = $('#update_event_quota').val()
-        //     let update_event_date = $('#update_event_date').val()
-        //     let update_event_date_last_register = $('#update_event_date_last_register').val()
-        //     let update_is_active = $('#update_event_is_active').is(':checked') ? 1 : 0;
-
-        //     let form_data = new FormData();
-        //     form_data.append('id', update_event_id);
-        //     form_data.append('name', update_event_name);
-        //     form_data.append('title', update_event_title);
-        //     form_data.append('category', update_event_category);
-        //     form_data.append('price', update_event_price);
-        //     form_data.append('description', update_event_description);
-        //     form_data.append('quota', update_event_quota);
-        //     form_data.append('date', update_event_date);
-        //     form_data.append('hotel', update_event_hotel);
-        //     form_data.append('harga_hotel', update_event_harga_hotel);
-        //     form_data.append('last_register', update_event_date_last_register);
-        //     form_data.append('is_active', update_is_active);
-        //     form_data.append('image', $('input[name="update_event_image"]')[0].files[0]);
-        //     if (update_event_name == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Nama event tidak boleh kosong',
-        //         })
-        //     } else if (update_event_title == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Title event tidak boleh kosong',
-        //         })
-        //     } else if (update_event_category == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Category event tidak boleh kosong',
-        //         })
-        //     } else if (update_event_price == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Price event tidak boleh kosong',
-        //         })
-        //     } else if (update_event_description == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Description event tidak boleh kosong',
-        //         })
-        //     } else if (update_event_quota == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Quota event tidak boleh kosong',
-        //         })
-        //     } else if (update_event_date == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Date event tidak boleh kosong',
-        //         })
-        //     } else if (update_event_date_last_register == '') {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: 'Oops...',
-        //             text: 'Date Last Register event tidak boleh kosong',
-        //         })
-        //     }
-
-        //     $.ajax({
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         },
-        //         url: '{{ route('event-update') }}',
-        //         type: 'post',
-        //         data: form_data,
-        //         // dataType: 'json',
-        //         cache : false,
-        //         processData: false,
-        //         contentType: false,
-        //         success: function(res) {
-        //             Swal.fire({
-        //                 icon: "success",
-        //                 title: res.meta.message,
-        //             });
-        //             $('#formUpdateEvent').modal('toggle');
-        //             $('.data_tables').DataTable().ajax.reload();
-        //             // location.reload()
-        //         },
-        //         error: function(xhr, status, error) {
-        //             var errorMessage = JSON.parse(xhr.responseText);
-        //             Swal.fire({
-        //                 icon: "error",
-        //                 title: "Oops....",
-        //                 text: errorMessage.data.message,
-        //                 // text: "User role cannot empty"
-        //             })
-        //         }
-        //     })
-        // })
-
-        $(document).on('click', '#update_event', function(e) {
-            e.preventDefault();
-
-            let update_event_id = $('#update_event_id').val();
-            let update_event_name = $('#update_event_name').val();
-            let update_event_title = $('#update_event_title').val();
-            let update_event_category = $('#update_event_category').val();
-            let update_event_price = $('#update_event_price').val();
-            let update_event_description = $('#update_event_description').val();
-            let update_event_quota = $('#update_event_quota').val();
-            let update_event_date = $('#update_event_date').val();
-            let update_event_date_last_register = $('#update_event_date_last_register').val();
-            let update_event_hotel = $('#update_event_hotel').val();
-            let update_event_harga_hotel = $('#update_event_harga_hotel').val();
-            let update_is_active = $('#update_event_is_active').is(':checked') ? 1 : 0;
-
-            // Validasi sebelum kirim
-            if (update_event_name == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Nama event tidak boleh kosong' });
-            } else if (update_event_title == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Title event tidak boleh kosong' });
-            } else if (update_event_category == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Category event tidak boleh kosong' });
-            } else if (update_event_price == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Price event tidak boleh kosong' });
-            } else if (update_event_description == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Description event tidak boleh kosong' });
-            } else if (update_event_quota == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Quota event tidak boleh kosong' });
-            } else if (update_event_date == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Date event tidak boleh kosong' });
-            } else if (update_event_date_last_register == '') {
-                return Swal.fire({ icon: "error", title: 'Oops...', text: 'Date Last Register event tidak boleh kosong' });
-            }
-
-            let form_data = new FormData();
-            form_data.append('id', update_event_id);
-            form_data.append('name', update_event_name);
-            form_data.append('title', update_event_title);
-            form_data.append('category', update_event_category);
-            form_data.append('price', update_event_price);
-            form_data.append('description', update_event_description);
-            form_data.append('quota', update_event_quota);
-            form_data.append('date', update_event_date);
-            form_data.append('hotel', update_event_hotel);
-            form_data.append('harga_hotel', update_event_harga_hotel);
-            form_data.append('last_register', update_event_date_last_register);
-            form_data.append('is_active', update_is_active);
-
-            // Gambar jika ada
-            const file = $('input[name="update_event_image"]')[0].files[0];
-            if (file) {
-                form_data.append('image', file);
-            }
-
-            // Append event_detail (name[] dan price[])
-            $('input[name="update_event_detail_name[]"]').each(function(index) {
-                form_data.append('update_event_detail_name[]', $(this).val());
-            });
-
-            $('input[name="update_event_detail_price[]"]').each(function(index) {
-                form_data.append('update_event_detail_price[]', $(this).val());
-            });
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: '{{ route('event-update') }}',
-                type: 'POST',
-                data: form_data,
-                cache: false,
-                processData: false,
-                contentType: false,
-                success: function(res) {
-                    Swal.fire({
-                        icon: "success",
-                        title: res.meta.message,
+                        title: "Validation Error",
+                        text: firstError,
                     });
-                    $('#formUpdateEvent').modal('toggle');
-                    $('.data_tables').DataTable().ajax.reload();
-                },
-                error: function(xhr, status, error) {
-                    if (xhr.status === 422) {
-                        let response = xhr.responseJSON;
-                        let firstError = Object.values(response.data)[0][0];
-                        Swal.fire({
-                            icon: "error",
-                            title: "Validation Error",
-                            text: firstError,
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Oops...",
-                            text: xhr.responseJSON?.data?.message || "Something went wrong!",
-                        });
-                    }
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: xhr.responseJSON?.data?.message || "Failed to update event",
+                    });
                 }
-            });
+            }
         });
+    }
 
-    })
-    $(function() {
-        $(".price").keyup(function(e) {
-            $(this).val(format($(this).val()));
-        });
-    });
-    var format = function(num) {
-        var str = num.toString().replace("", ""),
-            parts = false,
-            output = [],
-            i = 1,
-            formatted = null;
+    /**
+     * Format Price Input
+     */
+    function formatPriceInput(e) {
+        $(this).val(formatPrice($(this).val()));
+    }
+
+    /**
+     * Format number to price format (with thousand separator)
+     */
+    function formatPrice(num) {
+        if (!num) return '';
+
+        let str = num.toString().replace(/[^\d.,]/g, '');
+        let parts = false;
+        let output = [];
+        let i = 1;
+        let formatted = null;
+
         if (str.indexOf(".") > 0) {
             parts = str.split(".");
             str = parts[0];
         }
+
         str = str.split("").reverse();
-        for (var j = 0, len = str.length; j < len; j++) {
+
+        for (let j = 0, len = str.length; j < len; j++) {
             if (str[j] != ",") {
                 output.push(str[j]);
                 if (i % 3 == 0 && j < (len - 1)) {
@@ -629,7 +720,15 @@
                 i++;
             }
         }
+
         formatted = output.reverse().join("");
         return ("" + formatted + ((parts) ? "." + parts[1].substr(0, 2) : ""));
-    };
+    }
+
+    /**
+     * Update Active Label on checkbox change
+     */
+    $(document).on('change', '#update_event_is_active', function() {
+        $('#update_event_label').text(this.checked ? "Active" : "Non-Active");
+    });
 </script>

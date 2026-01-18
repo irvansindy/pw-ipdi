@@ -92,11 +92,6 @@
                                         class="btn btn-primary px-3">
                                         Logout
                                     </a>
-                                    {{-- <a href="{{ route('logout') }}"
-                                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                                        class="nav-link text-white font-weight-bold px-0">
-                                        <span class="d-sm-inline d-none  text-primary">Log out</span>
-                                    </a> --}}
                                 </form>
                             </li>
                         </ul>
