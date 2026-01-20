@@ -20,8 +20,10 @@
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- Font Awesome Icons -->
     {{-- <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script> --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css"
+        integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="{{ asset('assets/css/argon-dashboard.css') }}" rel="stylesheet" />
@@ -44,6 +46,44 @@
             height: 100%;
             object-fit: fill;
         } */
+
+        /* Floating Button Styles */
+        .btn-float {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: #11cdef;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 999;
+            text-decoration: none;
+        }
+
+        .btn-float:hover {
+            background-color: #0da5c0;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            transform: scale(1.1);
+            text-decoration: none;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .btn-float {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 20px;
+            }
+        }
     </style>
     @stack('css')
 </head>
@@ -99,34 +139,12 @@
     {{-- html canvas --}}
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js" integrity="sha512-sn/GHTj+FCxK5wam7k9w4gPPm6zss4Zwl/X9wgrvGMFbnedR8lTUSLdsolDRBRzsX6N+YgG6OWyvn9qaFVXH9w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
-    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/scannerdetection/1.2.0/jquery.scannerdetection.compatibility.js" integrity="sha512-YQRu5Y2eFL0L4LrZk2rGxCH5nD8G9ppSaQIqg5mmB/SLd8c0qTJ/cEua3ETXzXzWITvt4x1tiTXFC4M5bJBA4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/scannerdetection/1.2.0/jquery.scannerdetection.compatibility.js"
+        integrity="sha512-YQRu5Y2eFL0L4LrZk2rGxCH5nD8G9ppSaQIqg5mmB/SLd8c0qTJ/cEua3ETXzXzWITvt4x1tiTXFC4M5bJBA4Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script type="text/javascript" src="https://unpkg.com/default-passive-events"></script>
     <script>
-        // Skrip untuk memulai pemindai QR code
-        // let scanner = new Instascan.Scanner({
-        //     video: document.getElementById('preview')
-        // });
-        // scanner.addListener('scan', function(content) {
-        //     // Menampilkan SweetAlert ketika QR code di-scan
-        //     Swal.fire({
-        //         title: 'QR Code Scanned!',
-        //         text: content,
-        //         icon: 'success',
-        //         confirmButtonText: 'OK'
-        //     });
-        // });
-        // Instascan.Camera.getCameras().then(function(cameras) {
-        //     if (cameras.length > 0) {
-        //         scanner.start(cameras[0]);
-        //     } else {
-        //         console.error('No cameras found.');
-        //     }
-        // }).catch(function(e) {
-        //     console.error(e);
-        // });
-
         function CreateOrUpdateOrDelete(url, method, data, id_modal) {
             $.ajax({
                 headers: {
@@ -159,9 +177,20 @@
                 }
             })
         }
-        
     </script>
     @stack('js')
+
+    <!-- Floating Button - Hanya untuk yang login dan role bukan user -->
+    @auth
+        @php
+            $role = Auth::user()->getRoleNames()[0] ?? 'user';
+        @endphp
+        @if ($role !== 'user')
+            <a href="{{ route('dashboard') }}" class="btn-float" title="Events">
+                <i class="fas fa-calendar-alt"></i>
+            </a>
+        @endif
+    @endauth
 </body>
 
 </html>

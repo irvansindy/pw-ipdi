@@ -1,64 +1,45 @@
 <script>
-    $(document).ready(function() {
-        // fetchIuran()
-        // function fetchIuran() {
-        //     $('#list_fetch_data').empty()
-        //     $.ajax({
-        //         headers: {
-        //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        //         },
-        //         url: '{{ route("fetch-iuran-anggota") }}',
-        //         type: 'GET',
-        //         dataType: 'json',
-        //         async: true,
-        //         success: function(res) {
-        //             $.each(res.data, function(i, iuran) {
-        //                 $('#list_fetch_data').append(`
-        //                 <div class="col-md-3">
-        //                     <div class="card mx-2 list_data_iuran" data-bs-toggle="modal" data-bs-target="#form_create_iuran" data-id="${iuran.id}" style="cursor:pointer !important;">
-        //                         <div class="card-body p-3">
-        //                             <div class="row">
-        //                                 <div class="col-8">
-        //                                     <div class="numbers">
-        //                                         <p class="text-sm mb-0 text-uppercase font-weight-bold">
-        //                                             ${iuran.name}
-        //                                         </p>
-        //                                         <h5 class="font-weight-bolder">
-        //                                             Rp.${iuran.price}
-        //                                         </h5>
-        //                                         <p class="mb-0">
-        //                                             <span class="text-success text-sm font-weight-bolder">
-        //                                                 ${iuran.description}
-        //                                             </span>
-        //                                         </p>
-        //                                     </div>
-        //                                 </div>
-        //                                 <div class="col-4 text-end">
-        //                                     <div
-        //                                         class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
-        //                                         <i class="ni ni-money-coins text-lg opacity-10"
-        //                                             aria-hidden="true"></i>
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //                 `)
-        //             })
-        //         }
-        //     })
-        // }
+    // Helper functions for loading states
+    function setButtonLoading(button, isLoading) {
+        if (isLoading) {
+            $(button).prop('disabled', true);
+            $(button).data('original-html', $(button).html());
+            $(button).html(
+                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...`
+                );
+        } else {
+            $(button).prop('disabled', false);
+            $(button).html($(button).data('original-html') || 'Submit');
+        }
+    }
 
+    function showLoader(containerId) {
+        $(containerId).html(`
+            <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        `);
+    }
+
+    $(document).ready(function() {
         // transactions
         $('#table_list_iuran').DataTable({
             processing: true,
             ajax: {
-                url: '{{ route("fetch-transaksi-iuran") }}',
+                url: '{{ route('fetch-transaksi-iuran') }}',
                 type: 'GET',
+                error: function(xhr, error, code) {
+                    console.error('Error loading data:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Gagal memuat data. Silahkan coba lagi.',
+                    });
+                }
             },
-            columns: [
-                {
+            columns: [{
                     "data": null,
                     "render": function(data, type, row, meta) {
                         return meta.row + 1;
@@ -75,14 +56,20 @@
                 },
                 {
                     "data": "iuran.status",
-                    "defaultContent": "<i>Not set</i>"
+                    "defaultContent": "<i>Not set</i>",
+                    render: function(data) {
+                        const statusClass = data === 'progress' ? 'warning' : 'success';
+                        const statusText = data === 'progress' ? 'Menunggu' : 'Terverifikasi';
+                        return `<span class="badge bg-${statusClass}">${statusText}</span>`;
+                    }
                 },
                 {
                     'data': null,
                     title: 'Action',
                     wrap: true,
                     "render": function(item) {
-                        return '<button type="button" data-iuran_id="'+item.iuran.id+'" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
+                        return '<button type="button" data-iuran_id="' + item.iuran.id +
+                            '" class="btn btn-outline-info btn-sm mt-2 detail_iuran_transaction" data-bs-toggle="modal" data-bs-target="#form_detail_iuran">View</button>'
                     }
                 },
             ]
@@ -102,7 +89,7 @@
             window.location.href = "{{ route('create-iuran-anggota') }}";
         })
 
-        $("#tahun_iuran").keypress(function (e) {
+        $("#tahun_iuran").keypress(function(e) {
             if (String.fromCharCode(e.keyCode).match(/[^0-9]/g)) return false;
         });
 
@@ -110,24 +97,45 @@
             let data = $('input[name=iuran_type]:checked').val()
             if (data == 'kolektif') {
                 $('#form_data_peserta').show()
-                $('#list_peserta').empty()
+                $('#list_peserta').empty();
+                showLoader('#list_peserta');
+
                 $.ajax({
                     headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: '{{ route("fetch-peserta") }}',
+                    url: '{{ route('fetch-peserta') }}',
                     type: 'GET',
                     dataType: 'json',
                     async: true,
+                    timeout: 10000,
                     success: function(res) {
-                        $.each(res.data, function(i, peserta) {
-                            $('#list_peserta').append(`
-                                <option value="${peserta.id}">${peserta.username}</option>
-                            `)
-                        })
+                        $('#list_peserta').empty();
+                        if (res.data && res.data.length > 0) {
+                            $('#list_peserta').append(
+                                '<option value="">Pilih Peserta</option>');
+                            $.each(res.data, function(i, peserta) {
+                                $('#list_peserta').append(`
+                                    <option value="${peserta.id}">${peserta.username} (${peserta.email})</option>
+                                `)
+                            })
+                        } else {
+                            $('#list_peserta').append(
+                                '<option value="">Tidak ada data peserta</option>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#list_peserta').empty();
+                        $('#list_peserta').append(
+                            '<option value="">Gagal memuat data peserta</option>');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Gagal memuat daftar peserta. Silahkan coba lagi.',
+                        });
                     }
                 })
-            } else if(data == 'mandiri') {
+            } else if (data == 'mandiri') {
                 $('#form_data_peserta').hide()
                 $('#list_peserta').empty()
             }
@@ -135,22 +143,32 @@
 
         $(document).on('click', '#generate_payment_iuran', function(e) {
             e.preventDefault()
+
+            let btn = $(this);
+            setButtonLoading(btn, true);
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 type: 'POST',
-                url: '{{ route("generate-payment-iuran") }}',
+                url: '{{ route('generate-payment-iuran') }}',
                 data: new FormData($('#form_create_data_iuran')[0]),
-                processData: false,   // Prevent jQuery from processing the data
-                contentType: false,   // Prevent jQuery from setting content type
+                processData: false,
+                contentType: false,
                 cache: false,
+                timeout: 10000,
                 success: function(res) {
-                    // $('#form_create_event').modal('hide')
                     $('#grand_total_payment_iuran').empty()
                     let grand_total = res.data != null ? res.data : 0
+
+                    let formattedTotal = new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR'
+                    }).format(grand_total);
+
                     $('#grand_total_payment_iuran').append(
-                        `<p>Total: Rp.${grand_total}</p>`
+                        `<h5>Total: <strong>${formattedTotal}</strong></h5>`
                     )
                     $('#val_grand_total_payment_iuran').val(grand_total)
                     $('#button_action_payment_iuran').empty()
@@ -158,47 +176,112 @@
                         <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="button" class="btn bg-gradient-primary" id="create_transaction_iuran" data-iuran_id="">Submit</button>
                     `)
-                    // Swal.fire({
-                    //     icon: "success",
-                    //     title: 'Success!',
-                    //     text: res.meta.message,
-                    //     footer: '<a href="{{ route('histori-transaksi') }}" class="text-primary">Riwayat Transaksi</a>'
-                    // })
+
+                    setButtonLoading(btn, false);
                 },
+                error: function(xhr, status, error) {
+                    setButtonLoading(btn, false);
+                    let errorMsg = 'Gagal menghitung total pembayaran. Silahkan coba lagi.';
+                    try {
+                        let response = JSON.parse(xhr.responseText);
+                        errorMsg = response.meta?.message || errorMsg;
+                    } catch (e) {}
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: errorMsg,
+                    });
+                }
             })
         })
 
         $(document).on('click', '#create_transaction_iuran', function(e) {
             e.preventDefault()
-            let iuran_id = $(this).data('iuran_id')
-            let iuran_type = $("input[name=iuran_type]").val();
+
+            // Validasi form
+            let peserta = $('.nama_peserta_iuran_central_dialisis').length;
+            let iuranType = $("input[name=iuran_type]:checked").val();
+            let fileUpload = $('input[name="iuran_file_upload"]')[0].files.length;
+
+            if (!iuranType) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning!',
+                    text: 'Silahkan pilih tipe iuran (Mandiri atau Batch/Kolektif)',
+                });
+                return;
+            }
+
+            if (fileUpload === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning!',
+                    text: 'Silahkan upload bukti transfer',
+                });
+                return;
+            }
+
+            if (peserta === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning!',
+                    text: 'Silahkan pilih minimal 1 peserta',
+                });
+                return;
+            }
+
+            let btn = $(this);
+            setButtonLoading(btn, true);
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route("store-iuran-peserta") }}',
+                url: '{{ route('store-iuran-peserta') }}',
                 type: 'POST',
-                // data: {
-                //     id: iuran_id,
-                //     iuran_type: iuran_type
-                // },
                 data: new FormData($('#form_create_data_iuran')[0]),
                 processData: false,
                 contentType: false,
                 cache: false,
-                // dataType: 'json',
-                // async: true,
+                timeout: 30000,
                 success: function(res) {
-                    $('#form_create_event').modal('hide')
+                    setButtonLoading(btn, false);
+                    $('#form_create_data_iuran')[0].reset();
+
                     Swal.fire({
                         icon: "success",
-                        title: 'Success!',
+                        title: 'Berhasil!',
                         text: res.meta.message,
-                        footer: '<a href="{{ route('histori-transaksi') }}" class="text-primary">Riwayat Transaksi</a>'
-                    })
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = "{{ route('iuran-anggota') }}";
+                        }
+                    });
                 },
-                error: function(xhr) {
-                    console.log(xhr.responseText);
+                error: function(xhr, status, error) {
+                    setButtonLoading(btn, false);
+
+                    let errorMsg = 'Gagal menyimpan data. Silahkan hubungi admin.';
+                    try {
+                        let response = JSON.parse(xhr.responseText);
+                        if (response.meta?.message) {
+                            errorMsg = response.meta.message;
+                        } else if (response.message) {
+                            errorMsg = response.message;
+                        }
+                    } catch (e) {
+                        console.error('Error parsing response:', e);
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: errorMsg,
+                    });
+
+                    console.error('XHR Error:', xhr);
                 }
             })
         })
@@ -208,18 +291,18 @@
             let iuran_id = $(this).data('iuran_id')
             $('#form_upload_bukti_iuran')[0].reset()
             $('#master_iuran_id').val(iuran_id)
-            $('#upload_file_bukti_iuran').attr('data-iuran_id',iuran_id)
+            $('#upload_file_bukti_iuran').attr('data-iuran_id', iuran_id)
         })
 
         $(document).on('click', '#upload_file_bukti_iuran', function(e) {
             e.preventDefault()
             let data_upload = new FormData($('#form_upload_bukti_iuran')[0])
             $.ajax({
-                url: '{{ route("upload-iuran-peserta") }}',
+                url: '{{ route('upload-iuran-peserta') }}',
                 type: 'POST',
                 data: data_upload,
-                processData: false,   // Prevent jQuery from processing the data
-                contentType: false,   // Prevent jQuery from setting content type
+                processData: false, // Prevent jQuery from processing the data
+                contentType: false, // Prevent jQuery from setting content type
                 cache: false,
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -231,48 +314,67 @@
         $(document).on('click', '.detail_iuran_transaction', function(e) {
             e.preventDefault()
             let iuran_id = $(this).data('iuran_id')
-            // alert(iuran_id)
+            let btn = $(this);
+
+            showLoader('#list_detail_iuran_peserta');
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route("detail-transaksi-iuran") }}',
+                url: '{{ route('detail-transaksi-iuran') }}',
                 type: 'GET',
                 data: {
                     iuran_id: iuran_id
                 },
                 dataType: 'json',
-                async: true,
+                timeout: 10000,
                 success: function(res) {
-                    $('#list_detail_iuran_peserta').empty()
-                    // $('#source_attchment_iuran').empty()
-                    $('#source_attchment_iuran').prop('href', res.data[0].iuran_image_transfer)
-                    
-                    $('#nomor_iuran').html(res.data[0].iuran_number)
-                    $('#tahun_iuran').html(res.data[0].date)
-                    $('#upload_file_iuran').attr('data-iuran_id',res.data[0].id)
-                    
-                    let no_detail = 1;
-                    // console.log(res.data[0].transaction_detail);
-                    $.each(res.data[0].transaction_detail, function(i, data) {
-                        $('#list_detail_iuran_peserta').append(`
-                        <tr>
-                            <td>${no_detail++}</td>
-                            <td>${data.user.username}</td>
-                            <td>Rp.${data.biaya_regis_anggota_baru}</td>
-                            <td>Rp.${data.biaya_iuran_tahunan}</td>
-                            <td>${data.tahun_iuran}</td>
-                        </tr>
-                        `)
-                    })
+                    if (res.data && res.data.length > 0) {
+                        $('#list_detail_iuran_peserta').empty()
+                        $('#source_attchment_iuran').prop('href', res.data[0]
+                            .iuran_image_transfer)
+
+                        $('#nomor_iuran').html(res.data[0].iuran_number)
+                        $('#tahun_iuran').html(new Date(res.data[0].date).getFullYear())
+                        $('#upload_file_iuran').attr('data-iuran_id', res.data[0].id)
+
+                        let no_detail = 1;
+                        if (res.data[0].transaction_detail && res.data[0].transaction_detail
+                            .length > 0) {
+                            $.each(res.data[0].transaction_detail, function(i, data) {
+                                $('#list_detail_iuran_peserta').append(`
+                                <tr>
+                                    <td>${no_detail++}</td>
+                                    <td>${data.user?.username || '-'}</td>
+                                    <td>Rp ${parseInt(data.biaya_regis_anggota_baru).toLocaleString('id-ID')}</td>
+                                    <td>Rp ${parseInt(data.biaya_iuran_tahunan).toLocaleString('id-ID')}</td>
+                                    <td>${data.tahun_iuran}</td>
+                                </tr>
+                                `)
+                            })
+                        } else {
+                            $('#list_detail_iuran_peserta').append(`
+                            <tr>
+                                <td colspan="5" class="text-center">Tidak ada data peserta</td>
+                            </tr>
+                            `)
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'Data transaksi tidak ditemukan',
+                        })
+                    }
                 },
-                error: function(xhr) {
-                    // console.log(xhr.responseText);
-                    let response_error = JSON.parse(xhr.responseText)
+                error: function(xhr, status, error) {
+                    $('#list_detail_iuran_peserta').empty();
+
                     Swal.fire({
                         icon: "error",
                         title: 'Error!',
-                        text: 'gagal memuat data, silahkan hubungi admin.',
+                        text: 'Gagal memuat detail transaksi. Silahkan coba lagi.',
                     })
                 }
             })
@@ -281,39 +383,74 @@
         $(document).on('click', '#upload_file_iuran', function(e) {
             e.preventDefault()
 
+            // Validasi file
+            let uploadFile = $('input[name="upload_iuran"]')[0].files;
+            if (uploadFile.length === 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Warning!',
+                    text: 'Silahkan pilih file terlebih dahulu',
+                });
+                return;
+            }
+
             let form_data = new FormData();
             let id = $(this).data('iuran_id')
-            let upload_iuran = $('input[name="upload_iuran"]')[0].files[0];
-            form_data.append('id', id);
-            form_data.append('upload_iuran', upload_iuran);
+            let upload_iuran = uploadFile[0];
+
+            form_data.append('master_iuran_id', id);
+            form_data.append('file_iuran_data', upload_iuran);
+
+            let btn = $(this);
+            setButtonLoading(btn, true);
 
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route("upload-iuran-peserta") }}',
+                url: '{{ route('upload-iuran-peserta') }}',
                 type: 'POST',
-                // data: new FormData($('#form_update_data_iuran')[0]),
                 data: form_data,
                 processData: false,
                 contentType: false,
                 cache: false,
+                timeout: 30000,
                 enctype: 'multipart/form-data',
                 success: function(res) {
+                    setButtonLoading(btn, false);
                     $('#table_list_iuran').DataTable().ajax.reload();
+
                     Swal.fire({
                         icon: "success",
-                        title: 'Success!',
+                        title: 'Berhasil!',
                         text: res.meta.message,
-                    })
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Close modal if exists
+                            let modal = bootstrap.Modal.getInstance(document
+                                .getElementById('form_detail_iuran'));
+                            if (modal) modal.hide();
+                        }
+                    });
                 },
-                error: function(xhr) {
-                    // console.log(xhr.responseText);
-                    let response_error = JSON.parse(xhr.responseText)
+                error: function(xhr, status, error) {
+                    setButtonLoading(btn, false);
+
+                    let errorMsg = 'Gagal upload file. Silahkan hubungi admin.';
+                    try {
+                        let response = JSON.parse(xhr.responseText);
+                        if (response.meta?.message) {
+                            errorMsg = response.meta.message;
+                        } else if (response.message) {
+                            errorMsg = response.message;
+                        }
+                    } catch (e) {}
+
                     Swal.fire({
-                        icon: "error",
+                        icon: 'error',
                         title: 'Error!',
-                        text: 'Gagal upload, silahkan hubungi admin.',
+                        text: errorMsg,
                     })
                 }
             })

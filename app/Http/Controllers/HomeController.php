@@ -32,7 +32,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('pages.dashboard');
+        // Generate tahun dinamis (5 tahun ke belakang dari sekarang)
+        $currentYear = date('Y');
+        $years = [];
+        for ($i = 0; $i < 5; $i++) {
+            $years[] = $currentYear - $i;
+        }
+
+        return view('pages.dashboard', ['years' => $years]);
     }
 
     public function fetchMember()
@@ -66,33 +73,29 @@ class HomeController extends Controller
             // Ambil tahun dari request, jika tidak ada gunakan tahun sekarang
             $year = $request->input('year', date('Y'));
 
-            // Validasi tahun (hanya antara 2020-2025)
-            if (!in_array($year, range(2020, 2025))) {
-                return response()->json(['error' => 'Tahun tidak valid'], 400);
-            }
-
             $user_paid = User::leftJoin('iuran_transaction_details', 'users.id', '=', 'iuran_transaction_details.user_id')
             ->select(
-                'users.id as user_id', 
-                'users.username as user_name', 
+                'users.id as user_id',
+                'users.username as user_name',
                 'iuran_transaction_details.user_id',
-                'iuran_transaction_details.tahun_iuran', 
+                'iuran_transaction_details.tahun_iuran',
             )
             ->where('iuran_transaction_details.tahun_iuran', '!=', null)
-            ->where('iuran_transaction_details.tahun_iuran', '=', '2024')
+            ->where('iuran_transaction_details.tahun_iuran', '=', $year)
             ->where('iuran_transaction_details.user_id', '!=', null)
             ->count();
-            
+
             $user_unpaid = User::leftJoin('iuran_transaction_details', 'users.id', '=', 'iuran_transaction_details.user_id')
             ->select(
-                'users.id as user_id', 
-                'users.username as user_name', 
+                'users.id as user_id',
+                'users.username as user_name',
                 'iuran_transaction_details.user_id',
-                'iuran_transaction_details.tahun_iuran', 
+                'iuran_transaction_details.tahun_iuran',
             )
-            ->where('iuran_transaction_details.tahun_iuran', '!=', null)
-            ->where('iuran_transaction_details.tahun_iuran', '=', '2024')
-            ->where('iuran_transaction_details.user_id', '=', null)
+            ->where('iuran_transaction_details.tahun_iuran', '=', null)
+            ->orWhere(function($query) use ($year) {
+                $query->where('iuran_transaction_details.tahun_iuran', '!=', $year);
+            })
             ->count();
 
             $data_iuran = [

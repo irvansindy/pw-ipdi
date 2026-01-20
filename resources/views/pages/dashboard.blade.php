@@ -24,12 +24,10 @@
                             </div>
                             <div class="col-md-6">
                                 <select class="form-control" id="yearFilter">
-                                    <option value="2020">2020</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2025" selected>2025</option>
+                                    @foreach ($years as $year)
+                                        <option value="{{ $year }}"
+                                            @if ($year == date('Y')) selected @endif>{{ $year }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -50,12 +48,10 @@
                             </div>
                             <div class="col-md-6">
                                 <select class="form-control" id="yearFilterJnns">
-                                    <option value="2020">2020</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2023">2023</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2025" selected>2025</option>
+                                    @foreach ($years as $year)
+                                        <option value="{{ $year }}"
+                                            @if ($year == date('Y')) selected @endif>{{ $year }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -78,6 +74,7 @@
             $('#yearFilter').select2();
             $('#yearFilterJnns').select2();
             getMember()
+
             function getMember() {
                 $.ajax({
                     url: '{{ route('fetch-member-for-dashboard') }}',
@@ -157,7 +154,7 @@
                             },
                             tooltip: {
                                 callbacks: {
-                                    label: function (tooltipItem) {
+                                    label: function(tooltipItem) {
                                         const label = labels[tooltipItem.dataIndex];
                                         const value = data[tooltipItem.dataIndex];
                                         return `${label}: ${value} peserta`;
@@ -172,15 +169,17 @@
             // Fungsi untuk mengambil data dari API dan memperbarui chart
             function fetchDataIuran(year) {
                 $.ajax({
-                    url: '{{ route("iuran-for-dashboard") }}',
+                    url: '{{ route('iuran-for-dashboard') }}',
                     method: 'GET',
-                    data: { year: year },
+                    data: {
+                        year: year
+                    },
                     dataType: 'json',
-                    success: function (response) {
+                    success: function(response) {
                         createChartIuran(response.data.labels, response.data.iuran);
                         $('#yearFilter').val(response.data.year); // Set dropdown ke tahun yang sesuai
                     },
-                    error: function () {
+                    error: function() {
                         alert('Gagal mengambil data dari API');
                     }
                 });
@@ -193,7 +192,7 @@
             fetchDataIuran(currentYear);
 
             // Event listener untuk filter tahun
-            $('#yearFilter').change(function () {
+            $('#yearFilter').change(function() {
                 const selectedYear = $(this).val();
                 fetchDataIuran(selectedYear);
             });
@@ -230,7 +229,7 @@
                             },
                             tooltip: {
                                 callbacks: {
-                                    label: function (tooltipItem) {
+                                    label: function(tooltipItem) {
                                         const label = labels[tooltipItem.dataIndex];
                                         const value = data[tooltipItem.dataIndex];
                                         return `${label}: ${value} peserta`;
@@ -245,20 +244,23 @@
             // Fungsi untuk mengambil data dari API dan memperbarui chart
             function fetchDataJnns(year) {
                 $.ajax({
-                    url: '{{ route("jnns-for-dashboard") }}',
+                    url: '{{ route('jnns-for-dashboard') }}',
                     method: 'GET',
-                    data: { year: year },
+                    data: {
+                        year: year
+                    },
                     dataType: 'json',
-                    success: function (response) {
+                    success: function(response) {
                         let data = response.data;
                         // Jika data kosong (0,0), tampilkan chart dengan label tetap
                         if (data.jnns[0] == 0 && data.jnns[1] == 0) {
                             data = [1, 1]; // Tambahkan nilai dummy kecil agar chart tetap muncul
                         }
                         createChartJnns(response.data.labels, response.data.jnns);
-                        $('#yearFilterJnns').val(response.data.year); // Set dropdown ke tahun yang sesuai
+                        $('#yearFilterJnns').val(response.data
+                            .year); // Set dropdown ke tahun yang sesuai
                     },
-                    error: function () {
+                    error: function() {
                         alert('Gagal mengambil data dari API');
                     }
                 });
@@ -271,7 +273,7 @@
             fetchDataJnns(currentYear);
 
             // Event listener untuk filter tahun
-            $('#yearFilterJnns').change(function () {
+            $('#yearFilterJnns').change(function() {
                 const selectedYear = $(this).val();
                 fetchDataJnns(selectedYear);
             });
