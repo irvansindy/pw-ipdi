@@ -185,6 +185,7 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('/detail-news-management', [NewsController::class,'show'])->name('detail-news-management');
 	Route::post('/store-news-management', [NewsController::class,'store'])->name('store-news-management');
 	Route::post('/update-news-management', [NewsController::class,'update'])->name('update-news-management');
+	Route::delete('/delete-news-management', [NewsController::class,'destroy'])->name('delete-news-management');
 
 	Route::get('/attendance-audience', [ScreeningQrCodeAudience::class,'index'])->name('attendance-audience');
 	Route::get('/check-audience', [ScreeningQrCodeAudience::class,'getDataAudienceById'])->name('check-audience');

@@ -11,12 +11,42 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use App\Helpers\FormatResponseJson;
 class NewsController extends Controller
 {
+    protected $uploadPath = 'public/uploads/news';
+
+    public function __construct()
+    {
+        if (!File::exists($this->uploadPath)) {
+            File::makeDirectory($this->uploadPath, 0755, true);
+        }
+    }
+
     public function index()
     {
         return view('pages.admin.news.index');
+    }
+
+    private function saveNewsImage($imageFile, $newsTitle)
+    {
+        if (!$imageFile) {
+            return null;
+        }
+
+        $filename = Str::slug($newsTitle) . '.' . $imageFile->getClientOriginalExtension();
+        $imageFile->move(public_path('uploads/news'), $filename);
+
+        return 'uploads/news/' . $filename;
+    }
+
+    private function deleteNewsImage($imagePath)
+    {
+        if ($imagePath && File::exists(public_path($imagePath))) {
+            File::delete(public_path($imagePath));
+        }
     }
     public function fetch()
     {
@@ -60,12 +90,9 @@ class NewsController extends Controller
                     'published_at' => $request->news_published_at,
                 ];
                 if ($request->hasFile('news_image')) {
-                    $filename = Str::slug($request->news_title) . '.' . $request->file('news_image')->getClientOriginalExtension();
-                    // dd($filename);
-                    $newsData['image'] = $request->file('news_image')->storeAs('news_images', $filename, 'public');
+                    $newsData['image'] = $this->saveNewsImage($request->file('news_image'), $request->news_title);
                 }
                 News::create($newsData);
-                // return FormatResponseJson::success($newsData, 'News created successfully');
             });
             return FormatResponseJson::success(true, 'News created successfully');
         } catch (ValidationException $e) {
@@ -110,7 +137,7 @@ class NewsController extends Controller
                     'event_id' => null,
                     'title' => $request->news_title,
                     'content' => $request->news_content,
-                    'image' => null,
+                    'image' => $news->image,
                     'category_id' => $request->news_category == null ? null : $request->news_category,
                     'author_id' => \Auth::user()->id,
                     'source_url' => $request->news_source_url,
@@ -118,16 +145,40 @@ class NewsController extends Controller
                     'published_at' => $request->news_published_at,
                 ];
                 if ($request->hasFile('news_image')) {
-                    if ($news->news_image) {
-                        Storage::disk('public')->delete($news->news_image);
-                    }
-                    $filename = Str::slug($request->news_title) . '.' . $request->file('news_image')->getClientOriginalExtension();
-                    $newsData['image'] = $request->file('news_image')->storeAs('news_images', $filename, 'public');
+                    $this->deleteNewsImage($news->image);
+                    $newsData['image'] = $this->saveNewsImage($request->file('news_image'), $request->news_title);
                 }
                 $news->update($newsData);
-                // return FormatResponseJson::success($newsData, 'News updated successfully');
             });
             return FormatResponseJson::success(true, 'News updated successfully');
+        } catch (ValidationException $e) {
+            DB::rollback();
+            return FormatResponseJson::error(null, ['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return FormatResponseJson::error(null, $e->getMessage(), 500);
+        }
+    }
+
+    public function destroy(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'news_id' => 'required|exists:news,id',
+            ]);
+            if ($validator->fails()) {
+                throw new ValidationException($validator);
+            }
+            DB::transaction(function () use ($request) {
+                $news = News::findOrFail($request->news_id);
+
+                if ($news->image) {
+                    $this->deleteNewsImage($news->image);
+                }
+
+                $news->delete();
+            });
+            return FormatResponseJson::success(true, 'News deleted successfully');
         } catch (ValidationException $e) {
             DB::rollback();
             return FormatResponseJson::error(null, ['errors' => $e->errors()], 422);

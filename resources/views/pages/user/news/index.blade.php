@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.users.app', ['title' => 'Berita'])
 
 @section('content')
     <div class="container-fluid py-4">
@@ -38,7 +38,7 @@
                                             @endif
                                         </div>
                                         <h5 class="card-title fw-bold">{{ $mainNews->title }}</h5>
-                                        <p class="card-text">{{ Str::limit($mainNews->content, 200) }}</p>
+                                        <p class="card-text">{{ Str::limit(strip_tags($mainNews->content), 200) }}</p>
                                         <a href="{{ route('news.show', $mainNews->id) }}" class="btn btn-primary btn-sm">
                                             Baca Selengkapnya
                                         </a>
@@ -115,7 +115,7 @@
                                     <div class="card-body">
                                         <h6 class="card-title fw-bold">{{ $news->title }}</h6>
                                         <p class="card-text small text-muted">
-                                            {{ Str::limit($news->content, 100) }}
+                                            {{ Str::limit(strip_tags($news->content), 100) }}
                                         </p>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <small class="text-muted">

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.users.app', ['title' => $news->title])
 
 @section('content')
     <div class="container py-5">
@@ -49,7 +49,7 @@
 
                         <!-- Content -->
                         <div class="news-content">
-                            {!! nl2br(e($news->content)) !!}
+                            {!! nl2br(e(strip_tags($news->content))) !!}
                         </div>
 
                         <!-- Back Button -->
