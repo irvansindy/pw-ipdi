@@ -102,7 +102,7 @@
                                             <a href="{{ route('news.show', $news->id) }}"
                                                 class="text-decoration-none text-dark">
                                                 <div class="d-flex mb-3">
-                                                    <img src="{{ $newsImage }}"
+                                                    <img src="{{ $sideImage }}"
                                                          class="rounded me-2"
                                                          style="width: 70px; height: 70px; object-fit: cover;"
                                                          alt="{{ $news->title }}">
