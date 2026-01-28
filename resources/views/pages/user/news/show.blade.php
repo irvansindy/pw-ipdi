@@ -32,7 +32,6 @@
                             </div>
                             <div class="carousel-inner">
                                 @foreach ($news->images as $index => $image)
-                                {{-- @dd($image['file_path']) --}}
                                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                                         <img src="{{ asset($image['file_path']) }}"
                                              class="d-block w-100"

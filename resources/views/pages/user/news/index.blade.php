@@ -18,9 +18,15 @@
                             @if ($mainNews)
                                 <div class="card border-0 shadow-sm mb-3">
                                     @php
-                                        $mainImage = $mainNews->images[0]['file_path']
-                                            ? asset($mainNews->images[0]['file_path'])
-                                            : ($mainNews->image ? asset($mainNews->image) : asset('images/default-news.jpg'));
+                                        $mainImage = 'https://dummyimage.com/600x400/616161/fff&text=News+Image+Not+Available';
+
+                                        // Triple check untuk keamanan
+                                        if ($mainNews->images && $mainNews->images->count() > 0 && $mainNews->images->first()) {
+                                            $mainImage = asset($mainNews->images->first()->image_path);
+                                        } elseif ($mainNews->image) {
+                                            $mainImage = asset($mainNews->image);
+                                        }
+                                        // Jika keduanya null, gunakan default yang sudah di-set
                                     @endphp
                                     {{-- @dd($mainNews->images[0]['file_path']); --}}
                                     <img src="{{ $mainImage }}"
@@ -62,9 +68,15 @@
                                 @if ($sidebarNews->count() > 0)
                                     @foreach ($sidebarNews as $index => $news)
                                         @php
-                                            $sideImage = $mainNews->images[0]['file_path']
-                                                ? asset($mainNews->images[0]['file_path'])
-                                                : ($mainNews->image ? asset($mainNews->image) : asset('images/default-news.jpg'));
+                                            $sideImage = 'https://dummyimage.com/600x400/616161/fff&text=News+Image+Not+Available'; // Set default dulu
+
+                                            // Triple check untuk keamanan
+                                            if ($news->images && $news->images->count() > 0 && $news->images->first()) {
+                                                $sideImage = asset($news->images->first()->image_path);
+                                            } elseif ($news->image) {
+                                                $sideImage = asset($news->image);
+                                            }
+                                            // Jika keduanya null, gunakan default yang sudah di-set
                                         @endphp
 
                                         @if ($index === 0)
@@ -125,9 +137,15 @@
                     <div class="row g-4">
                         @foreach ($latestNews as $news)
                             @php
-                                $newsImage = $news->images[0]['file_path']
-                                    ? asset($news->images[0]['file_path'])
-                                    : ($news->image ? asset($news->image) : asset('images/default-news.jpg'));
+                                $newsImage = 'https://dummyimage.com/600x400/616161/fff&text=News+Image+Not+Available'; // Set default dulu
+
+                                // Triple check untuk keamanan
+                                if ($news->images && $news->images->count() > 0 && $news->images->first()) {
+                                    $newsImage = asset($news->images->first()->image_path);
+                                } elseif ($news->image) {
+                                    $newsImage = asset($news->image);
+                                }
+                                // Jika keduanya null, gunakan default yang sudah di-set
                             @endphp
                             <div class="col-md-6 col-lg-4">
                                 <div class="card border-0 shadow-sm h-100">
