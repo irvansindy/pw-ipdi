@@ -21,8 +21,8 @@
                                         $mainImage = 'https://dummyimage.com/600x400/616161/fff&text=News+Image+Not+Available';
 
                                         // Triple check untuk keamanan
-                                        if ($mainNews->images && $mainNews->images->count() > 0 && $mainNews->images->first()) {
-                                            $mainImage = asset($mainNews->images->first()->image_path);
+                                        if ($mainNews->images && $mainNews->images->count() > 0) {
+                                            $mainImage = asset($mainNews->images[0]['file_path']);
                                         } elseif ($mainNews->image) {
                                             $mainImage = asset($mainNews->image);
                                         }
@@ -71,8 +71,8 @@
                                             $sideImage = 'https://dummyimage.com/600x400/616161/fff&text=News+Image+Not+Available'; // Set default dulu
 
                                             // Triple check untuk keamanan
-                                            if ($news->images && $news->images->count() > 0 && $news->images->first()) {
-                                                $sideImage = asset($news->images->first()->image_path);
+                                            if ($news->images && $news->images->count() > 0) {
+                                                $sideImage = asset($news->images[0]['file_path']);
                                             } elseif ($news->image) {
                                                 $sideImage = asset($news->image);
                                             }
@@ -140,8 +140,8 @@
                                 $newsImage = 'https://dummyimage.com/600x400/616161/fff&text=News+Image+Not+Available'; // Set default dulu
 
                                 // Triple check untuk keamanan
-                                if ($news->images && $news->images->count() > 0 && $news->images->first()) {
-                                    $newsImage = asset($news->images->first()->image_path);
+                                if ($news->images && $news->images->count() > 0) {
+                                    $newsImage = asset($news->images[0]['file_path']);
                                 } elseif ($news->image) {
                                     $newsImage = asset($news->image);
                                 }
