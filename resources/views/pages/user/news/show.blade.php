@@ -21,22 +21,19 @@
                         <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
                             <div class="carousel-indicators">
                                 @foreach ($news->images as $index => $image)
-                                    <button type="button"
-                                            data-bs-target="#newsCarousel"
-                                            data-bs-slide-to="{{ $index }}"
-                                            class="{{ $index == 0 ? 'active' : '' }}"
-                                            aria-current="{{ $index == 0 ? 'true' : 'false' }}"
-                                            aria-label="Slide {{ $index + 1 }}">
+                                    <button type="button" data-bs-target="#newsCarousel"
+                                        data-bs-slide-to="{{ $index }}" class="{{ $index == 0 ? 'active' : '' }}"
+                                        aria-current="{{ $index == 0 ? 'true' : 'false' }}"
+                                        aria-label="Slide {{ $index + 1 }}">
                                     </button>
                                 @endforeach
                             </div>
                             <div class="carousel-inner">
                                 @foreach ($news->images as $index => $image)
                                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                        <img src="{{ asset($image['file_path']) }}"
-                                             class="d-block w-100"
-                                             alt="{{ $image['caption'] ?? $news->title }}"
-                                             style="max-height: 500px; object-fit: cover;">
+                                        <img src="{{ asset($image['file_path']) }}" class="d-block w-100"
+                                            alt="{{ $image['caption'] ?? $news->title }}"
+                                            style="max-height: 500px; object-fit: cover;">
                                         @if ($image['caption'])
                                             <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded">
                                                 <p class="mb-0">{{ $image['caption'] }}</p>
@@ -46,11 +43,13 @@
                                 @endforeach
                             </div>
                             @if ($news->images->count() > 1)
-                                <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+                                <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel"
+                                    data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Previous</span>
                                 </button>
-                                <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+                                <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel"
+                                    data-bs-slide="next">
                                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                     <span class="visually-hidden">Next</span>
                                 </button>
@@ -58,16 +57,12 @@
                         </div>
                     @elseif ($news->image)
                         <!-- Fallback ke gambar utama jika tidak ada images -->
-                        <img src="{{ asset($news->image) }}"
-                             class="card-img-top"
-                             alt="{{ $news->title }}"
-                             style="max-height: 500px; object-fit: cover;">
+                        <img src="{{ asset($news->image) }}" class="card-img-top" alt="{{ $news->title }}"
+                            style="max-height: 500px; object-fit: cover;">
                     @else
                         <!-- Default image jika tidak ada gambar sama sekali -->
-                        <img src="{{ asset('images/default-news.jpg') }}"
-                             class="card-img-top"
-                             alt="{{ $news->title }}"
-                             style="max-height: 500px; object-fit: cover;">
+                        <img src="{{ asset('images/default-news.jpg') }}" class="card-img-top" alt="{{ $news->title }}"
+                            style="max-height: 500px; object-fit: cover;">
                     @endif
 
                     <div class="card-body p-4">
@@ -101,7 +96,7 @@
 
                         <!-- Content -->
                         <div class="news-content">
-                            {!! nl2br(e($news->content)) !!}
+                            {{ nl2br(strip_tags($news->content)) }}
                         </div>
 
                         <!-- Back Button -->
@@ -122,14 +117,14 @@
                                 @php
                                     $relatedImage = $related->images->first()
                                         ? asset($related->images->first()->image_path)
-                                        : ($related->image ? asset($related->image) : asset('images/default-news.jpg'));
+                                        : ($related->image
+                                            ? asset($related->image)
+                                            : asset('images/default-news.jpg'));
                                 @endphp
                                 <div class="col-md-4">
                                     <div class="card border-0 shadow-sm h-100">
-                                        <img src="{{ $relatedImage }}"
-                                             class="card-img-top"
-                                             alt="{{ $related->title }}"
-                                             style="height: 180px; object-fit: cover;">
+                                        <img src="{{ $relatedImage }}" class="card-img-top" alt="{{ $related->title }}"
+                                            style="height: 180px; object-fit: cover;">
                                         <div class="card-body">
                                             <h6 class="card-title fw-bold">
                                                 {{ Str::limit($related->title, 60) }}
@@ -143,7 +138,7 @@
                                                     {{ $related->published_at ? \Carbon\Carbon::parse($related->published_at)->format('d M Y') : '-' }}
                                                 </small>
                                                 <a href="{{ route('news.show', $related->id) }}"
-                                                   class="btn btn-sm btn-primary">
+                                                    class="btn btn-sm btn-primary">
                                                     Baca
                                                 </a>
                                             </div>

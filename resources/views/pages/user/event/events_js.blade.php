@@ -74,8 +74,8 @@
                                             <div class="name ps-1">
                                                 <span>Tanggal acara</span>
                                                 <div class="stats">
-                                                    <small>${moment(card.date).format('DD-MM-YYYY')} </small> -
-                                                    <small>${moment(card.date_end).format('DD-MM-YYYY')} WIB</small>
+                                                    <small>${moment(card.start_date).format('DD-MM-YYYY')} </small> -
+                                                    <small>${moment(card.end_date).format('DD-MM-YYYY')} WIB</small>
                                                 </div>
                                             </div>
                                             ${button_regis}
