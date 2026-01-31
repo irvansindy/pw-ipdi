@@ -161,7 +161,7 @@ class UserContentController extends Controller
 
                 // HANYA EVENT YANG BELUM TERLEWATI
                 ->where('events.date', '>=', $today)
-
+                ->where('events.is_active', true)
                 // FILTER BY CATEGORY
                 ->when($filter, function ($q) use ($filter) {
                     $q->whereHas('category', function ($cat) use ($filter) {
