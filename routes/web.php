@@ -63,9 +63,6 @@ Route::get('/fetch-sejarah', [userHistory::class, 'fetchHistory'])->name('fetch-
 
 Route::get('struktur-organisasi', [UserContentController::class,'organizationalStructure'])->name('struktur-organisasi');
 
-// Route::get('berita', [userNews::class,'index'])->name('berita');
-// Route::get('fetch-berita', [userNews::class,'fetchNews'])->name('fetch-berita');
-
 // News Routes
 Route::get('/berita', [userNews::class, 'index'])->name('news.index');
 Route::get('/berita/{id}', [userNews::class, 'show'])->name('news.show');
@@ -185,6 +182,8 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('/detail-news-management', [NewsController::class,'show'])->name('detail-news-management');
 	Route::post('/store-news-management', [NewsController::class,'store'])->name('store-news-management');
 	Route::post('/update-news-management', [NewsController::class,'update'])->name('update-news-management');
+	Route::post('/upload-news-images', [NewsController::class,'uploadNewsImages'])->name('upload-news-images');
+	Route::post('/delete-news-image', [NewsController::class,'deleteNewsImageFile'])->name('delete-news-image');
 	Route::delete('/delete-news-management', [NewsController::class,'destroy'])->name('delete-news-management');
 
 	Route::get('/attendance-audience', [ScreeningQrCodeAudience::class,'index'])->name('attendance-audience');

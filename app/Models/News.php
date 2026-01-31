@@ -20,4 +20,9 @@ class News extends Model
     {
         return $this->belongsTo(Events::class, 'event_id');
     }
+
+    public function images()
+    {
+        return $this->hasMany(NewsImage::class, 'news_id')->orderBy('order', 'asc');
+    }
 }

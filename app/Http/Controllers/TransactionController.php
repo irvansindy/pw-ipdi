@@ -298,95 +298,95 @@ class TransactionController extends Controller
     }
 
     public function uploadTransaction(Request $request)
-{
-    try {
-        DB::beginTransaction();
+    {
+        try {
+            DB::beginTransaction();
 
-        // Validasi input
-        $request->validate([
-            'id' => 'required|exists:transactions,id',
-            'files.*' => 'required|mimes:png,jpg,jpeg,pdf|max:2048',
-            'descriptions.*' => 'nullable|string|max:255'
-        ], [
-            'files.*.required' => 'File harus diupload',
-            'files.*.mimes' => 'File harus berformat: png, jpg, jpeg, atau pdf',
-            'files.*.max' => 'Ukuran file maksimal 2MB',
-        ]);
-
-        $transaction_id = $request->id;
-
-        // Cek apakah transaksi milik user yang login
-        $transaction = Transactions::where('id', $transaction_id)
-            ->where('user_id', Auth::user()->id)
-            ->first();
-
-        if (!$transaction) {
-            DB::rollBack();
-            return FormatResponseJson::error(null, 'Transaksi tidak ditemukan', 404);
-        }
-
-        // Cek status transaksi
-        if ($transaction->status !== 'pending') {
-            DB::rollBack();
-            return FormatResponseJson::error(null, 'Hanya transaksi dengan status pending yang dapat diupload bukti pembayaran', 400);
-        }
-
-        $uploadedFiles = [];
-        $files = $request->file('files');
-        $descriptions = $request->input('descriptions', []);
-
-        // Loop untuk upload multiple files
-        foreach ($files as $index => $file) {
-            // ===== PENTING: Ambil info SEBELUM move file =====
-            $originalName = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
-            $fileSize = round($file->getSize() / 1024, 2); // KB - ambil sebelum move
-            $mimeType = $file->getClientMimeType(); // ambil sebelum move
-
-            // Generate unique filename
-            $fileName = time() . '_' . $index . '_' . uniqid() . '.' . $extension;
-
-            // Move file to public directory
-            $file->move(public_path('uploads/bukti_transaksi'), $fileName);
-
-            // Get description
-            $description = $descriptions[$index] ?? null;
-
-            // Save to database
-            $transactionFile = TransactionFile::create([
-                'transaction_id' => $transaction_id,
-                'file_name' => $originalName,
-                'file_path' => $fileName,
-                'description' => $description,
-                'file_type' => 'payment_proof',
-                'file_size' => $fileSize,
-                'mime_type' => $mimeType
+            // Validasi input
+            $request->validate([
+                'id' => 'required|exists:transactions,id',
+                'files.*' => 'required|mimes:png,jpg,jpeg,pdf|max:2048',
+                'descriptions.*' => 'nullable|string|max:255'
+            ], [
+                'files.*.required' => 'File harus diupload',
+                'files.*.mimes' => 'File harus berformat: png, jpg, jpeg, atau pdf',
+                'files.*.max' => 'Ukuran file maksimal 2MB',
             ]);
 
-            $uploadedFiles[] = $transactionFile;
+            $transaction_id = $request->id;
+
+            // Cek apakah transaksi milik user yang login
+            $transaction = Transactions::where('id', $transaction_id)
+                ->where('user_id', Auth::user()->id)
+                ->first();
+
+            if (!$transaction) {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'Transaksi tidak ditemukan', 404);
+            }
+
+            // Cek status transaksi
+            if ($transaction->status !== 'pending') {
+                DB::rollBack();
+                return FormatResponseJson::error(null, 'Hanya transaksi dengan status pending yang dapat diupload bukti pembayaran', 400);
+            }
+
+            $uploadedFiles = [];
+            $files = $request->file('files');
+            $descriptions = $request->input('descriptions', []);
+
+            // Loop untuk upload multiple files
+            foreach ($files as $index => $file) {
+                // ===== PENTING: Ambil info SEBELUM move file =====
+                $originalName = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $fileSize = round($file->getSize() / 1024, 2); // KB - ambil sebelum move
+                $mimeType = $file->getClientMimeType(); // ambil sebelum move
+
+                // Generate unique filename
+                $fileName = time() . '_' . $index . '_' . uniqid() . '.' . $extension;
+
+                // Move file to public directory
+                $file->move(public_path('uploads/bukti_transaksi'), $fileName);
+
+                // Get description
+                $description = $descriptions[$index] ?? null;
+
+                // Save to database
+                $transactionFile = TransactionFile::create([
+                    'transaction_id' => $transaction_id,
+                    'file_name' => $originalName,
+                    'file_path' => $fileName,
+                    'description' => $description,
+                    'file_type' => 'payment_proof',
+                    'file_size' => $fileSize,
+                    'mime_type' => $mimeType
+                ]);
+
+                $uploadedFiles[] = $transactionFile;
+            }
+
+            // Update transaction status dan simpan file pertama sebagai proof_of_payment utama
+            $transaction->update([
+                'status' => 'progress',
+                'proof_of_payment' => $uploadedFiles[0]->file_path ?? null
+            ]);
+
+            DB::commit();
+
+            return FormatResponseJson::success([
+                'transaction' => $transaction,
+                'uploaded_files' => $uploadedFiles
+            ], 'Berhasil mengupload ' . count($uploadedFiles) . ' file');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            DB::rollBack();
+            return FormatResponseJson::error($e->errors(), 'Validasi gagal', 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi: ' . $e->getMessage(), 500);
         }
-
-        // Update transaction status dan simpan file pertama sebagai proof_of_payment utama
-        $transaction->update([
-            'status' => 'progress',
-            'proof_of_payment' => $uploadedFiles[0]->file_path ?? null
-        ]);
-
-        DB::commit();
-
-        return FormatResponseJson::success([
-            'transaction' => $transaction,
-            'uploaded_files' => $uploadedFiles
-        ], 'Berhasil mengupload ' . count($uploadedFiles) . ' file');
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        DB::rollBack();
-        return FormatResponseJson::error($e->errors(), 'Validasi gagal', 422);
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return FormatResponseJson::error(null, 'Gagal melakukan upload bukti transaksi: ' . $e->getMessage(), 500);
     }
-}
 
     public function deleteTransactionFile(Request $request)
     {
