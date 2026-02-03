@@ -14,6 +14,7 @@ class Events extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'price' => 'integer',
         'start_date' => 'date',
         'end_date' => 'date',
         'date' => 'datetime',

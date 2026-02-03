@@ -73,8 +73,12 @@
                             <h6 class="my-0">Harga</h6>
                             <small class="text-muted">peranggota</small>
                         </div>
+                        {{-- <span class="text-muted" id="data_event_price" data-price="{{ $event->price }}">Rp.{{ number_format($event->price, 0, ',', '.') }}</span> --}}
                         <span class="text-muted" id="data_event_price"
-                            data-price="{{ $event->price }}">Rp.{{ number_format($event->price, 0, ',', '.') }}</span>
+                            data-price="{{ (int) $event->price }}">
+                            Rp.{{ number_format((float) $event->price, 0, ',', '.') }}
+                        </span>
+
                     </li>
                 </ul>
                 <h4 class="d-flex justify-content-between align-items-center mb-3">Payment</h4>
