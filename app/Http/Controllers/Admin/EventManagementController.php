@@ -176,7 +176,8 @@ class EventManagementController extends Controller
     public function update(Request $request)
     {
         DB::beginTransaction();
-
+        // $price_date = $request->price ?? 0;
+        //     dd($price_date);
         try {
             $validator = Validator::make($request->all(), [
                 "id" => "required|integer|exists:events,id",
@@ -217,6 +218,8 @@ class EventManagementController extends Controller
                 $file->move(public_path('img/logos/IPDI/event/'), $filename);
                 $event->image = $filename;
             }
+
+
 
             // Update event data
             $event->update([

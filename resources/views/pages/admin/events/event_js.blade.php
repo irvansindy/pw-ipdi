@@ -518,7 +518,9 @@
         let eventName = $('#update_event_name').val();
         let eventTitle = $('#update_event_title').val();
         let eventCategory = $('#update_event_category').val();
-        let eventPrice = $('#update_event_price').val();
+        let eventPrice = $('#update_event_price').length
+        ? ($('#update_event_price').val() || 0)
+        : 0;
         let eventDescription = $('#update_event_description').val();
         let eventQuota = $('#update_event_quota').val();
         let eventDate = $('#update_event_date').val();
