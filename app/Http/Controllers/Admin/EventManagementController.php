@@ -80,17 +80,21 @@ class EventManagementController extends Controller
 
             // Handle image upload
             $filename = null;
-            if ($request->hasFile('image')) {
-                $file = $request->file('image');
+            if ($request->hasFile('create_event_image')) {
+                $file = $request->file('create_event_image');
                 $filename = time() . '.' . $file->getClientOriginalExtension();
                 $file->move(public_path('img/logos/IPDI/event/'), $filename);
             }
+
+            // Normalisasi main price - hapus koma, spasi, simbol lain
+            $rawPrice = $request->create_event_price ?? 0;
+            $normalizedPrice = (int) preg_replace('/[^0-9]/', '', $rawPrice);
 
             $eventData = [
                 "name" => $request->create_event_name,
                 "title" => $request->create_event_title,
                 "category_event_id" => $request->create_event_category,
-                "price" => $request->create_event_price ?? 0,
+                "price" => $normalizedPrice,
                 "last_register" => $request->create_event_date_last_register,
                 "description" => $request->create_event_description,
                 "quota" => $request->create_event_quota,
@@ -109,10 +113,14 @@ class EventManagementController extends Controller
                 $eventDetails = [];
                 foreach ($request->detail_event_name as $index => $name) {
                     if (!empty($name) && isset($request->detail_event_price[$index])) {
+                        // Normalisasi price - hapus koma, spasi, simbol lain
+                        $rawPrice = $request->detail_event_price[$index];
+                        $price = (int) preg_replace('/[^0-9]/', '', $rawPrice);
+
                         $eventDetails[] = [
                             'event_id' => $event->id,
                             'name' => $name,
-                            'price' => $request->detail_event_price[$index],
+                            'price' => $price,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];
@@ -124,11 +132,15 @@ class EventManagementController extends Controller
             }
 
             // Create event hotel if provided
-            if ($request->filled('hotel') && $request->filled('harga_hotel')) {
+            if ($request->filled('create_event_hotel') && $request->filled('create_event_harga_hotel')) {
+                // Normalisasi hotel price - hapus koma, spasi, simbol lain
+                $rawHotelPrice = $request->create_event_harga_hotel;
+                $normalizedHotelPrice = (int) preg_replace('/[^0-9]/', '', $rawHotelPrice);
+
                 EventHotel::create([
                     'event_id' => $event->id,
-                    'name' => $request->hotel,
-                    'price' => $request->harga_hotel,
+                    'name' => $request->create_event_hotel,
+                    'price' => $normalizedHotelPrice,
                 ]);
             }
 
@@ -197,7 +209,7 @@ class EventManagementController extends Controller
                 "detail_name" => "nullable|array",
                 "detail_price" => "nullable|array",
                 "update_event_hotel" => "nullable|string|max:255",
-                "update_event_harga_hotel" => "nullable|numeric|min:0",
+                "update_event_harga_hotel" => "nullable|min:0",
             ]);
 
             if ($validator->fails()) {
@@ -221,12 +233,16 @@ class EventManagementController extends Controller
 
 
 
+            // Normalisasi main price untuk update
+            $rawUpdatePrice = $request->price ?? 0;
+            $normalizedUpdatePrice = (int) preg_replace('/[^0-9]/', '', $rawUpdatePrice);
+
             // Update event data
             $event->update([
                 "name" => $request->name,
                 "title" => $request->title,
                 "category_event_id" => $request->category,
-                "price" => $request->price ?? 0,
+                "price" => $normalizedUpdatePrice,
                 "description" => $request->description,
                 "quota" => $request->quota,
                 "date" => $request->date,
@@ -294,18 +310,22 @@ if (is_array($detailNames) && !empty($detailNames)) {
 
 
             // Update or delete hotel
-            if ($request->filled('hotel') && $request->filled('harga_hotel')) {
+            if ($request->filled('update_event_hotel') && $request->filled('update_event_harga_hotel')) {
+                // Normalisasi hotel price untuk update - hapus koma, spasi, simbol lain
+                $rawUpdateHotelPrice = $request->update_event_harga_hotel;
+                $normalizedUpdateHotelPrice = (int) preg_replace('/[^0-9]/', '', $rawUpdateHotelPrice);
+
                 $hotel = EventHotel::where('event_id', $event->id)->first();
                 if ($hotel) {
                     $hotel->update([
-                        'name' => $request->hotel,
-                        'price' => $request->harga_hotel,
+                        'name' => $request->update_event_hotel,
+                        'price' => $normalizedUpdateHotelPrice,
                     ]);
                 } else {
                     EventHotel::create([
                         'event_id' => $event->id,
-                        'name' => $request->hotel,
-                        'price' => $request->harga_hotel,
+                        'name' => $request->update_event_hotel,
+                        'price' => $normalizedUpdateHotelPrice,
                     ]);
                 }
             } else {

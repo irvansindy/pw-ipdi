@@ -80,6 +80,7 @@
         $(document).on('click', '#for_create_event_data', handleCreateEventModal);
         $(document).on('change', '#create_event_category', handleCategoryChange);
         $(document).on('change', '#check_event_hotel', handleHotelCheckbox);
+        $(document).on('change', '#update_check_event_hotel', handleUpdateHotelCheckbox);
         $(document).on('click', '#create_event', handleCreateEvent);
         $(document).on('click', '.detail_event_data', handleDetailEvent);
         $(document).on('click', '#update_event', handleUpdateEvent);
@@ -193,6 +194,31 @@
             `);
         } else {
             $('#select_event_hotel').empty();
+        }
+    }
+
+    /**
+     * Handle Update Hotel Checkbox
+     */
+    function handleUpdateHotelCheckbox() {
+        if ($('#update_check_event_hotel').prop('checked')) {
+            let hotelName = $('#update_event_hotel').val() || '';
+            let hotelPrice = $('#update_event_harga_hotel').val() || '';
+
+            $('#update_select_event_hotel').empty().append(`
+                <div class="row g-2 align-items-center form-group">
+                    <div class="col-md-6">
+                        <label for="update_event_hotel">Nama Hotel</label>
+                        <input type="text" name="update_event_hotel" id="update_event_hotel" class="form-control" value="${hotelName}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="update_event_harga_hotel">Harga Hotel</label>
+                        <input type="text" name="update_event_harga_hotel" id="update_event_harga_hotel" class="form-control price" value="${hotelPrice}">
+                    </div>
+                </div>
+            `);
+        } else {
+            $('#update_select_event_hotel').empty();
         }
     }
 
@@ -518,9 +544,9 @@
         let eventName = $('#update_event_name').val();
         let eventTitle = $('#update_event_title').val();
         let eventCategory = $('#update_event_category').val();
-        let eventPrice = $('#update_event_price').length
-        ? ($('#update_event_price').val() || 0)
-        : 0;
+        let eventPrice = $('#update_event_price').length ?
+            ($('#update_event_price').val() || 0) :
+            0;
         let eventDescription = $('#update_event_description').val();
         let eventQuota = $('#update_event_quota').val();
         let eventDate = $('#update_event_date').val();
