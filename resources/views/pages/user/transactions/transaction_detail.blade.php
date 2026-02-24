@@ -2,7 +2,7 @@
 <div class="modal fade" id="detailTransaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     role="dialog" aria-labelledby="detailTransaction_label" aria-hidden="true">
     {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered me-lg-8" role="document"> --}}
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <form id="form_upload_file">
                 @csrf
