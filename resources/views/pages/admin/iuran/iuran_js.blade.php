@@ -4,11 +4,10 @@
             processing: true,
             // serverside: false,
             ajax: {
-                url: '{{ route("fetch-iuran") }}',
+                url: '{{ route('fetch-iuran') }}',
                 type: 'GET',
             },
-            columns: [
-                {
+            columns: [{
                     "data": null,
                     "render": function(data, type, row, meta) {
                         return meta.row + 1;
@@ -23,8 +22,8 @@
                     // "render": function(data, item) {
                     //     return 'Rp.' + item.id
                     // },
-                    render: function (data, type, row) {
-                        return 'Rp.'+row.grand_total;
+                    render: function(data, type, row) {
+                        return 'Rp.' + row.grand_total;
                     },
                     "defaultContent": "<i>Not set</i>"
                 },
@@ -42,8 +41,8 @@
                     wrap: true,
                     "render": function(item) {
                         return '<button type="button" data-iuran_id="' +
-    item.id +
-    '" class="btn btn-outline-info btn-sm mt-2 detail_iuran_data" data-bs-toggle="modal" data-bs-target="#approval_iuran">View</button>'
+                            item.id +
+                            '" class="btn btn-outline-info btn-sm mt-2 detail_iuran_data" data-bs-toggle="modal" data-bs-target="#approval_iuran">View</button>'
                     }
                 },
             ]
@@ -67,7 +66,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route("store-iuran") }}',
+                url: '{{ route('store-iuran') }}',
                 type: 'post',
                 data: data,
                 dataType: 'json',
@@ -98,7 +97,7 @@
             $('#form_approval_iuran')[0].reset()
             $('#button_approval_iuran').empty()
             $.ajax({
-                url: '{{ route("detail-iuran") }}',
+                url: '{{ route('detail-iuran') }}',
                 type: 'GET',
                 data: {
                     id: iuran_id
@@ -119,11 +118,18 @@
                                 <td>${user.tahun_iuran}</td>
                             </tr>
                         `)
-                        
                     })
-                    $('#button_approval_iuran').append(`<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>`)
+                    $('#bukti_transaksi_iuran').empty()
+                    $('#bukti_transaksi_iuran').append(`
+                        <a href="{{ asset('${res.data.proof_of_payment}') }}" target="_blank" class="text-primary">Bukti Transaksi</a>
+                    `)
+                    $('#button_approval_iuran').append(
+                        `<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>`
+                        )
                     if (res.data.status == 'progress') {
-                        $('#button_approval_iuran').append(`<button type="button" class="btn bg-gradient-primary" id="approve_data_iuran">Approved</button>`)
+                        $('#button_approval_iuran').append(
+                            `<button type="button" class="btn bg-gradient-primary" id="approve_data_iuran">Approved</button>`
+                            )
                     }
                 },
                 error: function(xhr, status, error) {
@@ -158,7 +164,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route("update-iuran") }}',
+                url: '{{ route('update-iuran') }}',
                 type: 'post',
                 data: data_detail,
                 dataType: 'json',
@@ -194,7 +200,7 @@
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route("approve-iuran") }}',
+                url: '{{ route('approve-iuran') }}',
                 type: 'post',
                 data: data,
                 dataType: 'json',
