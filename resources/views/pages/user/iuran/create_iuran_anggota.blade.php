@@ -38,6 +38,7 @@
                                     <div class="col-md-3">
                                         <input type="date" class="form-control" name="tanggal_iuran_transfer"
                                             id="tanggal_iuran_transfer">
+                                            <span class="text-danger" style="font-size: 12px;">tanggal iuran transfer</span>
                                     </div>
                                 </div>
                             </div>
