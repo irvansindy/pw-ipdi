@@ -121,7 +121,7 @@
                     })
                     $('#bukti_transaksi_iuran').empty()
                     $('#bukti_transaksi_iuran').append(`
-                        <a href="{{ asset('${res.data.proof_of_payment}') }}" target="_blank" class="text-primary">Bukti Transaksi</a>
+                        <a href="{{ asset('${res.data.iuran_image_transfer}') }}" target="_blank" class="text-primary">Bukti Transaksi</a>
                     `)
                     $('#button_approval_iuran').append(
                         `<button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>`
