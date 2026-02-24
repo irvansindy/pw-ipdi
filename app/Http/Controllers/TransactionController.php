@@ -469,7 +469,8 @@ class TransactionController extends Controller
             'margin_bottom' => 0,
         ]);
 
-        $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
+        // $pdfPath = public_path('img/logos/bg/bg_jnns_vxii_qrcode.pdf');
+        $pdfPath = public_path('img/logos/bg/QR_Code_Registration_JNNS_XVIII.pdf');
         $pagecount = $mpdf->SetSourceFile($pdfPath);
         $tplId = $mpdf->ImportPage($pagecount);
         $mpdf->UseTemplate($tplId, 5, 0, null, null, true);
