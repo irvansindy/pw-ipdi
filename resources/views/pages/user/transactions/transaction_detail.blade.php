@@ -1,5 +1,6 @@
 {{-- modal --}}
-<div class="modal fade" id="detailTransaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"  role="dialog" aria-labelledby="detailTransaction_label" aria-hidden="true">
+<div class="modal fade" id="detailTransaction" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    role="dialog" aria-labelledby="detailTransaction_label" aria-hidden="true">
     {{-- <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered me-lg-8" role="document"> --}}
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -7,7 +8,8 @@
                 @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Detail Transaksi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #172b4d !important;">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="color: #172b4d !important;">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -50,7 +52,7 @@
                                 <th>Nama Peserta</th>
                             </thead>
                             <tbody id="list_data_pererta">
-                                
+
                             </tbody>
                         </table>
                     </div>
