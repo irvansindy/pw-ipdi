@@ -455,14 +455,13 @@
                     $('#detail_username').html(res.data.user.username);
                     $('#detail_event').html(res.data.event.name);
 
-                    let detail_event = res.data.event.event_detail;
+                    let detail_event = res.data.event_detail;
                     if (detail_event != null) {
-                        alert(moment(res.data.event.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event.event_detail.end_date).format('lll'))
-                        $('#detail_date').html(moment(res.data.event.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event.event_detail.end_date).format('lll'));
+                        alert(moment(res.data.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event_detail.end_date).format('lll'))
+                        $('#detail_date').html(moment(res.data.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event_detail.end_date).format('lll'));
                     } else {
                         alert(moment(res.data.event.date).format('lll') + ' - ' + moment(res.data.event.end_date).format('lll'))
                         $('#detail_date').html(moment(res.data.event.date).format('lll') + ' - ' + moment(res.data.event.end_date).format('lll'));
-                        // $('#detail_date').html(moment(res.data.event.date).format('lll'));
                     }
 
                     $('#detail_status').html(res.data.status);
