@@ -132,7 +132,7 @@
                     $('#update_transaction_status').html(res.data.status)
                     $('#update_transaction_proof_of_payment').empty()
                     $('#update_transaction_proof_of_payment').append(`
-                        <a href="{{ asset('uploads/bukti_transaksi/${res.data.proof_of_payment}') }}" target="_blank">Bukti Transaksi</a>
+                        <a href="{{ asset('uploads/bukti_transaksi/${res.data.proof_of_payment}') }}" target="_blank" class="text-primary">Bukti Transaksi</a>
                     `)
 
                     let numbering_user = 1

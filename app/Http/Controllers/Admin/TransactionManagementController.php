@@ -71,10 +71,10 @@ class TransactionManagementController extends Controller
     {
         try {
             $transaction = Transactions::find($request->update_transaction_id);
-            
+
             $list_transaction = TransactionDetail::with(['user'])->where('transaction_details.transaction_id', $transaction->id)->get();
 
-            // for ($i=0; $i < count($list_transaction); $i++) { 
+            // for ($i=0; $i < count($list_transaction); $i++) {
             //     Mail::to($list_transaction[$i]['user']->email)->send(new EventRegisterMail([
             //         'title' => $transaction->number,
             //         'body' => 'Selamat kamu sudah terdaftar dengan nomor registrasi '.$transaction->number,

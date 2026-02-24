@@ -457,10 +457,10 @@
 
                     let detail_event = res.data.event.event_detail;
                     if (detail_event != null) {
-                        alert('yes')
+                        alert(moment(res.data.event.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event.event_detail.end_date).format('lll'))
                         $('#detail_date').html(moment(res.data.event.event_detail.start_date).format('lll') + ' - ' + moment(res.data.event.event_detail.end_date).format('lll'));
                     } else {
-                        alert('no')
+                        alert(moment(res.data.event.date).format('lll') + ' - ' + moment(res.data.event.end_date).format('lll'))
                         $('#detail_date').html(moment(res.data.event.date).format('lll') + ' - ' + moment(res.data.event.end_date).format('lll'));
                         // $('#detail_date').html(moment(res.data.event.date).format('lll'));
                     }
