@@ -9,7 +9,8 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <form role="form" id="form_create_data_iuran" method="POST" action={{ route('profile.update') }} enctype="multipart/form-data">
+                    <form role="form" id="form_create_data_iuran" method="POST" action={{ route('profile.update') }}
+                        enctype="multipart/form-data">
                         @csrf
                         <div class="card-header pb-0">
                             <div class="align-items-center">
@@ -44,7 +45,8 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-auto">
-                                    <input type="number" min="0" class="form-control" name="jumlah_peserta_iuran" id="jumlah_peserta_iuran" placeholder="Jumlah Peserta Iuran">
+                                    <input type="number" min="0" class="form-control" name="jumlah_peserta_iuran"
+                                        id="jumlah_peserta_iuran" placeholder="Jumlah Peserta Iuran">
                                 </div>
                             </div>
                             <div class="array-list-peserta-iuran">

@@ -34,7 +34,7 @@ class IuranController extends Controller
         try {
             $peserta = User::with(['roles', 'dialisis'])
                 ->whereHas('roles', function ($query) {
-                    $query->where('name', 'user');
+                    $query->where('name', '!=', 'superadmin');
                 })
                 ->get();
 
