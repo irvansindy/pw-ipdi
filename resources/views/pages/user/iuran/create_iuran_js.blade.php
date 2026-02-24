@@ -84,7 +84,7 @@
                             let pesertaOptions = '<option value="">Pilih Peserta</option>';
                             peserta_iuran.forEach(p => {
                                 pesertaOptions +=
-                                    `<option value="${p.id}">${p.username} (${p.dialisis.name})</option>`;
+                                    `<option value="${p.id}">${p.username} (${p.dialisis != null ? p.dialisis.name : 'center dialisis belum diisi'})</option>`;
                             });
 
                             $('.array-list-peserta-iuran').append(`
