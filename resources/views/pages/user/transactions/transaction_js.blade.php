@@ -459,7 +459,7 @@
                     if (detail_event.name == 'paket') {
                         $('#detail_date').html(moment(res.data.event_detail.start_date).format('ll') + '(07.00 WIB - 16.30 WIB)' + ' s/d ' + moment(res.data.event_detail.end_date).format('ll') + '(07.00 WIB - 16.30 WIB)');
                     } else {
-                        $('#detail_date').html(moment(res.data.event.date).format('ll') + ' - ' + moment(res.data.event.end_date).format('ll'));
+                        $('#detail_date').html(moment(res.data.event.date).format('ll') + '(07.00 WIB - 16.30 WIB)');
                     }
 
                     $('#detail_status').html(res.data.status);
