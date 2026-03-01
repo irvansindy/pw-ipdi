@@ -50,6 +50,7 @@
         </div>
     </div>
     @include('pages.admin.iuran.modal_aproval_iuran')
+    @include('pages.admin.iuran.modal_edit_iuran')
 @endsection
 @push('js')
     @include('pages.admin.iuran.iuran_js')

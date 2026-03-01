@@ -10,25 +10,29 @@ use App\Models\User;
 use App\Models\IuranTransaction;
 use App\Models\IuranTransactionDetail;
 use Illuminate\Support\Str;
+
 class IuranController extends Controller
 {
     public function index()
     {
         return view('pages.user.iuran.index');
     }
+
     public function viewCreateIuran()
     {
         return view('pages.user.iuran.create_iuran_anggota');
     }
+
     public function fetchIuran()
     {
         try {
-            $iuran = Iuran::orderBy('id','desc')->get();
+            $iuran = Iuran::orderBy('id', 'desc')->get();
             return FormatResponseJson::success($iuran, 'iuran fetched successfully');
         } catch (\Exception $e) {
             return FormatResponseJson::error(null, $e->getMessage(), 404);
         }
     }
+
     public function peserta()
     {
         try {
@@ -44,6 +48,7 @@ class IuranController extends Controller
             return FormatResponseJson::error(null, 'Gagal mengambil data peserta', 500);
         }
     }
+
     public function generatePaymentIuran(Request $request)
     {
         try {
@@ -56,10 +61,10 @@ class IuranController extends Controller
             return FormatResponseJson::error(null, 'Gagal menghitung total pembayaran', 500);
         }
     }
+
     public function storeIuran(Request $request)
     {
         try {
-            // Validate input
             $request->validate([
                 'iuran_type' => 'required|in:mandiri,kolektif',
                 'iuran_file_upload' => 'required|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -69,15 +74,12 @@ class IuranController extends Controller
                 'iuran_50k' => 'required|array',
             ]);
 
-            // Generate transaction number using latest ID (more efficient than count)
             $lastTransaction = IuranTransaction::latest('id')->first();
             $numbering = ($lastTransaction ? $lastTransaction->id : 0) + 1;
             $result_number = 'IURAN-' . now()->format('y/m/d') . '/' . $numbering;
 
-            // Convert iuran type to boolean (0 = mandiri, 1 = kolektif)
             $iuran_type = $request->iuran_type === 'kolektif' ? 1 : 0;
 
-            // Calculate totals with type casting
             $total_iuran_20k = array_sum(array_filter($request->iuran_20k ?? [], 'is_numeric'));
             $total_iuran_50k = array_sum(array_filter($request->iuran_50k ?? [], 'is_numeric'));
             $grand_total = (float)($total_iuran_20k + $total_iuran_50k);
@@ -86,12 +88,10 @@ class IuranController extends Controller
                 return FormatResponseJson::error(null, 'Total iuran harus lebih dari 0', 400);
             }
 
-            // Handle file upload
             $file = $request->file('iuran_file_upload');
             $fileName = time() . '_' . Str::slug($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
             $filePath = 'storage/iuran/' . $fileName;
 
-            // Create master iuran transaction
             $master_iuran = IuranTransaction::create([
                 'iuran_number' => $result_number,
                 'iuran_id' => $iuran_type,
@@ -103,7 +103,6 @@ class IuranController extends Controller
                 'status' => 'progress'
             ]);
 
-            // Create transaction details in bulk (1 query instead of N)
             if (count($request->peserta) > 0) {
                 $details = [];
                 foreach ($request->peserta as $i => $peserta_id) {
@@ -118,10 +117,8 @@ class IuranController extends Controller
                     ];
                 }
 
-                // Insert all details at once
                 IuranTransactionDetail::insert($details);
 
-                // Move file after successful creation
                 if (!is_dir(public_path('storage/iuran'))) {
                     mkdir(public_path('storage/iuran'), 0755, true);
                 }
@@ -134,21 +131,32 @@ class IuranController extends Controller
             }
 
         } catch (\Illuminate\Validation\ValidationException $e) {
+            // Kirim sebagai object agar JS bisa render error per field
             return FormatResponseJson::error(null, $e->errors(), 422);
         } catch (\Exception $e) {
             \Log::error('Error in storeIuran: ' . $e->getMessage());
             return FormatResponseJson::error(null, 'Gagal menyimpan data. Silahkan hubungi admin.', 500);
         }
     }
+
     public function fetchTransaksiIuran()
     {
         try {
+            $authId = Auth::id();
+
             $transaksi = IuranTransactionDetail::with(['user', 'iuran'])
-                ->whereHas('user', function($query) {
-                    $query->where('id', Auth::user()->id);
+                ->whereHas('user', function ($query) use ($authId) {
+                    $query->where('id', $authId);
                 })
-                // ->select('id', 'tr_iuran_id', 'user_id', 'tahun_iuran', 'biaya_regis_anggota_baru', 'biaya_iuran_tahunan', 'created_at')
-                ->get();
+                ->get()
+                ->map(function ($detail) use ($authId) {
+                    // Tambahkan flag is_owner agar front-end bisa tampilkan tombol Delete
+                    // hanya kepada user yang memiliki relasi ke IuranTransaction (user_id)
+                    if ($detail->iuran) {
+                        $detail->iuran->is_owner = ($detail->iuran->user_id === $authId);
+                    }
+                    return $detail;
+                });
 
             return FormatResponseJson::success($transaksi, 'Data transaksi berhasil diambil');
         } catch (\Exception $e) {
@@ -156,6 +164,7 @@ class IuranController extends Controller
             return FormatResponseJson::error(null, 'Gagal mengambil data transaksi', 500);
         }
     }
+
     public function detailTransaksiIuran(Request $request)
     {
         try {
@@ -177,6 +186,7 @@ class IuranController extends Controller
             return FormatResponseJson::error(null, 'Gagal mengambil detail transaksi', 500);
         }
     }
+
     public function uploadIuran(Request $request)
     {
         try {
@@ -188,20 +198,17 @@ class IuranController extends Controller
             $file = $request->file('file_iuran_data');
             $fileName = time() . '_' . Str::slug($file->getClientOriginalName()) . '.' . $file->getClientOriginalExtension();
 
-            // Ensure directory exists
             if (!is_dir(public_path('uploads/bukti_transaksi/iuran'))) {
                 mkdir(public_path('uploads/bukti_transaksi/iuran'), 0755, true);
             }
 
             $transaction = IuranTransaction::findOrFail($request->master_iuran_id);
 
-            // Delete old file if exists
             $oldFile = public_path(str_replace('storage/', '', $transaction->iuran_image_transfer));
             if (file_exists($oldFile)) {
                 unlink($oldFile);
             }
 
-            // Update and move file
             $file->move(public_path('uploads/bukti_transaksi/iuran'), $fileName);
             $transaction->update([
                 'status' => 'verified',
@@ -210,10 +217,120 @@ class IuranController extends Controller
 
             return FormatResponseJson::success($transaction, 'File berhasil diupload');
         } catch (\Illuminate\Validation\ValidationException $e) {
+            // Kirim sebagai object agar JS bisa render error per field
             return FormatResponseJson::error(null, $e->errors(), 422);
         } catch (\Exception $e) {
             \Log::error('Error in uploadIuran: ' . $e->getMessage());
             return FormatResponseJson::error(null, 'Gagal melakukan upload. Silahkan hubungi admin', 500);
+        }
+    }
+
+    /**
+     * Edit detail iuran milik user yang sedang login.
+     * Hanya bisa dilakukan jika transaksi masih berstatus 'progress'.
+     * User hanya bisa mengedit row detail yang memiliki relasi dengan dirinya.
+     */
+    public function editDetailIuran(Request $request)
+    {
+        try {
+            $request->validate([
+                'detail_id'                => 'required|exists:iuran_transaction_details,id',
+                'tahun_iuran'              => 'required|digits:4|integer',
+                'biaya_regis_anggota_baru' => 'required|numeric|min:0',
+                'biaya_iuran_tahunan'      => 'required|numeric|min:0',
+            ], [
+                'tahun_iuran.required'              => 'Tahun iuran wajib diisi.',
+                'tahun_iuran.digits'                => 'Tahun iuran harus terdiri dari 4 digit.',
+                'tahun_iuran.integer'               => 'Tahun iuran harus berupa angka.',
+                'biaya_regis_anggota_baru.required' => 'Biaya registrasi anggota baru wajib diisi.',
+                'biaya_regis_anggota_baru.numeric'  => 'Biaya registrasi anggota baru harus berupa angka.',
+                'biaya_regis_anggota_baru.min'      => 'Biaya registrasi anggota baru tidak boleh kurang dari 0.',
+                'biaya_iuran_tahunan.required'      => 'Biaya iuran tahunan wajib diisi.',
+                'biaya_iuran_tahunan.numeric'       => 'Biaya iuran tahunan harus berupa angka.',
+                'biaya_iuran_tahunan.min'           => 'Biaya iuran tahunan tidak boleh kurang dari 0.',
+            ]);
+
+            // Pastikan detail ini milik user yang sedang login
+            $detail = IuranTransactionDetail::with('iuran')
+                ->where('id', $request->detail_id)
+                ->where('user_id', Auth::id())
+                ->first();
+
+            if (!$detail) {
+                return FormatResponseJson::error(null, 'Data detail iuran tidak ditemukan atau bukan milik Anda', 403);
+            }
+
+            // Pastikan transaksi induk masih berstatus 'progress' (belum diapprove)
+            if ($detail->iuran->status !== 'progress') {
+                return FormatResponseJson::error(null, 'Transaksi sudah diverifikasi, tidak dapat diedit', 403);
+            }
+
+            $detail->update([
+                'tahun_iuran'              => $request->tahun_iuran,
+                'biaya_regis_anggota_baru' => (float)$request->biaya_regis_anggota_baru,
+                'biaya_iuran_tahunan'      => (float)$request->biaya_iuran_tahunan,
+            ]);
+
+            // Recalculate grand_total pada transaksi induk
+            $newGrandTotal = IuranTransactionDetail::where('tr_iuran_id', $detail->tr_iuran_id)
+                ->selectRaw('SUM(biaya_regis_anggota_baru + biaya_iuran_tahunan) as total')
+                ->value('total');
+
+            $detail->iuran->update(['grand_total' => (float)$newGrandTotal]);
+
+            return FormatResponseJson::success($detail, 'Detail iuran berhasil diperbarui');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Kirim sebagai object agar JS bisa render error per field
+            return FormatResponseJson::error(null, $e->errors(), 422);
+        } catch (\Exception $e) {
+            \Log::error('Error in editDetailIuran: ' . $e->getMessage());
+            return FormatResponseJson::error(null, 'Gagal memperbarui data. Silahkan hubungi admin.', 500);
+        }
+    }
+
+    /**
+     * Hapus transaksi iuran beserta seluruh detailnya.
+     * Hanya bisa dilakukan oleh user yang memiliki relasi ke IuranTransaction (user_id).
+     * Hanya bisa dihapus jika masih berstatus 'progress'.
+     */
+    public function deleteTransaksiIuran(Request $request)
+    {
+        try {
+            $request->validate([
+                'iuran_id' => 'required|exists:iuran_transactions,id',
+            ]);
+
+            // Pastikan transaksi ini adalah milik user yang sedang login
+            $transaksi = IuranTransaction::where('id', $request->iuran_id)
+                ->where('user_id', Auth::id())
+                ->first();
+
+            if (!$transaksi) {
+                return FormatResponseJson::error(null, 'Transaksi tidak ditemukan atau bukan milik Anda', 403);
+            }
+
+            // Hanya boleh hapus jika belum diverifikasi
+            if ($transaksi->status !== 'progress') {
+                return FormatResponseJson::error(null, 'Transaksi sudah diverifikasi, tidak dapat dihapus', 403);
+            }
+
+            // Hapus file bukti transfer jika ada
+            $filePath = public_path($transaksi->iuran_image_transfer);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+
+            // Hapus detail dan master (detail dihapus dulu karena foreign key)
+            IuranTransactionDetail::where('tr_iuran_id', $transaksi->id)->delete();
+            $transaksi->delete();
+
+            return FormatResponseJson::success(null, 'Transaksi iuran berhasil dihapus');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Kirim sebagai object agar JS bisa render error per field
+            return FormatResponseJson::error(null, $e->errors(), 422);
+        } catch (\Exception $e) {
+            \Log::error('Error in deleteTransaksiIuran: ' . $e->getMessage());
+            return FormatResponseJson::error(null, 'Gagal menghapus transaksi. Silahkan hubungi admin.', 500);
         }
     }
 }

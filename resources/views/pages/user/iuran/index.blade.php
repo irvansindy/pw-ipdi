@@ -33,8 +33,8 @@
             </div>
         </div>
     </section>
-    {{-- @include('pages.user.iuran.checkout') --}}
     @include('pages.user.iuran.detail')
+    @include('pages.user.iuran.edit_detail_iuran')
     @include('pages.user.iuran.upload_file_iuran_transfer')
     @include('layouts.users.footer')
 @endsection
