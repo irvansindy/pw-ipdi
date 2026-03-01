@@ -91,9 +91,9 @@ Route::group(['middleware' => ['auth', 'role:user|admin|superadmin|ketua|sekreta
 	Route::post('/store-iuran-peserta', [userIuran::class,'storeIuran'])->name('store-iuran-peserta');
 	Route::post('/upload-iuran-peserta', [userIuran::class,'uploadIuran'])->name('upload-iuran-peserta');
 	// Edit detail iuran — hanya user pemilik detail (user_id match) + status masih 'progress'
-	Route::post('/iuran/detail/edit', [userIuran::class, 'editDetailIuran'])->name('edit-detail-iuran');
+	Route::post('/user/iuran/detail/edit', [userIuran::class, 'editDetailIuran'])->name('user-edit-detail-iuran');
 	// Delete transaksi iuran — hanya user pemilik transaksi (user_id match) + status masih 'progress'
-	Route::delete('/iuran/delete', [userIuran::class, 'deleteTransaksiIuran'])->name('delete-transaksi-iuran');
+	Route::delete('/user/iuran/delete', [userIuran::class, 'deleteTransaksiIuran'])->name('user-delete-transaksi-iuran');
 
 	// Upload transaction files (multiple)
 	Route::post('/upload-transaction', [TransactionController::class, 'uploadTransaction'])->name('upload-transaction');
@@ -156,7 +156,6 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::post('/approve-iuran', [IuranController::class,'approveIuran'])->name('approve-iuran');
 	// Edit detail iuran — admin bisa edit semua, tanpa batasan kepemilikan/status
     Route::post('/iuran/detail/edit', [IuranController::class, 'editDetailIuran'])->name('edit-detail-iuran');
-
     // Delete transaksi iuran — admin bisa hapus semua, tanpa batasan kepemilikan/status
     Route::delete('/iuran/delete', [IuranController::class, 'deleteTransaksiIuran'])->name('delete-transaksi-iuran');
 

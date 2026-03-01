@@ -294,7 +294,7 @@
                 input.val(20000).prop('readonly', true).addClass('bg-light').removeClass('is-invalid');
                 $('#err_biaya_20k').text('').addClass('d-none');
             } else {
-                input.val('').prop('readonly', false).removeClass('bg-light');
+                input.val('0').prop('readonly', false).removeClass('bg-light');
             }
         });
 
@@ -307,7 +307,7 @@
                 input.val(50000).prop('readonly', true).addClass('bg-light').removeClass('is-invalid');
                 $('#err_biaya_50k').text('').addClass('d-none');
             } else {
-                input.val('').prop('readonly', false).removeClass('bg-light');
+                input.val('0').prop('readonly', false).removeClass('bg-light');
             }
         });
 

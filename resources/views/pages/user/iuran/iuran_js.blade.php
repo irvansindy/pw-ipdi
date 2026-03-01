@@ -444,8 +444,38 @@
             $('#edit_detail_biaya_50k').val($(this).data('biaya_50k'));
         });
 
+        // =====================================================================
+        // CHECKBOX AUTO-FILL 20K
+        // =====================================================================
+        $(document).on('change', '#check_biaya_20k', function() {
+            const input = $('#edit_detail_biaya_20k');
+            if ($(this).is(':checked')) {
+                input.val(20000).prop('readonly', true).addClass('bg-light').removeClass('is-invalid');
+                $('#err_biaya_20k').text('').addClass('d-none');
+            } else {
+                input.val('0').prop('readonly', false).removeClass('bg-light');
+            }
+        });
+
+        // =====================================================================
+        // CHECKBOX AUTO-FILL 50K
+        // =====================================================================
+        $(document).on('change', '#check_biaya_50k', function() {
+            const input = $('#edit_detail_biaya_50k');
+            if ($(this).is(':checked')) {
+                input.val(50000).prop('readonly', true).addClass('bg-light').removeClass('is-invalid');
+                $('#err_biaya_50k').text('').addClass('d-none');
+            } else {
+                input.val('0').prop('readonly', false).removeClass('bg-light');
+            }
+        });
+
         // Reset state setiap modal dibuka
         $('#modal_edit_detail_iuran').on('show.bs.modal', function() {
+            $('#check_biaya_20k').prop('checked', false);
+            $('#check_biaya_50k').prop('checked', false);
+            $('#edit_detail_biaya_20k').prop('readonly', false).removeClass('bg-light');
+            $('#edit_detail_biaya_50k').prop('readonly', false).removeClass('bg-light');
             clearFieldErrors(editDetailFieldMap);
         });
 
@@ -472,7 +502,7 @@
 
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url: '{{ route('edit-detail-iuran') }}',
+                url: '{{ route('user-edit-detail-iuran') }}',
                 type: 'POST',
                 data: {
                     detail_id:                $('#edit_detail_id').val(),
@@ -527,7 +557,7 @@
                 if (result.isConfirmed) {
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                        url: '{{ route('delete-transaksi-iuran') }}',
+                        url: '{{ route('user-delete-transaksi-iuran') }}',
                         type: 'DELETE',
                         data: { iuran_id: iuranId },
                         dataType: 'json',
