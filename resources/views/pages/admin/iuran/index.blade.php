@@ -9,7 +9,29 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Iuran Management</h6>
+                            <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+                                {{-- Filter Tahun --}}
+                                <select class="form-select form-select-sm" id="filter_tahun_export" style="width: auto;">
+                                    <option value="">Tahun</option>
+                                    @for ($y = now()->year; $y >= now()->year - 5; $y--)
+                                        <option value="{{ $y }}">{{ $y }}</option>
+                                    @endfor
+                                </select>
 
+                                {{-- Filter Status --}}
+                                <select class="form-select form-select-sm" id="filter_status_export" style="width: auto;">
+                                    <option value="">Status</option>
+                                    <option value="progress">Menunggu</option>
+                                    <option value="verified">Terverifikasi</option>
+                                    <option value="success">Disetujui</option>
+                                </select>
+
+                                {{-- Tombol Export --}}
+                                <button type="button" class="btn bg-gradient-success btn-sm" id="btn_export_iuran" style="margin-bottom: 0px !important;">
+                                    <i class="fas fa-file-excel me-1"></i> Export Excel
+                                </button>
+
+                            </div>
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">

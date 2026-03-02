@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Helpers\FormatResponseJson;
 use App\Models\IuranTransaction;
 use App\Models\IuranTransactionDetail;
-
+use App\Exports\IuranExport;
+use Maatwebsite\Excel\Facades\Excel;
 class IuranController extends Controller
 {
     public function index()
@@ -151,5 +152,33 @@ class IuranController extends Controller
             \Log::error('Admin deleteTransaksiIuran: ' . $e->getMessage());
             return FormatResponseJson::error(null, 'Gagal menghapus transaksi. Silahkan hubungi developer.', 500);
         }
+    }
+
+    /**
+     * Export data iuran ke Excel.
+     *
+     * Query params (semua opsional):
+     *   ?tahun=2024            → filter berdasarkan tahun iuran
+     *   ?status=success        → filter berdasarkan status transaksi (progress|verified|success)
+     *
+     * Contoh URL:
+     *   /admin/iuran/export
+     *   /admin/iuran/export?tahun=2024
+     *   /admin/iuran/export?status=success
+     *   /admin/iuran/export?tahun=2024&status=success
+     */
+    public function exportIuran(Request $request)
+    {
+        $tahun  = $request->filled('tahun')  ? (int) $request->tahun  : null;
+        $status = $request->filled('status') ? $request->status       : null;
+
+        // Nama file dinamis sesuai filter
+        $fileParts = ['Data_Iuran'];
+        if ($tahun)  $fileParts[] = $tahun;
+        if ($status) $fileParts[] = ucfirst($status);
+        $fileParts[] = now()->format('Ymd_His');
+        $fileName = implode('_', $fileParts) . '.xlsx';
+
+        return Excel::download(new IuranExport($tahun, $status), $fileName);
     }
 }

@@ -1,12 +1,12 @@
 <script>
-    // Helper functions for loading states
+    // =========================================================================
+    // HELPERS
+    // =========================================================================
     function setButtonLoading(button, isLoading) {
         if (isLoading) {
             $(button).prop('disabled', true);
             $(button).data('original-html', $(button).html());
-            $(button).html(
-                `<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...`
-            );
+            $(button).html(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...`);
         } else {
             $(button).prop('disabled', false);
             $(button).html($(button).data('original-html') || 'Payment');
@@ -23,196 +23,195 @@
         `);
     }
 
-    $(document).ready(function() {
-        // <button type="button" class="btn btn-primary btn-sm ms-auto">Save</button>
-        $('#button_action_payment_iuran').empty()
-        $('#button_action_payment_iuran').append(`
-        <div class="ms-auto">
-            <a href="{{ route('iuran-anggota') }}" class="btn btn-danger btn-sm ms-auto mx-1">Cancel</a>
-            <button type="button" class="btn bg-gradient-dark btn-sm ms-auto" id="generate_payment_iuran" data-iuran_id="">Payment</button>
-        </div>
-    `)
+    // Cache daftar peserta agar tidak fetch ulang tiap tambah row
+    let cachedPeserta = null;
 
-        function updateIdIuran() {
-            $('.cls_data_array_iuran').each(function(i) {
-                const index = i + 1
-                const id_select_nama_iuran = 'nama_peserta_iuran_central_dialisis_' + index
-                const id_iuran_20k = 'iuran_20k_' + index
-                const id_iuran_50k = 'iuran_50k_' + index
+    // Buat satu row form peserta
+    // isKolektif: true  → tampilkan tombol minus (hapus row)
+    // isKolektif: false → sembunyikan tombol minus (mandiri selalu 1 row)
+    function buildRowPeserta(index, pesertaList, isKolektif) {
+        let options = '<option value="">Pilih Peserta</option>';
+        pesertaList.forEach(p => {
+            options += `<option value="${p.id}">${p.username} (${p.dialisis ? p.dialisis.name : 'center dialisis belum diisi'})</option>`;
+        });
 
-                $(this).find('select[name="nama_peserta_iuran_central_dialisis"]').attr('id',
-                    id_select_nama_iuran);
-                $(this).find('input[name="iuran_20k[]"]').attr('id', id_iuran_20k);
-                $(this).find('input[name="iuran_50k[]"]').attr('id', id_iuran_50k);
+        const minusBtn = isKolektif
+            ? `<div class="col-md-auto d-flex align-items-end">
+                    <button type="button" class="btn btn-danger mb-1 btn_hapus_peserta">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </div>`
+            : '';
 
-                // Update label 'for' attributes to match the input IDs
-                $(this).find('label.label_iuran_20k').attr('for', id_iuran_20k);
-                $(this).find('label.label_iuran_50k').attr('for', id_iuran_50k);
-            })
+        return `
+        <div class="row g-2 align-items-end cls_data_array_iuran mb-2" data-index="${index}">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label class="form-control-label">Nama Peserta</label>
+                    <select class="form-control nama_peserta_iuran_central_dialisis" name="peserta[]" style="width:100%" required>
+                        ${options}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-control-label d-block">Regis 20K</label>
+                    <div class="form-check mt-1">
+                        <input class="form-check-input iuran_20k" type="checkbox" value="20" name="iuran_20k[]">
+                        <label class="form-check-label">Ya</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-control-label d-block">Iuran 50K</label>
+                    <div class="form-check mt-1">
+                        <input class="form-check-input iuran_50k" type="checkbox" value="50" name="iuran_50k[]">
+                        <label class="form-check-label">Ya</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-control-label">Tahun</label>
+                    <input type="number" class="form-control" name="tahun_pembayaran_iuran[]" value="${new Date().getFullYear()}">
+                </div>
+            </div>
+            ${minusBtn}
+        </div>`;
+    }
+
+    // Inisialisasi select2 pada row terbaru saja
+    function initSelect2LastRow() {
+        $('.cls_data_array_iuran:last .nama_peserta_iuran_central_dialisis').select2({
+            width: '100%'
+        });
+    }
+
+    // Fetch peserta (gunakan cache jika sudah ada)
+    function fetchPeserta(callback) {
+        if (cachedPeserta) {
+            callback(cachedPeserta);
+            return;
         }
-
-        $(document).on('change', '#jumlah_peserta_iuran', function() {
-            let jumlah_peserta_iuran = $('#jumlah_peserta_iuran').val()
-            if (jumlah_peserta_iuran <= 0) {
-                $('.array-list-peserta-iuran').empty()
-                $('.array-list-peserta-iuran').append(
-                    `<p class="justify-content-center">Belum ada data</p>`)
-
-            } else {
-                $('.array-list-peserta-iuran').empty()
-                showLoader('.array-list-peserta-iuran');
-
-                $.ajax({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type: 'GET',
-                    url: '{{ route('fetch-peserta') }}',
-                    timeout: 10000,
-                    success: function(res) {
-                        $('.array-list-peserta-iuran').empty();
-
-                        if (!res.data || res.data.length === 0) {
-                            $('.array-list-peserta-iuran').append(
-                                `<p class="text-danger">Tidak ada data peserta tersedia</p>`
-                            );
-                            return;
-                        }
-
-                        let peserta_iuran = res.data;
-                        for (let i = 0; i < jumlah_peserta_iuran; i++) {
-                            let pesertaOptions = '<option value="">Pilih Peserta</option>';
-                            peserta_iuran.forEach(p => {
-                                pesertaOptions +=
-                                    `<option value="${p.id}">${p.username} (${p.dialisis != null ? p.dialisis.name : 'center dialisis belum diisi'})</option>`;
-                            });
-
-                            $('.array-list-peserta-iuran').append(`
-                            <div class="row cls_data_array_iuran">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="nama_peserta_iuran_central_dialisis_${i}" class="form-control-label">Nama Peserta</label>
-                                        <select class="form-control nama_peserta_iuran_central_dialisis" name="peserta[]" id="nama_peserta_iuran_central_dialisis_${i}" style="width: 100%" required>
-                                            ${pesertaOptions}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="iuran_20k_${i}">Regis 20K</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input iuran_20k" type="checkbox" value="20" name="iuran_20k[]" id="iuran_20k_${i}">
-                                            <label class="form-check-label" for="iuran_20k_${i}">
-                                                Ya
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="iuran_50k_${i}">Iuran 50K</label>
-                                        <div class="form-check">
-                                            <input class="form-check-input iuran_50k" type="checkbox" value="50" name="iuran_50k[]" id="iuran_50k_${i}">
-                                            <label class="form-check-label" for="iuran_50k_${i}">
-                                                Ya
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="tahun_pembayaran_iuran_${i}">Tahun</label>
-                                        <input type="number" class="form-control" name="tahun_pembayaran_iuran[]" id="tahun_pembayaran_iuran_${i}" value="${new Date().getFullYear()}">
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-                        }
-
-                        $('.nama_peserta_iuran_central_dialisis').select2();
-                        updateIdIuran();
-                    },
-                    error: function(xhr, status, error) {
-                        $('.array-list-peserta-iuran').empty();
-                        $('.array-list-peserta-iuran').append(`
-                        <div class="alert alert-danger">
-                            <strong>Error!</strong> Gagal memuat data peserta. Silahkan coba lagi.
-                        </div>
-                    `);
-                        console.error('Error:', error);
-                    }
-                })
+        showLoader('.array-list-peserta-iuran');
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'GET',
+            url: '{{ route('fetch-peserta') }}',
+            timeout: 10000,
+            success: function(res) {
+                if (!res.data || res.data.length === 0) {
+                    $('.array-list-peserta-iuran').html(`<p class="text-danger">Tidak ada data peserta tersedia.</p>`);
+                    return;
+                }
+                cachedPeserta = res.data;
+                callback(cachedPeserta);
+            },
+            error: function() {
+                $('.array-list-peserta-iuran').html(`
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> Gagal memuat data peserta. Silahkan coba lagi.
+                    </div>`);
             }
-        })
-        // <button type="button" class="btn btn-danger mt-4 button_pop_iuran" id=""><i class="fa-solid fa-minus"></i></button>
+        });
+    }
 
+    $(document).ready(function() {
+
+        // Tombol aksi default
+        $('#button_action_payment_iuran').html(`
+            <div class="ms-auto">
+                <a href="{{ route('iuran-anggota') }}" class="btn btn-danger btn-sm mx-1">Cancel</a>
+                <button type="button" class="btn bg-gradient-dark btn-sm" id="generate_payment_iuran">Payment</button>
+            </div>
+        `);
+
+        // =====================================================================
+        // PILIH TIPE IURAN — render row awal secara dinamis
+        // =====================================================================
+        $(document).on('change', '.data_iuran_type', function() {
+            const tipe = $('input[name=iuran_type]:checked').val();
+
+            // Reset area
+            $('.array-list-peserta-iuran').empty();
+            $('.for-grand-total-payment-iuran').empty();
+            cachedPeserta = null; // reset cache agar fresh
+
+            if (tipe === 'mandiri') {
+                $('#wrapper_btn_tambah').hide();
+                $('#section_peserta').show();
+
+                fetchPeserta(function(list) {
+                    $('.array-list-peserta-iuran').html(buildRowPeserta(0, list, false));
+                    $('.nama_peserta_iuran_central_dialisis').select2({ width: '100%' });
+                });
+
+            } else if (tipe === 'kolektif') {
+                $('#wrapper_btn_tambah').show();
+                $('#section_peserta').show();
+
+                fetchPeserta(function(list) {
+                    $('.array-list-peserta-iuran').html(buildRowPeserta(0, list, true));
+                    initSelect2LastRow();
+                });
+            }
+        });
+
+        // =====================================================================
+        // TAMBAH ROW PESERTA (kolektif saja)
+        // =====================================================================
+        $(document).on('click', '#btn_tambah_peserta', function() {
+            if (!cachedPeserta) return;
+
+            const index = $('.cls_data_array_iuran').length;
+            $('.array-list-peserta-iuran').append(buildRowPeserta(index, cachedPeserta, true));
+            initSelect2LastRow();
+        });
+
+        // =====================================================================
+        // HAPUS ROW PESERTA
+        // =====================================================================
+        $(document).on('click', '.btn_hapus_peserta', function() {
+            // Minimal selalu ada 1 row
+            if ($('.cls_data_array_iuran').length <= 1) {
+                Swal.fire({ icon: 'warning', title: 'Perhatian!', text: 'Minimal harus ada 1 peserta.' });
+                return;
+            }
+            $(this).closest('.cls_data_array_iuran').remove();
+        });
+
+        // =====================================================================
+        // GENERATE PAYMENT (hitung total)
+        // =====================================================================
         $(document).on('click', '#generate_payment_iuran', function(e) {
-            e.preventDefault()
+            e.preventDefault();
 
-            let btn = $(this);
-
-            // Validasi form
-            let iuranType = $("input[name=iuran_type]:checked").val();
-            let pesertaCount = $('.nama_peserta_iuran_central_dialisis').length;
-            let fileUpload = $('input[name="iuran_file_upload"]')[0].files.length;
+            const iuranType  = $('input[name=iuran_type]:checked').val();
+            const pesertaCount = $('.nama_peserta_iuran_central_dialisis').length;
+            const fileUpload = $('input[name="iuran_file_upload"]')[0].files.length;
 
             if (!iuranType) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning!',
-                    text: 'Silahkan pilih tipe iuran (Mandiri atau Batch/Kolektif)',
-                });
-                return;
+                return Swal.fire({ icon: 'warning', title: 'Warning!', text: 'Silahkan pilih tipe iuran (Mandiri atau Batch/Kolektif).' });
             }
-
             if (fileUpload === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning!',
-                    text: 'Silahkan upload bukti transfer',
-                });
-                return;
+                return Swal.fire({ icon: 'warning', title: 'Warning!', text: 'Silahkan upload bukti transfer.' });
             }
-
             if (pesertaCount === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning!',
-                    text: 'Silahkan isi data peserta minimal 1 orang',
-                });
-                return;
+                return Swal.fire({ icon: 'warning', title: 'Warning!', text: 'Silahkan isi data peserta minimal 1 orang.' });
             }
 
+            let btn = $(this);
             setButtonLoading(btn, true);
 
-            let form_data = new FormData($('#form_create_data_iuran')[0])
-
-            form_data.delete('peserta[]');
+            let form_data = new FormData($('#form_create_data_iuran')[0]);
             form_data.delete('iuran_20k[]');
             form_data.delete('iuran_50k[]');
-
-            // Iterate through each select option
-            $('.nama_peserta_iuran_central_dialisis').each(function(i) {
-                let value = $(this).val()
-                if (value) {
-                    form_data.append('peserta[]', value);
-                }
-            })
-            // Iterate through each checkbox with the class `iuran_20k`
-            $('.iuran_20k').each(function(i) {
-                let value = $(this).is(':checked') ? 20000 : 0;
-                form_data.append('iuran_20k[]', value);
-            });
-            // Iterate through each checkbox with the class `iuran_50k`
-            $('.iuran_50k').each(function(i) {
-                let value = $(this).is(':checked') ? 50000 : 0;
-                form_data.append('iuran_50k[]', value);
-            });
+            $('.iuran_20k').each(function() { form_data.append('iuran_20k[]', $(this).is(':checked') ? 20000 : 0); });
+            $('.iuran_50k').each(function() { form_data.append('iuran_50k[]', $(this).is(':checked') ? 50000 : 0); });
 
             $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{ route('generate-payment-iuran') }}',
                 data: form_data,
@@ -221,116 +220,70 @@
                 cache: false,
                 timeout: 10000,
                 success: function(res) {
-                    $('.for-grand-total-payment-iuran').empty()
-                    let grand_total = res.data != null ? res.data : 0
+                    setButtonLoading(btn, false);
+                    const grand_total = res.data ?? 0;
+                    const formattedTotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grand_total);
 
-                    let formattedTotal = new Intl.NumberFormat('id-ID', {
-                        style: 'currency',
-                        currency: 'IDR'
-                    }).format(grand_total);
-
-                    $('.for-grand-total-payment-iuran').append(
+                    $('.for-grand-total-payment-iuran').html(
                         `<h5 class="text-info"><strong>Total Bayar: ${formattedTotal}</strong></h5>`
-                    )
-                    $('#val_grand_total_payment_iuran').val(grand_total)
-                    $('#button_action_payment_iuran').empty()
-                    $('#button_action_payment_iuran').append(`
+                    );
+                    $('#val_grand_total_payment_iuran').val(grand_total);
+                    $('#button_action_payment_iuran').html(`
                         <div class="ms-auto">
-                            <a href="{{ route('iuran-anggota') }}" class="btn btn-danger btn-sm ms-auto mx-1">Cancel</a>
-                            <button type="button" class="btn bg-gradient-primary btn-sm ms-auto" id="create_transaction_iuran">Submit</button>
+                            <a href="{{ route('iuran-anggota') }}" class="btn btn-danger btn-sm mx-1">Cancel</a>
+                            <button type="button" class="btn bg-gradient-primary btn-sm" id="create_transaction_iuran">Submit</button>
                         </div>
-                    `)
-
-                    setButtonLoading(btn, false);
+                    `);
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr) {
                     setButtonLoading(btn, false);
-
                     let errorMsg = 'Gagal menghitung total pembayaran. Silahkan coba lagi.';
                     try {
-                        let response = JSON.parse(xhr.responseText);
-                        if (response.meta?.message) {
-                            errorMsg = response.meta.message;
-                        } else if (response.message) {
-                            errorMsg = response.message;
-                        }
-                    } catch (e) {}
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: errorMsg,
-                    });
+                        const r = JSON.parse(xhr.responseText);
+                        errorMsg = r.meta?.message || r.message || errorMsg;
+                    } catch(e) {}
+                    Swal.fire({ icon: 'error', title: 'Error!', text: errorMsg });
                 }
-            })
-        })
+            });
+        });
 
+        // =====================================================================
+        // SUBMIT TRANSAKSI
+        // =====================================================================
         $(document).on('click', '#create_transaction_iuran', function(e) {
-            e.preventDefault()
+            e.preventDefault();
 
-            // Validasi form
-            let peserta = $('.nama_peserta_iuran_central_dialisis').length;
-            let iuranType = $("input[name=iuran_type]:checked").val();
-            let fileUpload = $('input[name="iuran_file_upload"]')[0].files.length;
+            const iuranType  = $('input[name=iuran_type]:checked').val();
+            const pesertaCount = $('.nama_peserta_iuran_central_dialisis').length;
+            const fileUpload = $('input[name="iuran_file_upload"]')[0].files.length;
 
             if (!iuranType) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning!',
-                    text: 'Silahkan pilih tipe iuran (Mandiri atau Batch/Kolektif)',
-                });
-                return;
+                return Swal.fire({ icon: 'warning', title: 'Warning!', text: 'Silahkan pilih tipe iuran.' });
             }
-
             if (fileUpload === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning!',
-                    text: 'Silahkan upload bukti transfer',
-                });
-                return;
+                return Swal.fire({ icon: 'warning', title: 'Warning!', text: 'Silahkan upload bukti transfer.' });
             }
-
-            if (peserta === 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Warning!',
-                    text: 'Silahkan isi data peserta minimal 1 orang',
-                });
-                return;
+            if (pesertaCount === 0) {
+                return Swal.fire({ icon: 'warning', title: 'Warning!', text: 'Silahkan isi data peserta minimal 1 orang.' });
             }
 
             let btn = $(this);
             setButtonLoading(btn, true);
 
-            let form_data = new FormData($('#form_create_data_iuran')[0])
-
+            let form_data = new FormData($('#form_create_data_iuran')[0]);
             form_data.delete('peserta[]');
             form_data.delete('iuran_20k[]');
             form_data.delete('iuran_50k[]');
 
-            // Iterate through each select option
-            $('.nama_peserta_iuran_central_dialisis').each(function(i) {
-                let value = $(this).val()
-                if (value) {
-                    form_data.append('peserta[]', value);
-                }
-            })
-            // Iterate through each checkbox with the class `iuran_20k`
-            $('.iuran_20k').each(function(i) {
-                let value = $(this).is(':checked') ? 20000 : 0;
-                form_data.append('iuran_20k[]', value);
+            $('.nama_peserta_iuran_central_dialisis').each(function() {
+                const val = $(this).val();
+                if (val) form_data.append('peserta[]', val);
             });
-            // Iterate through each checkbox with the class `iuran_50k`
-            $('.iuran_50k').each(function(i) {
-                let value = $(this).is(':checked') ? 50000 : 0;
-                form_data.append('iuran_50k[]', value);
-            });
+            $('.iuran_20k').each(function() { form_data.append('iuran_20k[]', $(this).is(':checked') ? 20000 : 0); });
+            $('.iuran_50k').each(function() { form_data.append('iuran_50k[]', $(this).is(':checked') ? 50000 : 0); });
 
             $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 url: '{{ route('store-iuran-peserta') }}',
                 type: 'POST',
                 data: form_data,
@@ -341,44 +294,22 @@
                 success: function(res) {
                     setButtonLoading(btn, false);
                     $('#form_create_data_iuran')[0].reset();
-
-                    Swal.fire({
-                        icon: "success",
-                        title: 'Berhasil!',
-                        text: res.meta.message,
-                        confirmButtonText: 'OK'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = "{{ route('iuran-anggota') }}";
-                        }
-                    });
+                    Swal.fire({ icon: 'success', title: 'Berhasil!', text: res.meta.message, confirmButtonText: 'OK' })
+                        .then(result => {
+                            if (result.isConfirmed) window.location.href = "{{ route('iuran-anggota') }}";
+                        });
                 },
-                error: function(xhr, status, error) {
+                error: function(xhr) {
                     setButtonLoading(btn, false);
-
                     let errorMsg = 'Gagal menyimpan data. Silahkan hubungi admin.';
                     try {
-                        let response = JSON.parse(xhr.responseText);
-                        if (response.meta?.message) {
-                            errorMsg = response.meta.message;
-                        } else if (response.message) {
-                            errorMsg = response.message;
-                        }
-                    } catch (e) {
-                        console.error('Error parsing response:', e);
-                    }
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error!',
-                        text: errorMsg,
-                    });
-
-                    console.error('XHR Error:', xhr);
+                        const r = JSON.parse(xhr.responseText);
+                        errorMsg = r.meta?.message || r.message || errorMsg;
+                    } catch(e) {}
+                    Swal.fire({ icon: 'error', title: 'Error!', text: errorMsg });
                 }
-            })
-        })
+            });
+        });
 
-        $('.nama_peserta_iuran_central_dialisis').select2()
-    })
+    });
 </script>
