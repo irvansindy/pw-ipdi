@@ -52,8 +52,32 @@ class IuranController extends Controller
     public function generatePaymentIuran(Request $request)
     {
         try {
-            $total_iuran_20k = collect($request->iuran_20k)->sum();
-            $total_iuran_50k = collect($request->iuran_50k)->sum();
+            // Hitung total regis (20k) dan total iuran tahunan (50k) dengan memperhitungkan jumlah tahun yang dipilih
+            $iuran20 = $request->input('iuran_20k', []);
+            $iuran50 = $request->input('iuran_50k', []);
+            $tahun = $request->input('tahun_pembayaran_iuran', []);
+
+            $total_iuran_20k = 0;
+            $total_iuran_50k = 0;
+
+            $max = max([count($iuran20 ?? []), count($iuran50 ?? []), count($tahun ?? [])]);
+            for ($i = 0; $i < $max; $i++) {
+                $reg = isset($iuran20[$i]) && is_numeric($iuran20[$i]) ? (float)$iuran20[$i] : 0;
+                $val50 = isset($iuran50[$i]) && is_numeric($iuran50[$i]) ? (float)$iuran50[$i] : 0;
+
+                $yearsCount = 0;
+                if (isset($tahun[$i])) {
+                    if (is_array($tahun[$i])) {
+                        $yearsCount = count($tahun[$i]);
+                    } elseif ($tahun[$i] !== '') {
+                        $yearsCount = 1;
+                    }
+                }
+
+                $total_iuran_20k += $reg;
+                $total_iuran_50k += $val50 * $yearsCount;
+            }
+
             $grand_total = (float)($total_iuran_20k + $total_iuran_50k);
             return FormatResponseJson::success($grand_total, 'generate user payment iuran successfully');
         } catch (\Exception $e) {
@@ -72,6 +96,8 @@ class IuranController extends Controller
                 'peserta.*' => 'required|exists:users,id',
                 'iuran_20k' => 'required|array',
                 'iuran_50k' => 'required|array',
+                'tahun_pembayaran_iuran' => 'required|array',
+                'tahun_pembayaran_iuran.*' => 'required|array|min:1',
             ]);
 
             $lastTransaction = IuranTransaction::latest('id')->first();
@@ -80,8 +106,31 @@ class IuranController extends Controller
 
             $iuran_type = $request->iuran_type === 'kolektif' ? 1 : 0;
 
-            $total_iuran_20k = array_sum(array_filter($request->iuran_20k ?? [], 'is_numeric'));
-            $total_iuran_50k = array_sum(array_filter($request->iuran_50k ?? [], 'is_numeric'));
+            // Hitung total dengan memperhitungkan jumlah tahun yang dipilih per peserta
+            $iuran20 = $request->input('iuran_20k', []);
+            $iuran50 = $request->input('iuran_50k', []);
+            $tahun = $request->input('tahun_pembayaran_iuran', []);
+
+            $total_iuran_20k = 0;
+            $total_iuran_50k = 0;
+
+            $max = max([count($iuran20 ?? []), count($iuran50 ?? []), count($request->peserta ?? [])]);
+            for ($i = 0; $i < $max; $i++) {
+                $reg = isset($iuran20[$i]) && is_numeric($iuran20[$i]) ? (float)$iuran20[$i] : 0;
+                $val50 = isset($iuran50[$i]) && is_numeric($iuran50[$i]) ? (float)$iuran50[$i] : 0;
+
+                $yearsCount = 0;
+                if (isset($tahun[$i])) {
+                    if (is_array($tahun[$i])) {
+                        $yearsCount = count($tahun[$i]);
+                    } elseif ($tahun[$i] !== '') {
+                        $yearsCount = 1;
+                    }
+                }
+
+                $total_iuran_20k += $reg;
+                $total_iuran_50k += $val50 * $yearsCount;
+            }
             $grand_total = (float)($total_iuran_20k + $total_iuran_50k);
 
             if ($grand_total <= 0) {
@@ -106,12 +155,19 @@ class IuranController extends Controller
             if (count($request->peserta) > 0) {
                 $details = [];
                 foreach ($request->peserta as $i => $peserta_id) {
+                    $reg = isset($iuran20[$i]) && is_numeric($iuran20[$i]) ? (float)$iuran20[$i] : 0;
+                    $val50 = isset($iuran50[$i]) && is_numeric($iuran50[$i]) ? (float)$iuran50[$i] : 0;
+
+                    $years = $request->tahun_pembayaran_iuran[$i] ?? [];
+                    $yearsCount = is_array($years) ? count($years) : ($years !== '' ? 1 : 0);
+                    $biayaTahunan = $val50 * $yearsCount;
+
                     $details[] = [
                         'tr_iuran_id' => $master_iuran->id,
                         'user_id' => $peserta_id,
-                        'tahun_iuran' => $request->tahun_pembayaran_iuran[$i] ?? now()->year,
-                        'biaya_regis_anggota_baru' => (float)($request->iuran_20k[$i] ?? 0),
-                        'biaya_iuran_tahunan' => (float)($request->iuran_50k[$i] ?? 0),
+                        'tahun_iuran' => is_array($years) ? json_encode(array_values($years)) : ($years ?: now()->year),
+                        'biaya_regis_anggota_baru' => $reg,
+                        'biaya_iuran_tahunan' => $biayaTahunan,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
