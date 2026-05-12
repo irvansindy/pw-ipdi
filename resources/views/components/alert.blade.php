@@ -4,6 +4,15 @@
             <p class="text-white mb-0">{{ session()->get('succes') }}</p>
         </div>
     @endif
+    @if ($errors->any())
+        <div class="alert alert-danger" role="alert">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li class="text-white">{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     @if ($message = session()->has('error'))
         <div class="alert alert-danger" role="alert">
             <p class="text-white mb-0">{{ session()->get('error') }}</p>

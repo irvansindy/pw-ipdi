@@ -20,13 +20,14 @@ class TransactionExport implements FromCollection, WithHeadings
     public function collection()
     {
         $list_transaction = DB::select(
-            "SELECT 
-                b.username, 
-                b.nik, 
-                b.email, 
-                b.number_phone, 
-                b.nama_perusahaan, 
-                b.center_dialisis, 
+            "SELECT
+                b.username,
+                b.nik,
+                b.nira_ipdi,
+                b.email,
+                b.number_phone,
+                b.nama_perusahaan,
+                b.center_dialisis,
                 c.number,
                 c.proof_of_payment
             FROM transaction_details a
@@ -34,7 +35,7 @@ class TransactionExport implements FromCollection, WithHeadings
             JOIN transactions c ON a.transaction_id = c.id
             JOIN events e ON c.event_id = e.id
             JOIN categories_events cat ON e.category_event_id = cat.id
-            WHERE cat.name = ? 
+            WHERE cat.name = ?
             AND YEAR(c.created_at) = ?", [$this->category, $this->year]
         );
 
@@ -43,6 +44,7 @@ class TransactionExport implements FromCollection, WithHeadings
             return [
                 $item->username,
                 $item->nik,
+                $item->nira_ipdi,
                 $item->email,
                 $item->number_phone,
                 $item->nama_perusahaan,
@@ -60,6 +62,7 @@ class TransactionExport implements FromCollection, WithHeadings
         return [
             'Nama Lengkap',
             'NIK',
+            'NIRA IPDI',
             'Email',
             'Nomor Telp',
             'Asal Instansi',

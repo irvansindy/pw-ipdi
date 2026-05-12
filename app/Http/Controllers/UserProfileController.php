@@ -22,15 +22,48 @@ class UserProfileController extends Controller
     {
         // dd($request->photo_profile);
         $attributes = $request->validate([
-            'username' => ['required','max:255', 'min:2'],
-            'firstname' => ['max:100'],
-            'lastname' => ['max:100'],
-            'email' => ['required', 'email', 'max:255',  Rule::unique('users')->ignore(auth()->user()->id),],
-            'address' => ['max:100'],
-            'city' => ['max:100'],
-            'country' => ['max:100'],
-            'postal' => ['max:100'],
-            'about' => ['max:255']
+            'username' => ['required', 'string', 'min:2', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore(auth()->user()->id)],
+            'jenis_kelamin' => ['required', Rule::in(['L', 'P'])],
+            'nik' => ['required', 'digits:16'],
+            'nira_ppni' => ['required', 'string', 'max:255'],
+            'nira_ipdi' => ['required', 'string', 'max:255'],
+            'pw_ipdi_provinsi' => ['required', 'numeric'],
+            'pw_ipdi_kabupaten' => ['required_if:pw_ipdi_provinsi,17', 'nullable', 'numeric'],
+            'nama_perusahaan' => ['required', 'string', 'max:255'],
+            'center_dialisis' => ['required', 'numeric'],
+            'alamat_center_dialisis_perusahaan' => ['required', 'string', 'max:255'],
+            'number_phone' => ['required', 'string', 'max:20'],
+            'last_edication' => ['required', 'string', 'max:100'],
+            'address' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:100'],
+            'country' => ['required', 'string', 'max:100'],
+            'postal' => ['required', 'string', 'max:20'],
+        ], [
+            'username.required' => 'Nama harus diisi.',
+            'username.min' => 'Nama minimal 2 karakter.',
+            'email.required' => 'Email harus diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'nik.required' => 'NIK harus diisi.',
+            'nik.digits' => 'NIK harus terdiri dari 16 digit angka.',
+            'jenis_kelamin.required' => 'Jenis kelamin harus dipilih.',
+            'jenis_kelamin.in' => 'Jenis kelamin tidak valid.',
+            'nira_ppni.required' => 'NIRA PPNI harus diisi.',
+            'nira_ipdi.required' => 'NIRA IPDI harus diisi.',
+            'pw_ipdi_provinsi.required' => 'Provinsi PW IPDI harus dipilih.',
+            'pw_ipdi_provinsi.numeric' => 'Provinsi PW IPDI tidak valid.',
+            'pw_ipdi_kabupaten.required_if' => 'Kabupaten PW IPDI harus dipilih jika provinsi adalah Jawa Timur.',
+            'pw_ipdi_kabupaten.numeric' => 'Kabupaten PW IPDI tidak valid.',
+            'nama_perusahaan.required' => 'Nama perusahaan harus diisi.',
+            'center_dialisis.required' => 'Center Dialisis harus dipilih.',
+            'center_dialisis.numeric' => 'Center Dialisis tidak valid.',
+            'alamat_center_dialisis_perusahaan.required' => 'Alamat center dialisis/perusahaan harus diisi.',
+            'number_phone.required' => 'No. Hp harus diisi.',
+            'last_edication.required' => 'Pendidikan terakhir harus diisi.',
+            'address.required' => 'Alamat harus diisi.',
+            'city.required' => 'Kota harus diisi.',
+            'country.required' => 'Negara harus diisi.',
+            'postal.required' => 'Kode pos harus diisi.',
         ]);
 
         if ($request->hasFile('photo_profile')) {
@@ -123,6 +156,6 @@ class UserProfileController extends Controller
     }
     public function resetPassword()
     {
-        
+
     }
 }
