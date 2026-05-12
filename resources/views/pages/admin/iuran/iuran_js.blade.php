@@ -419,5 +419,20 @@
                 }
             });
         });
+
+        $(document).on('click', '#btn_export_iuran', function () {
+            const tahun  = $('#filter_tahun_export').val();
+            const status = $('#filter_status_export').val();
+
+            // Build query string
+            const params = new URLSearchParams();
+            if (tahun)  params.append('tahun',  tahun);
+            if (status) params.append('status', status);
+
+            const url = '{{ route('export-iuran') }}' + (params.toString() ? '?' + params.toString() : '');
+
+            // Trigger download langsung (buka di tab baru agar tidak reset halaman)
+            window.open(url, '_blank');
+        });
     });
 </script>
