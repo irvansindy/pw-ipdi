@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth', 'role:user|admin|superadmin|ketua|sekreta
 	Route::post('/user/iuran/detail/edit', [userIuran::class, 'editDetailIuran'])->name('user-edit-detail-iuran');
 	// Delete transaksi iuran — hanya user pemilik transaksi (user_id match) + status masih 'progress'
 	Route::delete('/user/iuran/delete', [userIuran::class, 'deleteTransaksiIuran'])->name('user-delete-transaksi-iuran');
-	Route::get('/iuran/export', [IuranController::class, 'exportIuran'])->name('export-iuran');
+
 	// Upload transaction files (multiple)
 	Route::post('/upload-transaction', [TransactionController::class, 'uploadTransaction'])->name('upload-transaction');
 	// Delete transaction file

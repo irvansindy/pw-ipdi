@@ -455,11 +455,16 @@
                     $('#detail_username').html(res.data.user.username);
                     $('#detail_event').html(res.data.event.name);
 
-                    let detail_event = res.data.event_detail;
-                    if (detail_event.name == 'paket') {
-                        $('#detail_date').html(moment(res.data.event_detail.start_date).format('ll') + ' (07.00 - 16.30 WIB)' + ' s/d ' + moment(res.data.event_detail.end_date).format('ll') + ' (07.00 - 16.30 WIB)');
+                    // Jika event_detail_id ada, gunakan start_date dari event_detail
+                    // Jika event_detail_id kosong, gunakan date dari event
+                    if (res.data.event_detail_id) {
+                        $('#detail_date').html(moment(res.data.event_detail.start_date)
+                            .format('ll') + ' (07.00 - 16.30 WIB)' + ' s/d ' + moment(
+                                res.data.event_detail.end_date).format('ll') +
+                            ' (07.00 - 16.30 WIB)');
                     } else {
-                        $('#detail_date').html(moment(res.data.event.date).format('ll') + ' (07.00 - 16.30 WIB)');
+                        $('#detail_date').html(moment(res.data.event.date).format('ll') +
+                            ' (07.00 - 16.30 WIB)');
                     }
 
                     $('#detail_status').html(res.data.status);
