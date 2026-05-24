@@ -98,9 +98,7 @@
 
         // Helper untuk ambil tanggal event
         function getEventStartDate(detail_event_id) {
-            // Coba cari input radio yang dipilih
             if (detail_event_id) {
-                // Cari label yang mengandung data-start_date
                 let radio = $(`input[name='event_detail'][value='${detail_event_id}']`);
                 let startDate = radio.data('start_date');
                 if (startDate) return startDate;
@@ -156,13 +154,7 @@
             }
 
             // --- Ambil tanggal event ---
-            let eventStartDate = '';
-            if (detail_event) {
-                eventStartDate = $(`input[name='event_detail']:checked`).data('start_date');
-            }
-            if (!eventStartDate) {
-                eventStartDate = $('#data_event_id').data('event_start');
-            }
+            let eventStartDate = getEventStartDate(detail_event);
 
             // Konfirmasi sebelum submit
             let confirmMessage = `
@@ -263,9 +255,15 @@
         // --- PATCH RADIO: inject data-start_date ke radio ---
         $('.event-detail-radio').each(function() {
             let id = $(this).val();
-            let startDate = $(this).closest('.form-check').find('label').text().match(/\(([^-]+)-/);
-            if (startDate && startDate[1]) {
-                $(this).attr('data-start_date', startDate[1].trim());
+            // Ambil data dari attribute blade
+            let startDate = $(this).attr('data-start_date');
+            if (!startDate) {
+                // fallback lama: parsing label
+                let labelText = $(this).closest('.form-check').find('label').text();
+                let match = labelText.match(/\(([^-]+)-/);
+                if (match && match[1]) {
+                    $(this).attr('data-start_date', match[1].trim());
+                }
             }
         });
         // PATCH: inject data-event_start ke #data_event_id

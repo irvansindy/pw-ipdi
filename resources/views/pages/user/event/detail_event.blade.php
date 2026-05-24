@@ -32,7 +32,8 @@
                                             <input class="form-check-input event-detail-radio" type="radio"
                                                 value="{{ $event_detail->id }}" name="event_detail"
                                                 id="detail_event_{{ $event_detail->id }}"
-                                                data-price="{{ $event_detail->price }}">
+                                                data-price="{{ $event_detail->price }}"
+                                                data-start_date="{{ $event_detail->start_date }}">
                                             <label class="form-check-label text-muted"
                                                 for="detail_event_{{ $event_detail->id }}">({{ $event_detail->name . ' - Rp.' . number_format($event_detail->price, 0, ',', '.') }})
                                             </label>
