@@ -96,6 +96,19 @@
             };
         }
 
+        // Helper untuk ambil tanggal event
+        function getEventStartDate(detail_event_id) {
+            // Coba cari input radio yang dipilih
+            if (detail_event_id) {
+                // Cari label yang mengandung data-start_date
+                let radio = $(`input[name='event_detail'][value='${detail_event_id}']`);
+                let startDate = radio.data('start_date');
+                if (startDate) return startDate;
+            }
+            // Jika tidak ada detail, ambil dari span utama
+            return $('#data_event_id').data('event_start');
+        }
+
         $(document).on('click', '#submit_regis_event', function(e) {
             e.preventDefault();
 
@@ -107,8 +120,8 @@
                     icon: 'warning',
                     title: 'Perhatian!',
                     html: '<div style="text-align: left;">' +
-                          validation.errors.map(err => '• ' + err).join('<br>') +
-                          '</div>',
+                        validation.errors.map(err => '• ' + err).join('<br>') +
+                        '</div>',
                     confirmButtonText: 'OK',
                     confirmButtonColor: '#d33'
                 });
@@ -142,10 +155,20 @@
                 detailEventName = $('input[name="event_detail"]:checked').next('label').text();
             }
 
+            // --- Ambil tanggal event ---
+            let eventStartDate = '';
+            if (detail_event) {
+                eventStartDate = $(`input[name='event_detail']:checked`).data('start_date');
+            }
+            if (!eventStartDate) {
+                eventStartDate = $('#data_event_id').data('event_start');
+            }
+
             // Konfirmasi sebelum submit
             let confirmMessage = `
                 <div style="text-align: left; padding: 10px;">
                     <p style="margin-bottom: 8px;"><strong>Event:</strong> ${$('#data_event_id').text()}</p>
+                    <p style="margin-bottom: 8px;"><strong>Tanggal Mulai:</strong> ${eventStartDate ? eventStartDate : '-'}</p>
                     ${detail_event ? '<p style="margin-bottom: 8px;"><strong>Detail:</strong> ' + detailEventName + '</p>' : ''}
                     ${is_hotel_checked ? '<p style="margin-bottom: 8px;"><strong>Hotel:</strong> ' + total_room_hotel + ' kamar, ' + total_room_night + ' malam</p>' : ''}
                     <hr style="margin: 12px 0;">
@@ -180,7 +203,8 @@
                         url: '{{ route('create-transaction') }}',
                         type: 'POST',
                         headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                'content')
                         },
                         data: data,
                         dataType: 'json'
@@ -193,12 +217,15 @@
                                 errorMessage = error.responseJSON.meta.message;
                             } else if (error.responseText) {
                                 let response = JSON.parse(error.responseText);
-                                errorMessage = response.meta?.message || errorMessage;
+                                errorMessage = response.meta?.message ||
+                                    errorMessage;
                             }
                         } catch (e) {
                             console.error('Error parsing response:', e);
                         }
-                        Swal.showValidationMessage(`<i class="fas fa-exclamation-circle"></i> ${errorMessage}`);
+                        Swal.showValidationMessage(
+                            `<i class="fas fa-exclamation-circle"></i> ${errorMessage}`
+                        );
                     });
                 },
                 allowOutsideClick: () => !Swal.isLoading()
@@ -232,6 +259,20 @@
                 }
             });
         });
+
+        // --- PATCH RADIO: inject data-start_date ke radio ---
+        $('.event-detail-radio').each(function() {
+            let id = $(this).val();
+            let startDate = $(this).closest('.form-check').find('label').text().match(/\(([^-]+)-/);
+            if (startDate && startDate[1]) {
+                $(this).attr('data-start_date', startDate[1].trim());
+            }
+        });
+        // PATCH: inject data-event_start ke #data_event_id
+        if (!$('#data_event_id').data('event_start')) {
+            let eventStart = $('li.list-group-item h6.my-0').eq(1).text().replace('WIB', '').trim();
+            $('#data_event_id').attr('data-event_start', eventStart);
+        }
     });
 </script>
 
@@ -248,8 +289,25 @@
     }
 
     @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-        20%, 40%, 60%, 80% { transform: translateX(5px); }
+
+        0%,
+        100% {
+            transform: translateX(0);
+        }
+
+        10%,
+        30%,
+        50%,
+        70%,
+        90% {
+            transform: translateX(-5px);
+        }
+
+        20%,
+        40%,
+        60%,
+        80% {
+            transform: translateX(5px);
+        }
     }
 </style>

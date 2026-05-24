@@ -74,8 +74,7 @@
                             <small class="text-muted">peranggota</small>
                         </div>
                         {{-- <span class="text-muted" id="data_event_price" data-price="{{ $event->price }}">Rp.{{ number_format($event->price, 0, ',', '.') }}</span> --}}
-                        <span class="text-muted" id="data_event_price"
-                            data-price="{{ (int) $event->price }}">
+                        <span class="text-muted" id="data_event_price" data-price="{{ (int) $event->price }}">
                             Rp.{{ number_format((float) $event->price, 0, ',', '.') }}
                         </span>
 
