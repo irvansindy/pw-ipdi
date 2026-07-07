@@ -78,20 +78,6 @@
 
         $(document).on('click', '.edit_user', function() {
             var userId = $(this).data('user_id');
-            var username = $(this).data('username');
-
-            // Tampilkan modal terlebih dahulu
-            $('#form_edit_user').modal('show');
-
-            // Tampilkan loading animation
-            $('#form_edit_user').find('.modal-body').html(
-                '<div class="text-center py-5">' +
-                '<div class="spinner-border text-primary" role="status">' +
-                '<span class="visually-hidden">Loading...</span>' +
-                '</div>' +
-                '<p class="mt-3">Memuat data...</p>' +
-                '</div>'
-            );
 
             $.ajax({
                 headers: {
@@ -125,6 +111,9 @@
                         .val(user.alamat_center_dialisis_perusahaan);
                     $('#form_edit_user_data').find('#last_edication').val(user
                         .last_edication);
+
+                    // Tampilkan modal setelah data terisi
+                    $('#form_edit_user').modal('show');
                 },
                 error: function(xhr) {
                     // Tampilkan error message
@@ -135,9 +124,6 @@
                         confirmButtonColor: '#d33',
                         confirmButtonText: 'OK'
                     });
-
-                    // Tutup modal
-                    $('#form_edit_user').modal('hide');
                 }
             })
         });
@@ -149,7 +135,7 @@
             let buttonText = $('#update_user').html();
             $('#update_user').prop('disabled', true).html(
                 '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Loading...'
-                );
+            );
 
             let form_data = new FormData($('#form_edit_user_data')[0]);
 
