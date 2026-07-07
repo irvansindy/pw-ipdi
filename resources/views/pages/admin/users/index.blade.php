@@ -35,7 +35,7 @@
                                             <tr>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     No
-                                                
+
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                     Nama
                                                 </th>
@@ -49,7 +49,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -61,7 +61,7 @@
                                             <tr>
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                                     No
-                                                
+
                                                 <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                                     Nama
                                                 </th>
@@ -75,21 +75,21 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            
+
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
 
-                        
+
                         {{-- <div class="table-responsive p-0 px-2">
                             <table class="table align-items-center mb-0" id="user_management">
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             No
-                                        
+
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Nama
                                         </th>
@@ -103,7 +103,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                 </tbody>
                             </table>
                         </div> --}}

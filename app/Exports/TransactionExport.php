@@ -5,8 +5,10 @@ namespace App\Exports;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class TransactionExport implements FromCollection, WithHeadings
+class TransactionExport implements FromCollection, WithHeadings, WithColumnFormatting
 {
     protected $category;
     protected $year;
@@ -69,6 +71,14 @@ class TransactionExport implements FromCollection, WithHeadings
             'Asal Dialisis',
             'Nomor Transaksi',
             'Bukti Transaksi (Link)',
+        ];
+    }
+
+    public function columnFormats(): array
+    {
+        return [
+            'B' => NumberFormat::FORMAT_TEXT, // NIK
+            'C' => NumberFormat::FORMAT_TEXT, // NIRA IPDI
         ];
     }
 }

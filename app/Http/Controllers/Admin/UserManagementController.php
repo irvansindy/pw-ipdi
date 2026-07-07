@@ -34,7 +34,7 @@ class UserManagementController extends Controller
             $admin = User::whereHas('roles', function ($query) {
                 $query->where('name', '!=', 'user');
             })->get();
-            
+
             return FormatResponseJson::success($admin, 'Data admin berhasil diambil');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 500);
@@ -85,9 +85,42 @@ class UserManagementController extends Controller
     public function update(Request $request)
     {
         try {
-            //code...
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'username' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'nik' => 'nullable|string|max:20',
+                'nira_ppni' => 'nullable|string|max:20',
+                'nira_ipdi' => 'nullable|string|max:20',
+                'pw_ipdi_provinsi' => 'nullable|string',
+                'nama_perusahaan' => 'nullable|string|max:255',
+                'center_dialisis' => 'nullable|string',
+                'number_phone' => 'nullable|string|max:20',
+                'alamat_center_dialisis_perusahaan' => 'nullable|string',
+                'last_edication' => 'nullable|string|max:100',
+            ]);
+
+            $user = User::findOrFail($request->user_id);
+
+            $user->update([
+                'username' => $request->username,
+                'email' => $request->email,
+                'nik' => $request->nik,
+                'nira_ppni' => $request->nira_ppni,
+                'nira_ipdi' => $request->nira_ipdi,
+                'pw_ipdi_provinsi' => $request->pw_ipdi_provinsi,
+                'nama_perusahaan' => $request->nama_perusahaan,
+                'center_dialisis' => $request->center_dialisis,
+                'number_phone' => $request->number_phone,
+                'alamat_center_dialisis_perusahaan' => $request->alamat_center_dialisis_perusahaan,
+                'last_edication' => $request->last_edication,
+            ]);
+
+            return FormatResponseJson::success($user, 'User berhasil diupdate');
+        } catch (\Illuminate\Validation\ValidationException $th) {
+            return FormatResponseJson::error(null, $th->errors(), 422);
         } catch (\Throwable $th) {
-            //throw $th;
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
     public function exportExcel()
