@@ -45,8 +45,8 @@ class TransactionExport implements FromCollection, WithHeadings, WithColumnForma
         $data = collect($list_transaction)->map(function ($item) {
             return [
                 $item->username,
-                $item->nik,
-                $item->nira_ipdi,
+                "'" . $item->nik,
+                "'" . $item->nira_ipdi,
                 $item->email,
                 $item->number_phone,
                 $item->nama_perusahaan,
