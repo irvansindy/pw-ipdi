@@ -62,18 +62,26 @@ class TransactionController extends Controller
     public function createTransaction(Request $request)
     {
         try {
+            // Validasi biodata lengkap sebelum membuat transaksi
+            if (!auth()->user()->hasCompleteBiodata()) {
+                return FormatResponseJson::error(
+                    ['redirect_url' => route('profile')],
+                    'Biodata belum lengkap. Silakan lengkapi profil Anda terlebih dahulu.',
+                    422
+                );
+            }
+
             DB::beginTransaction();
 
             // Validasi input
             $request->validate([
                 'id' => 'required|exists:events,id',
-                'user_id' => 'required|exists:users,id',
                 'price' => 'required|numeric',
             ]);
 
             $event_id = $request->id;
             $event_price = $request->price;
-            $user_id = $request->user_id;
+            $user_id = auth()->id();
             $detail_event_id = $request->detail_event;
             $event_hotel_id = $request->event_hotel;
             $is_hotel_checked = $request->is_hotel_checked;

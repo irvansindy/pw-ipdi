@@ -85,4 +85,34 @@ class User extends Authenticatable
     public function iuranForDashboard(){
         return $this->hasOne(IuranTransactionDetail::class, 'user_id', 'id');
     }
+
+    public function hasCompleteBiodata(): bool
+    {
+        $requiredFields = [
+            'username',
+            'email',
+            'jenis_kelamin',
+            'number_phone',
+            'nik',
+            'nira_ppni',
+            'nira_ipdi',
+            'pw_ipdi_provinsi',
+            'pw_ipdi_kabupaten',
+            'nama_perusahaan',
+            'center_dialisis',
+            'alamat_center_dialisis_perusahaan',
+            'address',
+            'city',
+            'country',
+            'postal',
+        ];
+
+        foreach ($requiredFields as $field) {
+            if (!filled($this->{$field})) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

@@ -3,6 +3,8 @@
         let basePrice = parseInt($('#data_event_price').data('price')) || 0;
         let detailPrice = 0;
         let hotelPrice = 0;
+        let isProfileComplete = {{ auth()->user()->hasCompleteBiodata() ? 'true' : 'false' }};
+        let profileRedirectRoute = "{{ route('profile') }}";
 
         // Update tampilan harga
         function updateTotal() {
@@ -113,6 +115,24 @@
             // Validasi form
             const validation = validateForm();
 
+            if (!isProfileComplete) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Biodata belum lengkap',
+                    html: '<div style="text-align: left;">Silakan lengkapi biodata Anda terlebih dahulu sebelum mendaftar event.</div>',
+                    confirmButtonText: 'Lengkapi Profil',
+                    showCancelButton: true,
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#95a5a6'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = profileRedirectRoute;
+                    }
+                });
+                return;
+            }
+
             if (!validation.isValid) {
                 Swal.fire({
                     icon: 'warning',
@@ -205,8 +225,14 @@
                     }).catch(error => {
                         let errorMessage = 'Terjadi kesalahan saat mendaftar';
                         try {
-                            if (error.responseJSON && error.responseJSON.meta) {
-                                errorMessage = error.responseJSON.meta.message;
+                            if (error.responseJSON) {
+                                errorMessage = error.responseJSON.meta?.message ||
+                                    errorMessage;
+                                if (error.responseJSON.data?.redirect_url) {
+                                    window.location.href = error.responseJSON.data
+                                        .redirect_url;
+                                    return;
+                                }
                             } else if (error.responseText) {
                                 let response = JSON.parse(error.responseText);
                                 errorMessage = response.meta?.message ||
