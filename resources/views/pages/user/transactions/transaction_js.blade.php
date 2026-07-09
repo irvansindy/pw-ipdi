@@ -52,6 +52,7 @@
                                 return `
                                     <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>
                                     <a href="/generate-ticket-qrcode?transnumber=${transNumber}" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>
+                                    <a href="https://chat.whatsapp.com/CpohhqEGA7f6qTnRcY5h0J" target="_blank" class="btn btn-success btn-sm mt-2">join grup</a>
                                 `;
                             }
                         } else {
