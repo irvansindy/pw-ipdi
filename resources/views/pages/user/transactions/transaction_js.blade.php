@@ -46,7 +46,7 @@
                             } else if (item.transactions.status === 'progress') {
                                 return `
                                     <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>
-                                    <a href="https://chat.whatsapp.com/CpohhqEGA7f6qTnRcY5h0J" target="_blank" class="btn btn-success btn-sm mt-2">join gruo</a>
+                                    <a href="https://chat.whatsapp.com/CpohhqEGA7f6qTnRcY5h0J" target="_blank" class="btn btn-success btn-sm mt-2">join grup</a>
                                 `;
                             } else if (item.transactions.status === 'success') {
                                 return `
