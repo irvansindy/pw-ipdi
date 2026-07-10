@@ -18,6 +18,7 @@ class Events extends Model
         'start_date' => 'date',
         'end_date' => 'date',
         'date' => 'datetime',
+        'link_wa_group' => 'string'
     ];
 
     // Observer untuk auto calculate total_days

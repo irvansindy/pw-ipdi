@@ -65,10 +65,17 @@
                             <small class="text-danger d-none error-create_event_description"></small>
                         </div>
                         <div class="form-group mb-3">
+                            <label for="create_event_link_wa_group" class="form-label">Link WA Group</label>
+                            <input type="url" class="form-control" name="create_event_link_wa_group"
+                                id="create_event_link_wa_group" placeholder="https://chat.whatsapp.com/....">
+                            <small class="text-muted">Opsional. Diisi jika event memiliki grup WA.</small>
+                        </div>
+                        <div class="form-group mb-3">
                             <label for="create_event_quota" class="form-label">Quota User <span
                                     class="text-danger">*</span></label>
-                            <input class="form-control" type="number" name="create_event_quota" id="create_event_quota"
-                                min="1" placeholder="Enter quota" value="" required>
+                            <input class="form-control" type="number" name="create_event_quota"
+                                id="create_event_quota" min="1" placeholder="Enter quota" value=""
+                                required>
                             <small class="text-danger d-none error-create_event_quota"></small>
                         </div>
                         <div class="form-group mb-3">

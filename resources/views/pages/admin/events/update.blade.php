@@ -69,6 +69,12 @@
                             <small class="text-danger d-none error-update_event_description"></small>
                         </div>
                         <div class="form-group mb-3">
+                            <label for="update_event_link_wa_group" class="form-label">Link WA Group</label>
+                            <input type="url" class="form-control" name="update_event_link_wa_group"
+                                id="update_event_link_wa_group" placeholder="https://chat.whatsapp.com/....">
+                            <small class="text-muted">Opsional. Diisi jika event memiliki grup WA.</small>
+                        </div>
+                        <div class="form-group mb-3">
                             <label for="update_event_quota" class="form-label">Quota User <span
                                     class="text-danger">*</span></label>
                             <input class="form-control" type="number" name="update_event_quota"

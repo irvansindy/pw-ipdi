@@ -409,6 +409,7 @@
                 $('#update_event_title').val(event.title);
                 $('#update_event_description').val(event.description);
                 $('#update_event_quota').val(event.quota);
+                $('#update_event_link_wa_group').val(event.link_wa_group || '');
 
                 // Format datetime-local field
                 if (event.date) {
@@ -554,6 +555,7 @@
         let eventEndDate = $('#update_event_end_date').val();
         let eventLastRegister = $('#update_event_date_last_register').val();
         let eventMaxAttendance = $('#update_event_max_attendance').val();
+        let eventLinkWaGroup = $('#update_event_link_wa_group').val() || '';
         let isActive = $('#update_event_is_active').is(':checked') ? 1 : 0;
 
         // Validation
@@ -650,6 +652,7 @@
         formData.append('end_date', eventEndDate);
         formData.append('last_register', eventLastRegister);
         formData.append('max_attendance', eventMaxAttendance);
+        formData.append('link_wa_group', eventLinkWaGroup);
         formData.append('is_active', isActive);
 
         // Hotel data

@@ -9,7 +9,8 @@
                     <div class="card-header pb-2">
                         <div class="d-flex align-items-center">
                             <h6>Event Management</h6>
-                            <button type="button" class="btn bg-gradient-primary ms-auto" id="for_create_event_data" data-bs-toggle="modal" data-bs-target="#formCreateEvent">+ Event</button>
+                            <button type="button" class="btn bg-gradient-primary ms-auto" id="for_create_event_data"
+                                data-bs-toggle="modal" data-bs-target="#formCreateEvent">+ Event</button>
 
                         </div>
                     </div>
@@ -21,20 +22,23 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                             No
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                            Name 
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                            Name
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Quota
                                         </th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        <th
+                                            class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                             Date
                                         </th>
                                         <th class="text-secondary opacity-7"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+
                                 </tbody>
                             </table>
                         </div>

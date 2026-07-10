@@ -36,6 +36,7 @@
                         if (item.transactions != null) {
                             const transId = item.transactions.id;
                             const transNumber = item.transactions.token_register;
+                            const eventLinkWaGroup = item.transactions?.event?.link_wa_group;
 
                             if (item.transactions.status === 'pending') {
                                 return `
@@ -44,16 +45,24 @@
                                     <button type="button" data-transaction_id="${transId}" data-transaction_number="${item.transactions.number}" class="btn btn-outline-danger btn-sm mt-2 delete_transaction">Delete</button>
                                 `;
                             } else if (item.transactions.status === 'progress') {
-                                return `
+                                let actions = `
                                     <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>
-                                    <a href="https://chat.whatsapp.com/CpohhqEGA7f6qTnRcY5h0J" target="_blank" class="btn btn-success btn-sm mt-2">join grup</a>
                                 `;
+                                if (eventLinkWaGroup) {
+                                    actions +=
+                                        `<a href="${eventLinkWaGroup}" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-sm mt-2">Join WA Group</a>`;
+                                }
+                                return actions;
                             } else if (item.transactions.status === 'success') {
-                                return `
+                                let actions = `
                                     <button type="button" data-transaction_id="${transId}" class="btn btn-outline-info btn-sm mt-2 detail_transaction" data-bs-toggle="modal" data-bs-target="#detailTransaction">View</button>
                                     <a href="/generate-ticket-qrcode?transnumber=${transNumber}" class="btn btn-outline-danger btn-sm mt-2">Qr Code</a>
-                                    <a href="https://chat.whatsapp.com/CpohhqEGA7f6qTnRcY5h0J" target="_blank" class="btn btn-success btn-sm mt-2">join grup</a>
                                 `;
+                                if (eventLinkWaGroup) {
+                                    actions +=
+                                        `<a href="${eventLinkWaGroup}" target="_blank" rel="noopener noreferrer" class="btn btn-success btn-sm mt-2">Join WA Group</a>`;
+                                }
+                                return actions;
                             }
                         } else {
                             return '';

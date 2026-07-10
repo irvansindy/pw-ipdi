@@ -72,6 +72,7 @@ class EventManagementController extends Controller
                 "create_event_detail_event_price" => "nullable|array",
                 "create_event_hotel" => "nullable|string|max:255",
                 "create_event_harga_hotel" => "nullable|min:0",
+                "create_event_link_wa_group" => "nullable|string|max:255",
             ]);
 
             if ($validator->fails()) {
@@ -104,6 +105,7 @@ class EventManagementController extends Controller
                 "max_attendance" => $request->create_event_max_attendance,
                 "image" => $filename,
                 "is_active" => 1,
+                "link_wa_group" => $request->input('create_event_link_wa_group'),
             ];
 
             $event = Events::create($eventData);
@@ -210,6 +212,7 @@ class EventManagementController extends Controller
                 "detail_price" => "nullable|array",
                 "update_event_hotel" => "nullable|string|max:255",
                 "update_event_harga_hotel" => "nullable|min:0",
+                "link_wa_group" => "nullable|string|max:255",
             ]);
 
             if ($validator->fails()) {
@@ -252,62 +255,62 @@ class EventManagementController extends Controller
                 "last_register" => $request->last_register,
                 "is_active" => $request->is_active ? 1 : 0,
                 "image" => $event->image,
+                "link_wa_group" => $request->input('link_wa_group', $request->input('update_event_link_wa_group')),
             ]);
 
             // Update event details
-$detailNames  = $request->input('update_event_detail_name', []);
-$detailPrices = $request->input('update_event_detail_price', []);
+            $detailNames  = $request->input('update_event_detail_name', []);
+            $detailPrices = $request->input('update_event_detail_price', []);
 
-if (is_array($detailNames) && !empty($detailNames)) {
+            if (is_array($detailNames) && !empty($detailNames)) {
 
-    // Get existing details keyed by name
-    $existingDetails = EventDetail::where('event_id', $event->id)
-        ->get()
-        ->keyBy('name')
-        ->toArray();
+                // Get existing details keyed by name
+                $existingDetails = EventDetail::where('event_id', $event->id)
+                    ->get()
+                    ->keyBy('name')
+                    ->toArray();
 
-    $usedNames = [];
+                $usedNames = [];
 
-    foreach ($detailNames as $index => $name) {
-        if (empty($name)) continue;
+                foreach ($detailNames as $index => $name) {
+                    if (empty($name)) continue;
 
-        // =========================
-        // NORMALISASI PRICE
-        // =========================
-        $rawPrice = $detailPrices[$index] ?? 0;
+                    // =========================
+                    // NORMALISASI PRICE
+                    // =========================
+                    $rawPrice = $detailPrices[$index] ?? 0;
 
-        // Hapus koma, spasi, simbol lain
-        $price = (int) preg_replace('/[^0-9]/', '', $rawPrice);
+                    // Hapus koma, spasi, simbol lain
+                    $price = (int) preg_replace('/[^0-9]/', '', $rawPrice);
 
-        $usedNames[] = $name;
+                    $usedNames[] = $name;
 
-        if (isset($existingDetails[$name])) {
-            // Update existing detail
-            EventDetail::where('event_id', $event->id)
-                ->where('name', $name)
-                ->update([
-                    'price' => $price
-                ]);
-        } else {
-            // Create new detail
-            EventDetail::create([
-                'event_id' => $event->id,
-                'name'     => $name,
-                'price'    => $price,
-            ]);
-        }
-    }
+                    if (isset($existingDetails[$name])) {
+                        // Update existing detail
+                        EventDetail::where('event_id', $event->id)
+                            ->where('name', $name)
+                            ->update([
+                                'price' => $price
+                            ]);
+                    } else {
+                        // Create new detail
+                        EventDetail::create([
+                            'event_id' => $event->id,
+                            'name'     => $name,
+                            'price'    => $price,
+                        ]);
+                    }
+                }
 
-    // Delete details that are not in the request
-    EventDetail::where('event_id', $event->id)
-        ->whereNotIn('name', $usedNames)
-        ->delete();
+                // Delete details that are not in the request
+                EventDetail::where('event_id', $event->id)
+                    ->whereNotIn('name', $usedNames)
+                    ->delete();
 
-} else {
-    // If no details provided, delete all
-    EventDetail::where('event_id', $event->id)->delete();
-}
-
+            } else {
+                // If no details provided, delete all
+                EventDetail::where('event_id', $event->id)->delete();
+            }
 
             // Update or delete hotel
             if ($request->filled('update_event_hotel') && $request->filled('update_event_harga_hotel')) {
@@ -342,9 +345,5 @@ if (is_array($detailNames) && !empty($detailNames)) {
             DB::rollback();
             return FormatResponseJson::error(null, $e->getMessage(), 500);
         }
-    }
-    public function indexPeserta()
-    {
-        return view('');
     }
 }
