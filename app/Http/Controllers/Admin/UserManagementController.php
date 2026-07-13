@@ -43,12 +43,60 @@ class UserManagementController extends Controller
     public function fetchById(Request $request)
     {
         try {
-            $user = User::where('id', $request->id)->first();
-            return FormatResponseJson::success($user,'Data user berhasil diambil');
+            $user = User::with('roles')->where('id', $request->id)->first();
+            if (!$user) {
+                return FormatResponseJson::error(null, 'User tidak ditemukan', 404);
+            }
+
+            $userData = $user->toArray();
+            $userData['role_ids'] = $user->roles->pluck('id')->toArray();
+            $userData['role_names'] = $user->roles->pluck('name')->toArray();
+
+            return FormatResponseJson::success($userData, 'Data user berhasil diambil');
         } catch (\Throwable $th) {
             return FormatResponseJson::error(null, $th->getMessage(), 500);
         }
     }
+
+    public function destroy(Request $request)
+    {
+        try {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+            ]);
+
+            $user = User::findOrFail($request->user_id);
+            $user->delete();
+
+            return FormatResponseJson::success(null, 'User berhasil dihapus');
+        } catch (\Illuminate\Validation\ValidationException $th) {
+            return FormatResponseJson::error(null, $th->errors(), 422);
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
+
+    public function updateRole(Request $request)
+    {
+        try {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'roles' => 'nullable|array',
+                'roles.*' => 'exists:roles,id',
+            ]);
+
+            $user = User::findOrFail($request->user_id);
+            $roleNames = Role::whereIn('id', $request->roles ?? [])->pluck('name')->toArray();
+            $user->syncRoles($roleNames);
+
+            return FormatResponseJson::success($user, 'Role user berhasil diupdate');
+        } catch (\Illuminate\Validation\ValidationException $th) {
+            return FormatResponseJson::error(null, $th->errors(), 422);
+        } catch (\Throwable $th) {
+            return FormatResponseJson::error(null, $th->getMessage(), 500);
+        }
+    }
+
     public function storeAdmin(Request $request)
     {
         try {

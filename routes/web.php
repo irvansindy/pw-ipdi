@@ -133,6 +133,8 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::get('/fetch-admin', [UserManagementController::class, 'fetchAdmin'])->name('fetch-admin');
 	Route::get('/fetch-user-by-id', [UserManagementController::class, 'fetchById'])->name('fetch-user-by-id');
 	Route::post('/update-user', [UserManagementController::class, 'update'])->name('update-user');
+	Route::delete('/users/delete', [UserManagementController::class, 'destroy'])->name('users-delete');
+	Route::post('/users/update-role', [UserManagementController::class, 'updateRole'])->name('users-update-role');
 	Route::get('/fetch-admin-by-id', [UserManagementController::class, 'fetchAdminById'])->name('fetch-admin-by-id');
 	Route::post('/create-admin-cms', [UserManagementController::class, 'storeAdmin'])->name('create-admin-cms');
 

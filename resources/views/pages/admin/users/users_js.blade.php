@@ -31,7 +31,13 @@
                     "render": function(item) {
                         return '<a href="#" class="text-info font-weight-bold text-xs mx-2 edit_user" data-user_id="' +
                             item.id + '" data-username="' + item.username +
-                            '" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a>'
+                            '" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a> ' +
+                            '<a href="#" class="text-warning font-weight-bold text-xs mx-2 role_user" data-user_id="' +
+                            item.id + '" data-username="' + item.username +
+                            '" data-bs-toggle="modal" data-bs-target="#form_role_user" data-toggle="tooltip" data-original-title="Edit role">Role</a> ' +
+                            '<a href="#" class="text-danger font-weight-bold text-xs mx-2 delete_user" data-user_id="' +
+                            item.id + '" data-username="' + item.username +
+                            '" data-bs-toggle="modal" data-bs-target="#form_delete_user" data-toggle="tooltip" data-original-title="Delete user">Delete</a>'
                     }
                 },
             ],
@@ -68,9 +74,7 @@
                     "render": function(item) {
                         return '<a href="#" class="text-info font-weight-bold text-xs mx-2 edit_user" data-user_id="' +
                             item.id + '" data-username="' + item.username +
-                            '" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a> <a href="#" class="text-black font-weight-bold text-xs mx-2 role_admin" data-user_id="' +
-                            item.id + '" data-username="' + item.username +
-                            '" data-bs-toggle="modal" data-bs-target="#form_role_admin" data-toggle="tooltip" data-original-title="Role Admin">Role</a>'
+                            '" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a>'
                     }
                 },
             ],
@@ -239,35 +243,137 @@
             });
         });
 
-        $(document).on('click', '.role_admin', function() {
+        $(document).on('click', '.role_user', function() {
             var userId = $(this).data('user_id');
             var username = $(this).data('username');
-            $('#form_role_admin').find('#user_id').val(userId);
-            $('#form_role_admin').find('#username').val(username);
-            alert('Role Admin for ' + username);
+            $('#user_roles').select2({
+                width: '100%',
+                dropdownParent: $('#form_role_user')
+            });
+            $('#form_role_user_data')[0].reset();
+            $('#form_role_user_data').find('#role_user_id').val(userId);
+            $('#form_role_user_data').find('#role_username').val(username);
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                url: '{{ route('fetch-admin-by-id') }}',
+                url: '{{ route('fetch-user-by-id') }}',
                 type: 'GET',
                 data: {
                     id: userId
                 },
                 dataType: 'json',
                 success: function(res) {
-                    $('#form_role_admin_data')[0].reset()
                     let user = res.data;
-                    $('#form_role_admin_data').find('#user_id').val(user.id);
-                    $('#form_role_admin_data').find('#username').val(user.username);
-                    $('#form_role_admin_data').find('#email').val(user.email);
-                    $('#form_role_admin_data').find('#roles').val(user.roles);
+                    $('#form_role_user_data').find('#role_user_id').val(user.id);
+                    $('#form_role_user_data').find('#role_username').val(user.username);
+                    $('#form_role_user_data').find('#user_roles').val(user.role_ids || []);
                 },
                 error: function(xhr) {
-                    $('#form_role_admin_data')[0].reset()
-                    alert('Error fetching user data.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Gagal mengambil data role user',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
                 }
             })
+        });
+
+        $(document).on('click', '#submit_user_role', function(e) {
+            e.preventDefault();
+
+            let userId = $('#form_role_user_data').find('#role_user_id').val();
+            let roles = $('#form_role_user_data').find('#user_roles').val();
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('users-update-role') }}',
+                type: 'POST',
+                data: {
+                    user_id: userId,
+                    roles: roles
+                },
+                success: function(res) {
+                    $('#form_role_user').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Role user berhasil diupdate',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                    $('#user_management').DataTable().ajax.reload();
+                    $('#admin_management').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    let errorMessage = 'Terjadi kesalahan saat update role';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+        $(document).on('click', '.delete_user', function() {
+            var userId = $(this).data('user_id');
+            var username = $(this).data('username');
+            $('#delete_user_id').val(userId);
+            $('#delete_username').text(username);
+        });
+
+        $(document).on('click', '#confirm_delete_user', function(e) {
+            e.preventDefault();
+
+            let userId = $('#delete_user_id').val();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{ route('users-delete') }}',
+                type: 'DELETE',
+                data: {
+                    user_id: userId
+                },
+                success: function(res) {
+                    $('#form_delete_user').modal('hide');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'User berhasil dihapus',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                    $('#user_management').DataTable().ajax.reload();
+                    $('#admin_management').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    let errorMessage = 'Terjadi kesalahan saat menghapus user';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage = xhr.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        html: errorMessage,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
         });
 
     })
