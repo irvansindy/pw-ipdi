@@ -70,7 +70,7 @@ Route::get('/api/berita', [userNews::class, 'fetchNews'])->name('news.fetch');
 
 Route::get('/event-registration', [UserContentController::class,'eventRegistration'])->name('event-registration');
 
-Route::group(['middleware' => ['auth', 'role:user|admin|superadmin|ketua|sekretaris|bendahara|admin-verificator|infokom']], function() {
+Route::group(['middleware' => ['auth', 'role:user|admin|superadmin|ketua|sekretaris|bendahara|admin-verificator|infokom|admin-diklat|admin-organisasi']], function() {
 	Route::post('/check-transaction', [TransactionController::class,'checkTransaction'])->name('check-transaction');
 	Route::post('/create-transaction', [TransactionController::class,'createTransaction'])->name('create-transaction');
 	Route::get('/list-transaksi', [TransactionController::class,'viewTransaction'])->name('list-transaksi');
