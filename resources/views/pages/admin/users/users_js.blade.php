@@ -32,9 +32,6 @@
                         return '<a href="#" class="text-info font-weight-bold text-xs mx-2 edit_user" data-user_id="' +
                             item.id + '" data-username="' + item.username +
                             '" data-bs-toggle="modal" data-bs-target="#form_edit_user" data-toggle="tooltip" data-original-title="Edit user">Edit</a> ' +
-                            '<a href="#" class="text-warning font-weight-bold text-xs mx-2 role_user" data-user_id="' +
-                            item.id + '" data-username="' + item.username +
-                            '" data-bs-toggle="modal" data-bs-target="#form_role_user" data-toggle="tooltip" data-original-title="Edit role">Role</a> ' +
                             '<a href="#" class="text-danger font-weight-bold text-xs mx-2 delete_user" data-user_id="' +
                             item.id + '" data-username="' + item.username +
                             '" data-bs-toggle="modal" data-bs-target="#form_delete_user" data-toggle="tooltip" data-original-title="Delete user">Delete</a>'
