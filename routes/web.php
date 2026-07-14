@@ -35,6 +35,7 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\IuranController;
 use App\Http\Controllers\Admin\ScreeningQrCodeAudience;
 use App\Http\Controllers\Admin\MenuPermissionController;
+use App\Http\Controllers\Admin\DialisisController;
 use App\Http\Controllers\UserContentController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\VisionAndMisionController as userVisiMision;
@@ -196,6 +197,12 @@ Route::group(['middleware' => ['auth', 'role:admin|superadmin|ketua|sekretaris|b
 	Route::post('/upload-news-images', [NewsController::class,'uploadNewsImages'])->name('upload-news-images');
 	Route::post('/delete-news-image', [NewsController::class,'deleteNewsImageFile'])->name('delete-news-image');
 	Route::delete('/delete-news-management', [NewsController::class,'destroy'])->name('delete-news-management');
+
+	Route::get('/dialisis', [DialisisController::class, 'index'])->name('dialisis');
+	Route::get('/fetch-dialisis', [DialisisController::class, 'fetch'])->name('fetch-dialisis');
+	Route::post('/dialisis', [DialisisController::class, 'store'])->name('dialisis.store');
+	Route::put('/dialisis/{id}', [DialisisController::class, 'update'])->name('dialisis.update');
+	Route::delete('/dialisis/{id}', [DialisisController::class, 'destroy'])->name('dialisis.destroy');
 
 	Route::get('/attendance-audience', [ScreeningQrCodeAudience::class,'index'])->name('attendance-audience');
 	Route::get('/check-audience', [ScreeningQrCodeAudience::class,'getDataAudienceById'])->name('check-audience');
