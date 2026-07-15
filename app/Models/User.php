@@ -96,15 +96,15 @@ class User extends Authenticatable
             'nik',
             'nira_ppni',
             'nira_ipdi',
-            'pw_ipdi_provinsi',
-            'pw_ipdi_kabupaten',
-            'nama_perusahaan',
+            // 'pw_ipdi_provinsi',
+            // 'pw_ipdi_kabupaten',
+            // 'nama_perusahaan',
             'center_dialisis',
             'alamat_center_dialisis_perusahaan',
-            'address',
-            'city',
-            'country',
-            'postal',
+            // 'address',
+            // 'city',
+            // 'country',
+            // 'postal',
         ];
 
         foreach ($requiredFields as $field) {
