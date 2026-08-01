@@ -9,7 +9,9 @@ use App\Models\CategoriesEvent;
 use App\Models\AttendanceLog;
 use App\Helpers\FormatResponseJson;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ExportAttendanceDetailed;
+use App\Models\Events;
+// use App\Exports\ExportAttendanceDetailed;
+use App\Exports\ExportAttendance;
 use Carbon\Carbon;
 
 class ScreeningQrCodeAudience extends Controller
@@ -222,7 +224,7 @@ class ScreeningQrCodeAudience extends Controller
 
         $fileName = 'attendance_detailed_' . now()->format('Ymd_His') . '.xlsx';
 
-        return Excel::download(new ExportAttendanceDetailed($category, $year), $fileName);
+        return Excel::download(new ExportAttendance($category, $year), $fileName);
     }
 
     /**

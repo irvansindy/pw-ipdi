@@ -16,8 +16,8 @@ class ExportAttendance implements FromCollection, WithHeadings
         $this->year = $year;
     }
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         return TransactionDetail::with(['transactions.event.category', 'user.dialisis'])
@@ -33,11 +33,11 @@ class ExportAttendance implements FromCollection, WithHeadings
             ->get()
             ->map(function ($item) {
                 return [
-                    'Tanggal Hadir'   => $item->updated_at->format('Y-m-d H:i:s'),
+                    'Tanggal Hadir' => $item->updated_at->format('Y-m-d H:i:s'),
                     'Nomor Transaksi' => $item->transactions->number ?? '-',
-                    'Nama Event'      => $item->transactions->event->title ?? '-',
-                    'Nama Peserta'       => $item->user->username ?? '-',
-                    'Rumah Sakit'       => $item->user->dialisis->name ?? '-',
+                    'Nama Event' => $item->transactions->event->title ?? '-',
+                    'Nama Peserta' => $item->user->username ?? '-',
+                    'Rumah Sakit' => $item->user->dialisis->name ?? '-',
                 ];
             });
     }
