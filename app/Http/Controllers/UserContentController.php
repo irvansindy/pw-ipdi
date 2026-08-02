@@ -102,50 +102,7 @@ class UserContentController extends Controller
             return FormatResponseJson::error(null, $e->getMessage(), 400);
         }
     }
-    public function fetchAllEventOld(Request $request)
-    {
-        try {
-            $search = $request->input('search');
-            $filter = $request->input('filter');
-
-            $events_query = Events::with(['category', 'EventDetail', 'hotel']);
-
-            if ($search != null && $filter != null) {
-                $events_query->whereHas('category', function($q) use ($filter) {
-                    $q->where('name','=',$filter);
-                })
-                ->where(function($query) use ($search) {
-                    $query->where('name','like','%'.$search.'%')
-                        ->orWhere('title','like','%'.$search.'%')
-                        ->orWhere('price','like','%'.$search.'%')
-                        ->orWhere('description','like','%'.$search.'%')
-                        ->orWhere('quota','like','%'.$search.'%');
-                });
-            } else {
-                if ($search != null) {
-                    $events_query->whereHas('category', function($q) use ($search) {
-                        $q->where('name', 'like', '%'. $search .'%');
-                    })
-                    ->orWhere('name','like','%'.$search.'%')
-                    ->orWhere('title','like','%'.$search.'%')
-                    ->orWhere('price','like','%'.$search.'%')
-                    ->orWhere('description','like','%'.$search.'%')
-                    ->orWhere('quota','like','%'.$search.'%');
-                } else if ($filter != null) {
-                    $events_query->whereHas('category', function($q) use ($filter) {
-                        $q->where('name','=',$filter);
-                    });
-                }
-            }
-
-            $events = $events_query->orderBy('date', 'desc')->limit(100)->get();
-
-            return FormatResponseJson::success($events,'Event fetched successfully');
-        } catch (\Exception $e) {
-            return FormatResponseJson::error(null, $e->getMessage(), 400);
-        }
-    }
-    public function fetchAllEvent(Request $request)
+    public function fetchAllEventOldV2(Request $request)
     {
         try {
             $search = $request->input('search');
@@ -184,6 +141,56 @@ class UserContentController extends Controller
                 })
 
                 ->orderBy('date', 'asc') // event terdekat di atas
+                ->limit(50)
+                ->get();
+
+            return FormatResponseJson::success($events, 'Event fetched successfully');
+
+        } catch (\Throwable $e) {
+            return FormatResponseJson::error(null, $e->getMessage(), 400);
+        }
+    }
+
+    public function fetchAllEvent(Request $request)
+    {
+        try {
+            $search = $request->input('search');
+            $filter = $request->input('filter');
+            $today  = today();
+
+            $events = Events::query()
+                ->with([
+                    'category:id,name',
+                    'EventDetail',
+                    'hotel:id,name'
+                ])
+
+                // Hanya tampilkan event yang belum melewati end_date
+                ->whereDate('events.end_date', '>=', $today)
+                ->where('events.is_active', true)
+
+                // Filter Category
+                ->when($filter, function ($q) use ($filter) {
+                    $q->whereHas('category', function ($cat) use ($filter) {
+                        $cat->where('name', $filter);
+                    });
+                })
+
+                // Search
+                ->when($search, function ($q) use ($search) {
+                    $q->where(function ($query) use ($search) {
+                        $query->where('name', 'like', "%{$search}%")
+                            ->orWhere('title', 'like', "%{$search}%")
+                            ->orWhere('price', 'like', "%{$search}%")
+                            ->orWhere('description', 'like', "%{$search}%")
+                            ->orWhere('quota', 'like', "%{$search}%")
+                            ->orWhereHas('category', function ($cat) use ($search) {
+                                $cat->where('name', 'like', "%{$search}%");
+                            });
+                    });
+                })
+
+                ->orderBy('date', 'asc')
                 ->limit(50)
                 ->get();
 
