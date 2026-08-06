@@ -175,7 +175,8 @@ class ScreeningQrCodeAudience extends Controller
     {
         try {
             $categoryId = $request->input('category');
-            $year = $request->input('year');
+            $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->toDateString() : null;
+            $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->toDateString() : null;
 
             $data = Transactions::with([
                 'event.category',
@@ -183,26 +184,55 @@ class ScreeningQrCodeAudience extends Controller
                 'transactionDetail',
                 'attendanceLogs'
             ])
-            ->whereHas('transactionDetail', function ($query) {
-                $query->where('is_attendanced', 1);
-            })
-            ->when($categoryId, function ($query, $categoryId) {
-                $query->whereHas('event.category', function ($q) use ($categoryId) {
-                    $q->where('id', $categoryId);
-                });
-            })
-            ->when($year, function ($query, $year) {
-                $query->whereYear('created_at', $year);
-            })
-            ->get();
+                ->whereHas('transactionDetail', function ($query) {
+                    $query->where('is_attendanced', 1);
+                })
+                ->when($categoryId, function ($query, $categoryId) {
+                    $query->whereHas('event.category', function ($q) use ($categoryId) {
+                        $q->where('id', $categoryId);
+                    });
+                })
+                ->when($startDate || $endDate, function ($query) use ($startDate, $endDate) {
+                    $query->whereHas('attendanceLogs', function ($q) use ($startDate, $endDate) {
+                        if ($startDate) {
+                            $q->whereDate('attendance_date', '>=', $startDate);
+                        }
+
+                        if ($endDate) {
+                            $q->whereDate('attendance_date', '<=', $endDate);
+                        }
+                    });
+                })
+                ->get();
 
             // Tambahkan info attendance
-            $data->map(function ($item) {
+            $data->map(function ($item) use ($startDate, $endDate) {
                 $detail = $item->transactionDetail[0] ?? null;
-                $item->total_attendance = $item->attendanceLogs->count();
+                $attendanceLogs = $item->attendanceLogs;
+
+                if ($startDate) {
+                    $attendanceLogs = $attendanceLogs->filter(function ($log) use ($startDate) {
+                        return Carbon::parse($log->attendance_date)->toDateString() >= $startDate;
+                    });
+                }
+
+                if ($endDate) {
+                    $attendanceLogs = $attendanceLogs->filter(function ($log) use ($endDate) {
+                        return Carbon::parse($log->attendance_date)->toDateString() <= $endDate;
+                    });
+                }
+
+                $latestAttendance = $attendanceLogs->sortByDesc(function ($log) {
+                    return Carbon::parse($log->attendance_date)->format('Y-m-d') . ' ' . Carbon::parse($log->attendance_time)->format('H:i:s');
+                })->first();
+
+                $item->total_attendance = $attendanceLogs->count();
                 $item->attendance_completed = $detail ? $detail->attendance_completed : false;
                 $item->max_attendance = $item->event->max_attendance ?? $item->event->total_days;
-                $item->attendance_dates = $item->attendanceLogs->pluck('attendance_date')->map(function($date) {
+                $item->latest_attendance_at = $latestAttendance
+                    ? Carbon::parse($latestAttendance->attendance_date)->format('Y-m-d') . ' ' . Carbon::parse($latestAttendance->attendance_time)->format('H:i:s')
+                    : null;
+                $item->attendance_dates = $attendanceLogs->pluck('attendance_date')->map(function($date) {
                     return Carbon::parse($date)->format('d-m-Y');
                 })->toArray();
                 return $item;
@@ -220,11 +250,12 @@ class ScreeningQrCodeAudience extends Controller
     public function export(Request $request)
     {
         $category = $request->input('category');
-        $year = $request->input('year');
+        $startDate = $request->input('start_date') ? Carbon::parse($request->input('start_date'))->toDateString() : null;
+        $endDate = $request->input('end_date') ? Carbon::parse($request->input('end_date'))->toDateString() : null;
 
         $fileName = 'attendance_detailed_' . now()->format('Ymd_His') . '.xlsx';
 
-        return Excel::download(new ExportAttendance($category, $year), $fileName);
+        return Excel::download(new ExportAttendance($category, $startDate, $endDate), $fileName);
     }
 
     /**

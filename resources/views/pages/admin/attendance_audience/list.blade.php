@@ -22,13 +22,21 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-3 mr-3 mb-3">
-                                <select id="year" class="form-select year-filter">
-                                    <option value="">Semua Tahun</option>
-                                    @for ($i = 0; $i <= 5; $i++)
-                                        <option value="{{ now()->year - $i }}">{{ now()->year - $i }}</option>
-                                    @endfor
-                                </select>
+                            <div class="col-md-5 mr-3 mb-3">
+                                <div class="date-range-filter">
+                                    <div class="date-filter-field">
+                                        <label for="start_date" class="date-filter-label">Tanggal Mulai</label>
+                                        <input type="date" id="start_date" class="form-control date-filter">
+                                    </div>
+                                    <span class="date-range-separator">s/d</span>
+                                    <div class="date-filter-field">
+                                        <label for="end_date" class="date-filter-label">Tanggal Akhir</label>
+                                        <input type="date" id="end_date" class="form-control date-filter">
+                                    </div>
+                                    <button type="button" id="resetDateRange" class="btn btn-outline-secondary">
+                                        Reset
+                                    </button>
+                                </div>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
                                 <button id="exportExcel" class="btn btn-success">
@@ -64,10 +72,6 @@
 
 @push('css')
     <style>
-        .year-filter {
-            width: 100px !important;
-        }
-
         #category.form-select {
             width: 200px !important;
             height: 45px;
@@ -75,10 +79,42 @@
             padding: 0.5rem 1rem;
         }
 
-        .year-filter {
-            width: 150px !important;
+        .date-range-filter {
+            display: flex;
+            align-items: end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .date-filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .date-filter-label {
+            color: #67748e;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0;
+        }
+
+        .date-filter {
+            width: 160px !important;
             height: 45px;
             font-size: 1rem;
+            padding: 0.5rem 1rem;
+        }
+
+        .date-range-separator {
+            color: #67748e;
+            font-weight: 600;
+            margin-bottom: 12px;
+            white-space: nowrap;
+        }
+
+        #resetDateRange {
+            height: 45px;
             padding: 0.5rem 1rem;
         }
 
@@ -118,7 +154,8 @@
                     url: '{{ route('fetch-data-is-attendance') }}',
                     data: function(d) {
                         d.category = $('#category').val();
-                        d.year = $('#year').val();
+                        d.start_date = $('#start_date').val();
+                        d.end_date = $('#end_date').val();
                     }
                 },
                 columns: [
@@ -166,12 +203,17 @@
                         }
                     },
                     {
-                        data: 'transaction_detail',
-                        name: 'transaction_detail',
+                        data: 'latest_attendance_at',
+                        name: 'latest_attendance_at',
                         render: function(data, type, row) {
-                            if (data && data[0] && data[0].last_attendance_at) {
-                                return moment(data[0].last_attendance_at).format('DD-MM-YYYY HH:mm');
+                            if (data) {
+                                return moment(data).format('DD-MM-YYYY HH:mm');
                             }
+
+                            if (row.transaction_detail && row.transaction_detail[0] && row.transaction_detail[0].last_attendance_at) {
+                                return moment(row.transaction_detail[0].last_attendance_at).format('DD-MM-YYYY HH:mm');
+                            }
+
                             return '-';
                         }
                     }
@@ -179,19 +221,34 @@
                 order: [[7, 'desc']] // Sort by last attendance
             });
 
-            $('#category, #year').change(function() {
+            $('#start_date').change(function() {
+                $('#end_date').attr('min', $(this).val());
+            });
+
+            $('#end_date').change(function() {
+                $('#start_date').attr('max', $(this).val());
+            });
+
+            $('#category, #start_date, #end_date').change(function() {
+                table.ajax.reload();
+            });
+
+            $('#resetDateRange').click(function() {
+                $('#start_date, #end_date').val('').removeAttr('min max');
                 table.ajax.reload();
             });
 
             $('#exportExcel').click(function () {
                 const category = $('#category').val();
-                const year = $('#year').val();
+                const startDate = $('#start_date').val();
+                const endDate = $('#end_date').val();
+                const params = new URLSearchParams();
 
-                let url = '{{ route('export-attendance') }}?';
-                if (category) url += `category=${category}&`;
-                if (year) url += `year=${year}`;
+                if (category) params.append('category', category);
+                if (startDate) params.append('start_date', startDate);
+                if (endDate) params.append('end_date', endDate);
 
-                window.location.href = url;
+                window.location.href = '{{ route('export-attendance') }}?' + params.toString();
             });
         });
     </script>
