@@ -13,8 +13,9 @@
                     </div>
 
                     <div class="card-body px-3 pt-3 pb-2">
-                        <div class="row mb-3 px-2">
-                            <div class="col-md-3 mr-3 mb-3">
+                        <div class="attendance-filter-toolbar mb-4">
+                            <div class="filter-field category-filter-field">
+                                <label for="category" class="filter-label">Kategori</label>
                                 <select id="category" class="form-select">
                                     <option value="">Semua Kategori</option>
                                     @foreach ($categories as $category)
@@ -22,23 +23,23 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-5 mr-3 mb-3">
-                                <div class="date-range-filter">
-                                    <div class="date-filter-field">
-                                        <label for="start_date" class="date-filter-label">Tanggal Mulai</label>
-                                        <input type="date" id="start_date" class="form-control date-filter">
-                                    </div>
-                                    <span class="date-range-separator">s/d</span>
-                                    <div class="date-filter-field">
-                                        <label for="end_date" class="date-filter-label">Tanggal Akhir</label>
-                                        <input type="date" id="end_date" class="form-control date-filter">
-                                    </div>
-                                    <button type="button" id="resetDateRange" class="btn btn-outline-secondary">
-                                        Reset
-                                    </button>
+
+                            <div class="date-range-filter">
+                                <div class="filter-field">
+                                    <label for="start_date" class="filter-label">Tanggal Mulai</label>
+                                    <input type="date" id="start_date" class="form-control date-filter">
+                                </div>
+                                <span class="date-range-separator">s/d</span>
+                                <div class="filter-field">
+                                    <label for="end_date" class="filter-label">Tanggal Akhir</label>
+                                    <input type="date" id="end_date" class="form-control date-filter">
                                 </div>
                             </div>
-                            <div class="col-md-3 d-flex align-items-end">
+
+                            <div class="filter-action-group">
+                                <button type="button" id="resetDateRange" class="btn btn-outline-secondary">
+                                    Reset
+                                </button>
                                 <button id="exportExcel" class="btn btn-success">
                                     Export ke Excel
                                 </button>
@@ -72,50 +73,78 @@
 
 @push('css')
     <style>
-        #category.form-select {
-            width: 200px !important;
+        .attendance-filter-toolbar {
+            display: flex;
+            align-items: flex-end;
+            gap: 14px;
+            flex-wrap: wrap;
+            padding: 0 0.5rem;
+        }
+
+        .filter-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-label {
+            color: #67748e;
+            font-size: 0.82rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0;
+        }
+
+        .category-filter-field {
+            min-width: 240px;
+        }
+
+        #category.form-select,
+        .date-filter {
             height: 45px;
             font-size: 1rem;
             padding: 0.5rem 1rem;
+        }
+
+        #category.form-select {
+            width: 100% !important;
         }
 
         .date-range-filter {
             display: flex;
-            align-items: end;
+            align-items: flex-end;
             gap: 8px;
             flex-wrap: wrap;
         }
 
-        .date-filter-field {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .date-filter-label {
-            color: #67748e;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0;
-        }
-
         .date-filter {
-            width: 160px !important;
-            height: 45px;
-            font-size: 1rem;
-            padding: 0.5rem 1rem;
+            width: 180px !important;
         }
 
         .date-range-separator {
             color: #67748e;
-            font-weight: 600;
-            margin-bottom: 12px;
+            font-weight: 700;
+            height: 45px;
+            display: flex;
+            align-items: center;
             white-space: nowrap;
         }
 
-        #resetDateRange {
+        .filter-action-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #resetDateRange,
+        #exportExcel {
             height: 45px;
             padding: 0.5rem 1rem;
+            margin-bottom: 0;
+        }
+
+        #exportExcel {
+            min-width: 170px;
         }
 
         .badge-attendance {
@@ -138,6 +167,26 @@
         .attendance-3plus {
             background-color: #007bff;
             color: #fff;
+        }
+
+        @media (max-width: 991.98px) {
+            .attendance-filter-toolbar,
+            .date-range-filter,
+            .filter-action-group {
+                width: 100%;
+            }
+
+            .category-filter-field,
+            .filter-field,
+            .date-filter,
+            #resetDateRange,
+            #exportExcel {
+                width: 100% !important;
+            }
+
+            .date-range-separator {
+                height: auto;
+            }
         }
     </style>
 @endpush
